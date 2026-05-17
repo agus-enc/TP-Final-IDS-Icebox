@@ -1,0 +1,41 @@
+from datetime import datetime
+
+def construir_error(code: int, message: str, description: str, level: str = 'error'):
+    return {
+        'errors': [{
+            'code': code,
+            'message': message,
+            'level': level,
+            'description': description
+        }]
+    }
+
+def validar_formato_fecha(fecha: str):
+    try:
+        return datetime.strptime(fecha, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError(construir_error(
+            code=400,
+            message=f"Formato de '{fecha}' inválido",
+            description=f"El valor '{fecha}' no cumple el formato esperado: '%Y-%m-%d'"
+        ))
+
+def validar_entero(numero: str) -> int:
+    try:
+        return int(numero)
+    except ValueError:
+        raise ValueError(construir_error(
+            code=400,
+            message=f"Formato de '{numero}' inválido",
+            description=f"El valor '{numero}' no puede convertirse a un número entero"
+        ))
+
+def validar_minimo(valor: int, minimo: int, nombre: str) -> int:
+    if valor < minimo:
+        raise ValueError(construir_error(
+            code=400,
+            message='Valor por debajo del mínimo permitido',
+            description=f"El parámetro '{nombre}' debe ser mayor a {minimo}. Se recibió: {valor}"
+        ))
+
+    return valor
