@@ -74,3 +74,14 @@ def eliminar_viaje_por_id(id_viaje: int) -> bool:
     sql = 'DELETE FROM viajes WHERE id_viaje = %(id_viaje)s'
     ejecutar_mutacion(sql, {'id_viaje': id_viaje})
     return True
+
+def eliminar_parada_por_id(id_parada: int) -> bool:
+    """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""
+    sql_buscar = 'SELECT 1 FROM paradas WHERE id_parada = %(id_parada)s'
+    existe_parada = ejecutar_consulta(sql_buscar, {"id_parada": id_parada})
+
+    if not existe_parada:
+        return False
+    sql_borrar = 'DELETE FROM paradas WHERE id_parada = %(id_parada)s'
+    ejecutar_mutacion(sql_borrar, {'id_parada': id_parada})
+    return True
