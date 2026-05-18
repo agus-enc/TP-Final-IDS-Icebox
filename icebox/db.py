@@ -74,3 +74,24 @@ def eliminar_viaje_por_id(id_viaje: int) -> bool:
     sql = 'DELETE FROM viajes WHERE id_viaje = %(id_viaje)s'
     ejecutar_mutacion(sql, {'id_viaje': id_viaje})
     return True
+
+def obtener_usuario(id_usuario: int) -> dict | None:
+    """
+    Obtener un usuario específico por id
+    """
+    sql = "SELECT * FROM usuarios WHERE id = %(id_usuario)s"
+    resultados = ejecutar_consulta(sql, {"id_usuario" : id_usuario})
+
+    return resultados[0] if resultados else None
+
+def eliminar_usuario_por_id(id_usuario: int) -> bool:
+    """
+    Elimina un usuario por id. Retorna True si fue eliminado, False si no existía
+    """
+    usuario = obtener_usuario(id_usuario)
+    if not usuario:
+        return False
+    
+    sql = "DELETE FROM usuarios WHERE id = %(id_usuario)s"
+    ejecutar_mutacion(sql, {"id_usuario" : id_usuario})
+    return True
