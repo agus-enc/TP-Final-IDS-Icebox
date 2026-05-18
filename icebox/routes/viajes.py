@@ -23,8 +23,6 @@ def post_viaje(id_usuario):
 
     return jsonify(viaje_dto), 201
 
-viajes_bp = Blueprint('viajes', __name__)
-
 @viajes_bp.route('/viajes/<id_viaje>', methods=['DELETE'])
 def delete_viaje(id_viaje):
     try:
@@ -43,9 +41,7 @@ def delete_viaje(id_viaje):
 
     return '', 204
 
-viajes_bp = Blueprint('viajes', __name__)
-
-@paradas_bp.route('/paradas/<id_parada>', methods=['DELETE'])
+@viajes_bp.route('/viajes/paradas/<id_parada>', methods=['DELETE'])
 def delete_parada(id_parada):
     try:
         id_parada_validada = validar_id_parada(id_parada)
