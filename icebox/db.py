@@ -94,7 +94,7 @@ def eliminar_usuario_por_id(id_usuario: int) -> bool:
     
     sql = "DELETE FROM usuarios WHERE id = %(id_usuario)s"
     ejecutar_mutacion(sql, {"id_usuario" : id_usuario})
-    
+
 def eliminar_parada_por_id(id_parada: int) -> bool:
     """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""
     sql_buscar = 'SELECT 1 FROM paradas WHERE id_parada = %(id_parada)s'
@@ -105,3 +105,22 @@ def eliminar_parada_por_id(id_parada: int) -> bool:
     sql_borrar = 'DELETE FROM paradas WHERE id_parada = %(id_parada)s'
     ejecutar_mutacion(sql_borrar, {'id_parada': id_parada})
     return True
+
+def actualizar_posicion_iman(id_iman: int, ubicacion_heladera: bool, posicion_x: float, posicion_y: float) -> bool:
+    """
+    Guarda la posición final del imán, y si está o no en la heladera (booleano)
+    """
+    sql = """
+        UPDATE imanes
+        SET ubicación_heladera = %(ubicacion_heladera)s,
+            posicion_x = %(posicion_x)s,
+            posicion_y = %(posicion_y)s
+        WHERE id_iman = %(id_iman)s
+    """
+    filas_afectadas = ejecutar_mutacion(sql, {
+        "id_iman": id_iman,
+        "ubicacion_heladera": ubicacion_heladera,
+        "posicion_x": posicion_x,
+        "posicion_y": posicion_y
+    })
+    return filas_afectadas > 0
