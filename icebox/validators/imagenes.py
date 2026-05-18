@@ -2,7 +2,7 @@ from ..utils import construir_error
 from ..constants import EXTENSIONES_PERMITIDAS, MIME_TYPES_PERMITIDOS
 
 def validar_imagen(archivo) -> None:
-    """  Verifica el nombre y la extension del archivo """
+    """  Verifica el nombre, la extension y el MIME Type de la imagen """
     if archivo.filename == '':
         raise ValueError(construir_error(
             code='invalid.file',
