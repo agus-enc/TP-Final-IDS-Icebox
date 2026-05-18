@@ -1,4 +1,7 @@
-from ..utils import validar_formato_fecha, construir_error
+from ..constants import (
+    MIN_ID
+)
+from ..utils import validar_formato_fecha, construir_error, validar_entero, validar_minimo
 
 def validar_body_viaje(body: dict) -> dict:
     """
@@ -42,3 +45,8 @@ def validar_body_viaje(body: dict) -> dict:
         "titulo": titulo.strip(),
         "fecha_viaje": fecha_viaje
     }
+
+def validar_id_viaje(id_str: str) -> int:
+    """Valida que el id del viaje recibido en la URL sea un entero válido y mayor a cero."""
+    id_viaje = validar_entero(id_str, 'id_viaje')
+    return validar_minimo(id_viaje, MIN_ID, 'id_viaje')

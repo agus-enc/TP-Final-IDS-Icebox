@@ -26,3 +26,7 @@ def crear_viaje(body: dict, id_usuario: int) -> dict:
         "titulo": datos_limpios["titulo"],
         "fecha_viaje": datos_limpios["fecha_viaje"]
         })
+
+def eliminar_viaje(id_viaje: int) -> bool:
+    """Elimina un viaje por id. Retorna True si existía y fue eliminado, False si no existía."""
+    return db.eliminar_viaje_por_id(id_viaje)

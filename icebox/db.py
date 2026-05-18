@@ -64,3 +64,13 @@ def obtener_viaje(id_viaje: int) -> dict | None:
     resultados = ejecutar_consulta(sql, {"id_viaje": id_viaje})
 
     return resultados[0] if resultados else None
+
+def eliminar_viaje_por_id(id_viaje: int) -> bool:
+    """Elimina un viaje por id. Retorna True si existía y fue eliminado, False si no existía."""
+    viaje = obtener_viaje(id_viaje)
+    if not viaje:
+        return False
+
+    sql = 'DELETE FROM viajes WHERE id_viaje = %(id_viaje)s'
+    ejecutar_mutacion(sql, {'id_viaje': id_viaje})
+    return True

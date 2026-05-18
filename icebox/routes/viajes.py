@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
 from ..validators.usuarios import validar_id_usuario
-from ..services.viajes import crear_viaje
+from ..services.viajes import crear_viaje, eliminar_viaje
+from ..validators.viajes import validar_id_viaje
+from ..utils import construir_error
 
 viajes_bp = Blueprint("viajes", __name__)
 
@@ -20,3 +22,23 @@ def post_viaje(id_usuario):
         return jsonify(e.args[0]), status
 
     return jsonify(viaje_dto), 201
+
+viajes_bp = Blueprint('viajes', __name__)
+
+@viajes_bp.route('/viajes/<id_viaje>', methods=['DELETE'])
+def delete_viaje(id_viaje):
+    try:
+        id_viaje = validar_id_viaje(id_viaje)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+
+    eliminado = eliminar_viaje(id_viaje)
+
+    if not eliminado:
+        return jsonify(construir_error(
+            code="VIAJE_NOT_FOUND",
+            message='Viaje no encontrado',
+            description=f"No existe un viaje con id '{id_viaje}'"
+        )), 404
+
+    return '', 204
