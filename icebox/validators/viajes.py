@@ -19,11 +19,11 @@ def validar_body_viaje(body: dict) -> dict:
         errores.append(construir_error(
             code='invalid.titulo',
             message=f'Campo requerido: Titulo.',
-            description=f"El titulo es un campo obligatioro."
+            description=f"El titulo es un campo obligatorio."
         )['errors'][0])
 
     fecha_viaje = body.get("fecha_viaje")
-    if not fecha_viaje:
+    if not fecha_viaje or not isinstance(fecha_viaje, str):
         errores.append(construir_error(
             code='invalid.date',
             message=f'Campo requerido: Fecha.',
@@ -31,13 +31,9 @@ def validar_body_viaje(body: dict) -> dict:
         )['errors'][0])
     else:
         try:
-            validar_formato_fecha(fecha_viaje, "%Y-%m-%d", "fecha_viaje")
-        except ValueError:
-            errores.append(construir_error(
-                code='invalid.date',
-                message=f'Campo requerido: Fecha.',
-                description=f"La fecha {fecha_viaje} es invalida."
-            )['errors'][0])
+            validar_formato_fecha(fecha_viaje)
+        except ValueError as e:
+            errores.extend(e.args[0]['errors'])
 
     if errores:
         raise ValueError({"errors": errores})

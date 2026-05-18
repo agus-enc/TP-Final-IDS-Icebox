@@ -12,7 +12,7 @@ def construir_error(code: str, message: str, description: str, level: str = 'err
 
 def validar_formato_fecha(fecha: str):
     try:
-        return datetime.strptime(fecha, '%Y-%m-%d')
+        datetime.strptime(fecha, '%Y-%m-%d')
     except ValueError:
         raise ValueError(construir_error(
             code='invalid.date.format',
