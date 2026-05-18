@@ -30,10 +30,7 @@ def cambiar_posicion_iman(id_iman):
                 description=f"No se encontró ningún imán con el id {id_iman}"
             )), 404
         
-        return jsonify({
-            "status": "success",
-            "message": "La posición del imán fue actualizada con éxito"
-        }), 200
+        return "", 204
     
     except Exception as e:
         return jsonify(construir_error(
