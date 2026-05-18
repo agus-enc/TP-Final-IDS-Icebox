@@ -37,6 +37,7 @@ CREATE TABLE paradas (
     id_viaje INT NOT NULL,
     id_ciudad INT NOT NULL,
     orden_en_ruta INT NOT NULL, -- saber el orden de las paradas
+    relato_texto TEXT,
     FOREIGN KEY (id_viaje) REFERENCES viajes(id_viaje) ON DELETE CASCADE,
     FOREIGN KEY (id_ciudad) REFERENCES ciudades(id_ciudad)
 );
