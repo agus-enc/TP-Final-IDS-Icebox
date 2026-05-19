@@ -1,4 +1,5 @@
 from mysql.connector import connect
+from contextlib import contextmanager
 
 def get_connection():
     return connect(
@@ -49,6 +50,25 @@ def ejecutar_mutacion(sql: str, parametros: dict) -> int:
             cursor.close()
         if conn:
             conn.close()
+
+@contextmanager
+def obtener_transaccion():
+    """
+    Maneja el ciclo de vida de una transacción (Commit / Rollback automático) para querys complejas.
+    Uso: with obtener_transaccion() as cursor: ...
+    """
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+
+    try:
+        yield cursor # Le "presta" el cursor a la función que lo llame
+        conexion.commit()
+    except Exception as e:
+        conexion.rollback() # Si en la función salta un error inesperado, revierte los cambios.
+        raise e
+    finally:
+        cursor.close()
+        conexion.close()
 
 def insertar_viaje(id_usuario: int, titulo: str, fecha_viaje: str) -> int:
     """Inserta un nuevo viaje y retorna el id generado."""
@@ -124,6 +144,41 @@ def actualizar_posicion_iman(id_iman: int, ubicacion_heladera: bool, posicion_x:
         "posicion_y": posicion_y
     })
     return filas_afectadas > 0
+
+def obtener_usuario_por_viaje(id_viaje: int) -> int | None:
+    sql = 'SELECT id_usuario FROM viajes WHERE id_viaje = %(id_viaje)s'
+    resultados = ejecutar_consulta(sql, {'id_viaje': id_viaje})
+    return resultados[0]['id_usuario'] if resultados else None
+
+def obtener_ciudad_por_id(id_ciudad: int) -> int | None:
+    sql = 'SELECT id_ciudad FROM ciudades WHERE id_ciudad = %(id_ciudad)s'
+    resultados = ejecutar_consulta(sql, {'id_ciudad': id_ciudad})
+    return resultados[0]['id_ciudad'] if resultados else None
+
+def insertar_parada_con_iman(id_viaje: int, id_usuario: int, id_ciudad: int, orden_en_ruta: int, relato_str: str | None, imagen_url: str | None, predeterminado: bool) -> dict:
+    with obtener_transaccion() as cursor:
+        sql_parada = '''
+                     INSERT INTO paradas (id_viaje, id_ciudad, orden_en_ruta, relato_texto)
+                     VALUES (%(id_viaje)s, %(id_ciudad)s, %(orden_en_ruta)s, %(relato_texto)s)
+                     '''
+        cursor.execute(sql_parada, {
+            "id_viaje": id_viaje, "id_ciudad": id_ciudad,
+            "orden_en_ruta": orden_en_ruta, "relato_texto": relato_str
+        })
+        id_parada = cursor.lastrowid
+
+        sql_iman = '''
+                   INSERT INTO imanes (id_usuario, id_ciudad, id_parada, imagen_url, predeterminado)
+                   VALUES (%(id_usuario)s, %(id_ciudad)s, %(id_parada)s, %(imagen_url)s, %(predeterminado)s)
+                   '''
+        cursor.execute(sql_iman, {
+            "id_usuario": id_usuario, "id_ciudad": id_ciudad,
+            "id_parada": id_parada,
+            "imagen_url": imagen_url, "predeterminado": predeterminado
+        })
+        id_iman = cursor.lastrowid
+
+        return {"id_parada": id_parada, "id_iman": id_iman}
 
 def insertar_usuario(nombre_usuario: str, email: str, password: str)-> int:
     """Inserta un nuevo usuario y devuelve el id generado"""
