@@ -228,10 +228,12 @@ def obtener_imanes_usuario(id_usuario: int, en_heladera: bool) -> list:
     """
     
     sql = """
-        SELECT id_iman, id_usuario, id_ciudad, id_parada, imagen_url, predeterminado, ubicación_heladera, posicion_x, posicion_y
+        SELECT id_iman, id_usuario, imanes.id_ciudad, imanes.id_parada, paradas.id_viaje, imagen_url, predeterminado, ubicación_heladera, posicion_x, posicion_y
         FROM imanes
+        INNER JOIN paradas
+        ON imanes.id_parada = paradas.id_parada
         WHERE id_usuario = %(id_usuario)s
-            AND ubicación_heladera = %(en_heladera)s 
+            AND ubicación_heladera = %(en_heladera)s
         """
     
     parametros = {
