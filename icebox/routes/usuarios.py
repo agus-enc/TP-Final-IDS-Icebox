@@ -64,6 +64,29 @@ def obtener_perfil(id_usuario):
     usuario.pop('password', None)
     return jsonify(usuario), 200
 
+@usuarios_bp.route("/usuarios/<int:id_usuario>", methods=['PATCH'])
+def actualizar_nombre_usuario(id_usuario):
+
+    try:
+        validar_id_usuario(id_usuario)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+    
+    data = request.get_json() or {}
+    nuevo_nombre = data.get('nombre_usuario')
+
+    if not nuevo_nombre:
+        error_body = construir_error('missing.fields', 'Campo faltante', 'Debe proporcionar un nombre de usuario')
+        return jsonify(error_body), 400
+    
+    nombre_actualizado = modificar_nombre(id_usuario, nuevo_nombre)
+
+    if not nombre_actualizado:
+        error_body = construir_error('user.not_found', ' No se pudo actualizar', 'El usuario no existe')
+        return jsonify(error_body), 404
+    
+    return jsonify({'message': 'Datos de cuenta actualizados correctamente'}), 200
+
 
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=["DELETE"])
 def delete_usuario(id_usuario):
