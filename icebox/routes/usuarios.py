@@ -76,13 +76,13 @@ def actualizar_nombre_usuario(id_usuario):
     nuevo_nombre = data.get('nombre_usuario')
 
     if not nuevo_nombre:
-        error_body = construir_error('missing.fields', 'Campo faltante', 'Debe proporcionar un nombre de usuario')
+        error_body = construir_error('missing.field', 'Campo faltante', 'Debe proporcionar un nombre de usuario')
         return jsonify(error_body), 400
     
     nombre_actualizado = modificar_nombre(id_usuario, nuevo_nombre)
 
     if not nombre_actualizado:
-        error_body = construir_error('user.not_found', ' No se pudo actualizar', 'El usuario no existe')
+        error_body = construir_error('user.not_found', 'No se pudo actualizar', 'El usuario no existe')
         return jsonify(error_body), 404
     
     return jsonify({'message': 'Datos de cuenta actualizados correctamente'}), 200
@@ -109,8 +109,33 @@ def actualizar_email(id_usuario):
             return jsonify(error_body), 404
         return jsonify({"message":"Dirección de correo electrónico modificada con exito"})
     except Exception as e:
-        error_body = construir_error('database.error', 'El meail ya esta en uso', str(e))
+        error_body = construir_error('database.error', 'El email ya esta en uso', str(e))
         return jsonify(error_body), 400
+    
+@usuarios_bp.route('/usuarios/<int:id_usuario>', methods=['PATCH'])
+def actualizar_password(id_usuario):
+     
+    try:
+        validar_id_usuario(id_usuario)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+    
+    data = request.get_json() or {}
+    nueva_password = data.get('password')
+
+    if not nueva_password:
+        error_body = construir_error('missing.field', 'Campo faltante', 'Debe proporcionar una password')
+        return jsonify(error_body), 400
+    
+    actualizado = modificar_password(id_usuario, nueva_password)
+    if not actualizado:
+        error_body = construir_error('user.not_found', 'No se pudo actualzar', 'El usuario no existe')
+        return jsonify(error_body), 404
+    
+    return jsonify({"message":"Contraseña modificada de forma segura"})
+         
+    
+
 
 
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=["DELETE"])
