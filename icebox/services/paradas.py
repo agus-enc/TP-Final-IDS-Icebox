@@ -43,3 +43,7 @@ def crear_parada(id_viaje: int, body: dict) -> dict:
             "predeterminado": predeterminado
         }
     }
+
+def eliminar_parada(id_parada: int) -> bool:
+    """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""
+    return db.eliminar_parada_por_id(id_parada)

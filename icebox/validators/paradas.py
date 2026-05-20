@@ -1,4 +1,7 @@
-from ..utils import construir_error
+from ..constants import (
+    MIN_ID
+)
+from ..utils import construir_error, validar_entero, validar_minimo
 
 def validar_body_parada(body: dict) -> dict:
     """ Valida los campos de una parada"""
@@ -56,3 +59,8 @@ def validar_body_parada(body: dict) -> dict:
         raise ValueError({"errors": errores}, 400)
 
     return body
+
+def validar_id_parada(id_str: str) -> int:
+    """Valida que el id de la parada recibido en la URL sea un entero válido y mayor a cero."""
+    id_parada = validar_entero(id_str, 'id_parada')
+    return validar_minimo(id_parada, MIN_ID, 'id_parada')

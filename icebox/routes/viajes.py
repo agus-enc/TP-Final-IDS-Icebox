@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from ..validators.usuarios import validar_id_usuario
-from ..services.viajes import crear_viaje, eliminar_viaje, eliminar_parada
-from ..validators.viajes import validar_id_viaje, validar_id_parada
+from ..services.viajes import crear_viaje, eliminar_viaje
+from ..validators.viajes import validar_id_viaje
 from ..utils import construir_error
 
 viajes_bp = Blueprint("viajes", __name__)

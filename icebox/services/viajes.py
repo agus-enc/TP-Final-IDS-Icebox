@@ -30,7 +30,3 @@ def crear_viaje(body: dict, id_usuario: int) -> dict:
 def eliminar_viaje(id_viaje: int) -> bool:
     """Elimina un viaje por id. Retorna True si existía y fue eliminado, False si no existía."""
     return db.eliminar_viaje_por_id(id_viaje)
-
-def eliminar_parada(id_parada: int) -> bool:
-    """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""
-    return db.eliminar_parada_por_id(id_parada)

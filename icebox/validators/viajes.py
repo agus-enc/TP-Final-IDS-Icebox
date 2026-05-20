@@ -50,8 +50,3 @@ def validar_id_viaje(id_str: str) -> int:
     """Valida que el id del viaje recibido en la URL sea un entero válido y mayor a cero."""
     id_viaje = validar_entero(id_str, 'id_viaje')
     return validar_minimo(id_viaje, MIN_ID, 'id_viaje')
-
-def validar_id_parada(id_str: str) -> int:
-    """Valida que el id de la parada recibido en la URL sea un entero válido y mayor a cero."""
-    id_parada = validar_entero(id_str, 'id_parada')
-    return validar_minimo(id_parada, MIN_ID, 'id_parada')
