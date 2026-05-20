@@ -25,6 +25,29 @@ def registrar_usuario():
         return jsonify(error_body), 400
 
 
+@usuarios_bp.route("/usuarios/login", methods=['POST'])
+def login():
+    data = request.get_json() or {}
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        error_body = construir_error('missing.credentials', 'Faltan credenciales', 'Email y contraseña son requeridos para iniciar sesión')
+        return jsonify(error_body), 400
+    
+    usuario = autenticar_usuario(email, password)
+
+    if not usuario:
+        error_body = construir_error('invalid.credentials', 'Credenciales incorrectas', 'El email o la contraseña no coinciden')
+        return jsonify(error_body), 401
+    
+    """Si coinciden, le devolvemos los datos del usuario (sin la password)"""
+    usuario.pop('password', None)
+    return jsonify({
+        "message": "Autenticacion exitosa",
+        "usuario": usuario,
+    }), 200
+
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=["DELETE"])
 def delete_usuario(id_usuario):
     
