@@ -17,3 +17,21 @@ def post_parada(id_viaje):
         error_dict = e.args[0]
         status = e.args[1] if len(e.args) > 1 else 400
         return jsonify(error_dict), status
+
+@paradas_bp.route('/viajes/paradas/<id_parada>', methods=['DELETE'])
+def delete_parada(id_parada):
+    try:
+        id_parada_validada = validar_id_parada(id_parada)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+
+    eliminado = eliminar_parada(id_parada_validada)
+
+    if not eliminado:
+        return jsonify(construir_error(
+            code="PARADA_NOT_FOUND",
+            message='Parada no encontrada',
+            description=f"No existe una parada con id '{id_parada_validada}'"
+        )), 404
+
+    return '', 204

@@ -24,7 +24,6 @@ def registrar_usuario():
         error_body = construir_error('database.error', 'Error al registrar', str(e))
         return jsonify(error_body), 400
 
-
 @usuarios_bp.route("/usuarios/login", methods=['POST'])
 def login():
     data = request.get_json() or {}
@@ -111,7 +110,6 @@ def actualizar_email(id_usuario):
     except Exception as e:
         error_body = construir_error('database.error', 'El meail ya esta en uso', str(e))
         return jsonify(error_body), 400
-
 
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=["DELETE"])
 def delete_usuario(id_usuario):
