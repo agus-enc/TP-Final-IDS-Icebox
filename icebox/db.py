@@ -181,7 +181,9 @@ def insertar_parada_con_iman(id_viaje: int, id_usuario: int, id_ciudad: int, ord
         return {"id_parada": id_parada, "id_iman": id_iman}
 
 def insertar_usuario(nombre_usuario: str, email: str, password: str)-> int:
-    """Inserta un nuevo usuario y devuelve el id generado"""
+    """
+    Inserta un nuevo usuario y devuelve el id generado
+    """
     sql = """
         INSERT INTO usuarios (nombre_usuario, email, password)
         VALUES (%(nombre_usuario)s, %(email)s, %(password)s)
@@ -191,12 +193,14 @@ def insertar_usuario(nombre_usuario: str, email: str, password: str)-> int:
 
 def obtener_usuario_por_email(email: str)-> dict | None:
     """Busca un usuario por su mail (util para el login)"""
+    
     sql = "SELECT * FROM usuarios WHERE email = %(email)s"
     resultados = ejecutar_consulta(sql, {"email": email})
     return resultados[0] if resultados else None
 
 def actualizar_nombre_usuario(id_usuario: int, nombre_usuario: str)-> bool:
     """Actualiza el nombre de usuario"""
+    
     sql = "UPDATE usuarios SET nombre_usuario = %(nombre_usuario)s WHERE id_usuario = %(id_usuario)s"
     filas_afectadas = ejecutar_mutacion(sql, {"id_usuario": id_usuario, "nombre_usuario": nombre_usuario})
 
@@ -204,6 +208,7 @@ def actualizar_nombre_usuario(id_usuario: int, nombre_usuario: str)-> bool:
 
 def actualizar_mail_usuario(id_usuario: int, email: str)-> bool:
     """Actualiza el correo electronico"""
+    
     sql = "UPDATE usuarios SET email = %(email)s WHERE id_usuario = %(id_usuario)s"
     filas_afectadas = ejecutar_mutacion(sql, {"id_usuario": id_usuario, "email": email})
 
@@ -211,6 +216,7 @@ def actualizar_mail_usuario(id_usuario: int, email: str)-> bool:
 
 def actualizar_password_usuario(id_usuario: int, password: str)-> bool:
     """Actualiza la contraseña del usuario"""
+    
     sql = "UPDATE usuarios SET password = %(password)s WHERE id_usuario = %(id_usuario)s"
     filas_afectadas = ejecutar_mutacion(sql, {"id_usuario": id_usuario, "password": password})
 
