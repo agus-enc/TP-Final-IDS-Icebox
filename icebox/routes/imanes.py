@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ..utils import construir_error
-from ..services.imanes import modificar_posicion_iman
+from ..services.imanes import modificar_posicion_iman, listar_imanes
 
 imanes_bp = Blueprint("imanes", __name__)
 
@@ -36,5 +36,29 @@ def cambiar_posicion_iman(id_iman):
         return jsonify(construir_error(
             code="INTERNAL_ERROR",
             message="Error interno del servidor",
+            description=str(e)
+        )), 500
+    
+@imanes_bp.route("/imanes", methods=["GET"])
+def obtener_imanes():
+
+    id_usuario = request.args.get("id_usuario", type=int)
+    ubicacion_param = request.args.get("ubicacion", type=str)
+
+    if not id_usuario:
+        return jsonify (construir_error(
+            code="BAD_REQUEST",
+            message="Falta el id del usuario",
+            description="El parámetro id_usuario es obligatorio en los argumentos de la URL"
+        )), 400
+    
+    try:
+        imanes = listar_imanes(id_usuario, ubicacion_param)
+        return jsonify(imanes), 200
+    
+    except Exception as e:
+        return jsonify(construir_error(
+            code="INTERNAL_ERROR",
+            message="Error al obtener los imanes",
             description=str(e)
         )), 500

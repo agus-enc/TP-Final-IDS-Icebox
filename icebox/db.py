@@ -222,5 +222,22 @@ def actualizar_password_usuario(id_usuario: int, password: str)-> bool:
 
     return filas_afectadas > 0
 
+def obtener_imanes_usuario(id_usuario: int, en_heladera: bool) -> list:
+    """
+    Trae los imanes del usuario filtrados por su ubicación (heladera = True, cajón = False)
+    """
+    
+    sql = """
+        SELECT id_iman, id_usuario, id_ciudad, id_parada, imagen_url, predeterminado, ubicación_heladera, posicion_x, posicion_y
+        FROM imanes
+        WHERE id_usuario = %(id_usuario)s
+            AND ubicación_heladera = %(en_heladera)s 
+        """
+    
+    parametros = {
+        "id_usuario": id_usuario,
+        "en_heladera": en_heladera
+    }
 
- 
+    resultado = ejecutar_consulta(sql, parametros)
+    return resultado
