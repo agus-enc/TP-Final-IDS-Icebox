@@ -87,6 +87,31 @@ def actualizar_nombre_usuario(id_usuario):
     
     return jsonify({'message': 'Datos de cuenta actualizados correctamente'}), 200
 
+@usuarios_bp.route('/usuarios/<int:id_usuario>', methods=['PATCH'])
+def actualizar_email(id_usuario):
+
+    try:
+        validar_id_usuario(id_usuario)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+    
+    data = request.get_json() or {}
+    nuevo_email = data.get('email')
+
+    if not nuevo_email:
+        error_body = construir_error('missing.fields', 'Campo faltante', 'Debe proporcionar un email')
+        return jsonify(error_body), 400
+    
+    try:
+        actualizado = modificar_email(id_usuario, nuevo_email)
+        if not actualizado:
+            error_body = construir_error('user.not_found', 'No se pudo actualizar el email', 'El usuario no existe')
+            return jsonify(error_body), 404
+        return jsonify({"message":"Dirección de correo electrónico modificada con exito"})
+    except Exception as e:
+        error_body = construir_error('database.error', 'El meail ya esta en uso', str(e))
+        return jsonify(error_body), 400
+
 
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=["DELETE"])
 def delete_usuario(id_usuario):
