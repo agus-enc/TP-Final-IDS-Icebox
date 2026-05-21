@@ -47,3 +47,7 @@ def crear_parada(id_viaje: int, body: dict) -> dict:
 def eliminar_parada(id_parada: int) -> bool:
     """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""
     return eliminar_parada_por_id(id_parada)
+
+def eliminar_relato(id_parada: int) -> bool:
+    """Busca la parada y pone su columna relato_texto en NULL. Retorna True si se modificó, False si la parada no existía."""
+    return db.eliminar_relato_parada(id_parada)
