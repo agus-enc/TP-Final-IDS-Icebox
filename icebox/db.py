@@ -99,7 +99,7 @@ def obtener_usuario(id_usuario: int) -> dict | None:
     """
     Obtener un usuario específico por id
     """
-    sql = "SELECT * FROM usuarios WHERE id = %(id_usuario)s"
+    sql = "SELECT * FROM usuarios WHERE id_usuario = %(id_usuario)s"
     resultados = ejecutar_consulta(sql, {"id_usuario" : id_usuario})
 
     return resultados[0] if resultados else None
@@ -243,3 +243,15 @@ def obtener_imanes_usuario(id_usuario: int, en_heladera: bool) -> list:
 
     resultado = ejecutar_consulta(sql, parametros)
     return resultado
+
+def obtener_paises_por_usuario(id_usuario: int) -> list:
+    sql = """
+    SELECT DISTINCT p.id_pais, p.nombre
+    FROM paises p
+    JOIN ciudades c ON p.id_pais = c.id_pais
+    JOIN paradas pa ON c.id_ciudad = pa.id_ciudad
+    JOIN viajes v ON pa.id_viaje = v.id_viaje
+    WHERE v.id_usuario = %(id_usuario)s;
+    """
+
+    return ejecutar_consulta(sql, {"id_usuario": id_usuario})
