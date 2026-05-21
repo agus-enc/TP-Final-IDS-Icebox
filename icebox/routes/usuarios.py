@@ -8,13 +8,15 @@ usuarios_bp = Blueprint("usuarios", __name__)
 @usuarios_bp.route("/usuarios", methods=['POST'])
 def registrar_usuario():
     data = request.get_json() or {}
+
+    try:
+        validar_registro_usuario(data)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+    
     nombre_usuario = data.get('nombre_usuario')
     email = data.get("email")
     password = data.get("password")
-
-    if not nombre_usuario or not email or not password:
-        error_body = construir_error('missing_fields', 'Campos faltantes', 'nombre_usuario, email y password son requeridos para crear una cuenta')
-        return jsonify(error_body), 400
     
     try:
         nuevo_id = registrar_nuevo_usuario(nombre_usuario, email, password)
@@ -52,6 +54,7 @@ def obtener_perfil(id_usuario):
     
     try:
         validar_id_usuario(id_usuario)
+    
     except ValueError as e:
         return jsonify(e.args[0]), 400
     
