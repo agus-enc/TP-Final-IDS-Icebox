@@ -15,3 +15,7 @@ def listar_imanes(id_usuario: int, ubicacion_param: str = None) -> list:
         en_heladera = False
     
     return obtener_imanes_usuario(id_usuario, en_heladera)
+
+def eliminar_iman(id_iman: int) -> bool:
+    """Elimina un iman por id. Retorna True si existía y fue eliminado, False si no existía."""
+    return db.eliminar_iman_por_id(id_iman)

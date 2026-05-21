@@ -121,6 +121,13 @@ def eliminar_parada_por_id(id_parada: int) -> bool:
     filas_afectadas = ejecutar_mutacion(sql_borrar, {'id_parada': id_parada})
     return filas_afectadas > 0
 
+def eliminar_iman_por_id(id_iman: int) -> bool:
+    """Elimina un iman por id. Retorna True si existía y fue eliminado, False si no existía."""
+    sql_borrar = 'DELETE FROM imanes WHERE id_iman = %(id_iman)s'
+    filas_afectadas = ejecutar_mutacion(sql_borrar, {'id_iman': id_iman})
+   
+    return filas_afectadas > 0
+
 def actualizar_posicion_iman(id_iman: int, ubicacion_heladera: bool, posicion_x: float, posicion_y: float) -> bool:
     """
     Guarda la posición final del imán, y si está o no en la heladera (booleano)

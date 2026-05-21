@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from ..utils import construir_error
-from ..services.imanes import modificar_posicion_iman, listar_imanes
+from ..services.imanes import modificar_posicion_iman, listar_imanes, eliminar_iman
+from ..validators.imanes import validar_id_iman
 
 imanes_bp = Blueprint("imanes", __name__)
 
@@ -62,3 +63,23 @@ def obtener_imanes():
             message="Error al obtener los imanes",
             description=str(e)
         )), 500
+
+imanes_bp = Blueprint('imanes', __name__)
+
+@imanes_bp.route('/imanes/<int:id_iman>', methods=['DELETE'])
+def delete_iman(id_iman):
+    try:
+        id_iman_validado = validar_id_iman(id_iman)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+
+    eliminado = eliminar_iman(id_iman_validado)
+
+    if not eliminado:
+        return jsonify(construir_error(
+            code="IMAN_NOT_FOUND",
+            message='Imán no encontrado',
+            description=f"No existe un imán con id '{id_iman_validado}'"
+        )), 404
+
+    return '', 204
