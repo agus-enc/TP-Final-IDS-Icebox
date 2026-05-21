@@ -26,7 +26,7 @@ def post_viaje(id_usuario):
 
     return jsonify(viaje_dto), 201
 
-@viajes_bp.route('/viajes/<id_viaje>', methods=['DELETE'])
+@viajes_bp.route('/viajes/<int:id_viaje>', methods=['DELETE'])
 def delete_viaje(id_viaje):
     try:
         id_viaje_validado = validar_id_viaje(id_viaje)

@@ -20,7 +20,7 @@ def post_parada(id_viaje):
         status = e.args[1] if len(e.args) > 1 else 400
         return jsonify(error_dict), status
 
-@paradas_bp.route('/viajes/paradas/<id_parada>', methods=['DELETE'])
+@paradas_bp.route('/viajes/paradas/<int:id_parada>', methods=['DELETE'])
 def delete_parada(id_parada):
     try:
         id_parada_validada = validar_id_parada(id_parada)
