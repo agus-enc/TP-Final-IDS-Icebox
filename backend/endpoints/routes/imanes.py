@@ -64,8 +64,6 @@ def obtener_imanes():
             description=str(e)
         )), 500
 
-imanes_bp = Blueprint('imanes', __name__)
-
 @imanes_bp.route('/imanes/<int:id_iman>', methods=['DELETE'])
 def delete_iman(id_iman):
     try:
