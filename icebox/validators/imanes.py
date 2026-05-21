@@ -1,3 +1,4 @@
+from ..utils import validar_entero, validar_minimo
 from ..constants import (
     MIN_ID
 )
