@@ -29,12 +29,14 @@ def registrar_usuario():
 @usuarios_bp.route("/usuarios/login", methods=['POST'])
 def login():
     data = request.get_json() or {}
+    
+    try:
+        validar_login_usuario(data)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+    
     email = data.get('email')
     password = data.get('password')
-
-    if not email or not password:
-        error_body = construir_error('missing.credentials', 'Faltan credenciales', 'Email y contraseña son requeridos para iniciar sesión')
-        return jsonify(error_body), 400
     
     usuario = autenticar_usuario(email, password)
 
@@ -135,6 +137,9 @@ def actualizar_password(id_usuario):
         return jsonify(error_body), 404
     
     return jsonify({"message":"Contraseña modificada de forma segura"})
+         
+    
+
 
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=["DELETE"])
 def delete_usuario(id_usuario):
