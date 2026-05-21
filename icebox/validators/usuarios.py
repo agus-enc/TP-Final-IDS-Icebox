@@ -1,7 +1,7 @@
 from ..utils import construir_error, validar_entero, validar_minimo
 
 def validar_id_usuario(id_usuario: int) -> int:
-    return validar_minimo(id_usuario, 0, 'id')
+    return validar_minimo(id_usuario, 1, 'id')
 
 def validar_registro_usuario(data: dict):
     """Valida los datos al crear un nuevo usuario"""

@@ -135,9 +135,6 @@ def actualizar_password(id_usuario):
         return jsonify(error_body), 404
     
     return jsonify({"message":"Contraseña modificada de forma segura"})
-         
-    
-
 
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=["DELETE"])
 def delete_usuario(id_usuario):

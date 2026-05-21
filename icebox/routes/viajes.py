@@ -13,17 +13,20 @@ def post_viaje(id_usuario):
     except ValueError as e:
         return jsonify(e.args[0]), 400
 
-    body = request.get_json(silent=True)
-
     try:
+        body = request.get_json(silent=True)
+        if not body:
+            raise ValueError({"errors": [{"code": "missing.body", "message": "Falta el body JSON."}]}, 400)
         viaje_dto = crear_viaje(body, id_usuario)
+
     except ValueError as e:
+        error_dict = e.args[0]
         status = e.args[1] if len(e.args) > 1 else 400
-        return jsonify(e.args[0]), status
+        return jsonify(error_dict), status
 
     return jsonify(viaje_dto), 201
 
-@viajes_bp.route('/viajes/<id_viaje>', methods=['DELETE'])
+@viajes_bp.route('/viajes/<int:id_viaje>', methods=['DELETE'])
 def delete_viaje(id_viaje):
     try:
         id_viaje_validado = validar_id_viaje(id_viaje)

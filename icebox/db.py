@@ -43,7 +43,14 @@ def ejecutar_mutacion(sql: str, parametros: dict) -> int:
         cursor.execute(sql, parametros or {})
         conn.commit()
 
-        return cursor.lastrowid or 0
+        sql_clean = sql.strip().upper()
+
+        if sql_clean.startswith("INSERT"):
+            return cursor.lastrowid or 0
+        elif sql_clean.startswith(("UPDATE", "DELETE")):
+            return cursor.rowcount or 0
+        
+        return 0
 
     finally:
         if cursor:
@@ -87,19 +94,15 @@ def obtener_viaje(id_viaje: int) -> dict | None:
 
 def eliminar_viaje_por_id(id_viaje: int) -> bool:
     """Elimina un viaje por id. Retorna True si existía y fue eliminado, False si no existía."""
-    viaje = obtener_viaje(id_viaje)
-    if not viaje:
-        return False
-
     sql = 'DELETE FROM viajes WHERE id_viaje = %(id_viaje)s'
-    ejecutar_mutacion(sql, {'id_viaje': id_viaje})
-    return True
+    filas_afectadas = ejecutar_mutacion(sql, {'id_viaje': id_viaje})
+    return filas_afectadas > 0
 
 def obtener_usuario(id_usuario: int) -> dict | None:
     """
     Obtener un usuario específico por id
     """
-    sql = "SELECT * FROM usuarios WHERE id = %(id_usuario)s"
+    sql = "SELECT * FROM usuarios WHERE id_usuario = %(id_usuario)s"
     resultados = ejecutar_consulta(sql, {"id_usuario" : id_usuario})
 
     return resultados[0] if resultados else None
@@ -108,23 +111,22 @@ def eliminar_usuario_por_id(id_usuario: int) -> bool:
     """
     Elimina un usuario por id. Retorna True si fue eliminado, False si no existía
     """
-    usuario = obtener_usuario(id_usuario)
-    if not usuario:
-        return False
-    
-    sql = "DELETE FROM usuarios WHERE id = %(id_usuario)s"
-    ejecutar_mutacion(sql, {"id_usuario" : id_usuario})
+    sql = "DELETE FROM usuarios WHERE id_usuario = %(id_usuario)s"
+    filas_afectadas = ejecutar_mutacion(sql, {"id_usuario" : id_usuario})
+    return filas_afectadas > 0
 
 def eliminar_parada_por_id(id_parada: int) -> bool:
     """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""
-    sql_buscar = 'SELECT 1 FROM paradas WHERE id_parada = %(id_parada)s'
-    existe_parada = ejecutar_consulta(sql_buscar, {"id_parada": id_parada})
-
-    if not existe_parada:
-        return False
     sql_borrar = 'DELETE FROM paradas WHERE id_parada = %(id_parada)s'
-    ejecutar_mutacion(sql_borrar, {'id_parada': id_parada})
-    return True
+    filas_afectadas = ejecutar_mutacion(sql_borrar, {'id_parada': id_parada})
+    return filas_afectadas > 0
+
+def eliminar_iman_por_id(id_iman: int) -> bool:
+    """Elimina un iman por id. Retorna True si existía y fue eliminado, False si no existía."""
+    sql_borrar = 'DELETE FROM imanes WHERE id_iman = %(id_iman)s'
+    filas_afectadas = ejecutar_mutacion(sql_borrar, {'id_iman': id_iman})
+   
+    return filas_afectadas > 0
 
 def actualizar_posicion_iman(id_iman: int, ubicacion_heladera: bool, posicion_x: float, posicion_y: float) -> bool:
     """
@@ -243,3 +245,22 @@ def obtener_imanes_usuario(id_usuario: int, en_heladera: bool) -> list:
 
     resultado = ejecutar_consulta(sql, parametros)
     return resultado
+
+def obtener_paises_por_usuario(id_usuario: int) -> list:
+    sql = """
+    SELECT DISTINCT p.id_pais, p.nombre
+    FROM paises p
+    JOIN ciudades c ON p.id_pais = c.id_pais
+    JOIN paradas pa ON c.id_ciudad = pa.id_ciudad
+    JOIN viajes v ON pa.id_viaje = v.id_viaje
+    WHERE v.id_usuario = %(id_usuario)s;
+    """
+
+    return ejecutar_consulta(sql, {"id_usuario": id_usuario})
+
+def eliminar_relato_parada(id_parada: int) -> bool:
+    """Busca la parada y pone su columna relato_texto en NULL. Retorna True si se modificó, False si la parada no existía."""
+    sql_vaciar = 'UPDATE paradas SET relato_texto = NULL WHERE id_parada = %(id_parada)s'
+    filas_afectadas = ejecutar_mutacion(sql_vaciar, {'id_parada': id_parada})
+
+    return filas_afectadas > 0

@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from ..services.paradas import crear_parada, eliminar_parada, validar_id_parada
+from ..services.paradas import crear_parada, eliminar_parada, eliminar_relato
+from ..validators.paradas import  validar_id_parada
 from ..utils import construir_error
 
 paradas_bp = Blueprint("paradas", __name__)
@@ -19,7 +20,7 @@ def post_parada(id_viaje):
         status = e.args[1] if len(e.args) > 1 else 400
         return jsonify(error_dict), status
 
-@paradas_bp.route('/viajes/paradas/<id_parada>', methods=['DELETE'])
+@paradas_bp.route('/viajes/paradas/<int:id_parada>', methods=['DELETE'])
 def delete_parada(id_parada):
     try:
         id_parada_validada = validar_id_parada(id_parada)
@@ -33,6 +34,24 @@ def delete_parada(id_parada):
             code="PARADA_NOT_FOUND",
             message='Parada no encontrada',
             description=f"No existe una parada con id '{id_parada_validada}'"
+        )), 404
+
+    return '', 204
+
+@paradas_bp.route('/paradas/<id_parada>/relato', methods=['DELETE'])
+def delete_relato_parada(id_parada):
+    try:
+        id_parada_validada = validar_id_parada(id_parada)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+
+    modificado = eliminar_relato(id_parada_validada)
+
+    if not modificado:
+        return jsonify(construir_error(
+            code="PARADA_NOT_FOUND",
+            message='Parada no encontrada',
+            description=f"No existe una parada con id '{id_parada_validada}' para borrar su relato"
         )), 404
 
     return '', 204
