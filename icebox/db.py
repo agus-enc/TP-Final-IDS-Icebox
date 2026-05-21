@@ -112,7 +112,7 @@ def eliminar_usuario_por_id(id_usuario: int) -> bool:
     if not usuario:
         return False
     
-    sql = "DELETE FROM usuarios WHERE id = %(id_usuario)s"
+    sql = "DELETE FROM usuarios WHERE id_usuario = %(id_usuario)s"
     ejecutar_mutacion(sql, {"id_usuario" : id_usuario})
 
 def eliminar_parada_por_id(id_parada: int) -> bool:

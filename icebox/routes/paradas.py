@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from ..services.paradas import crear_parada, eliminar_parada, validar_id_parada
+from ..services.paradas import crear_parada, eliminar_parada
+from ..validators.paradas import  validar_id_parada
 from ..utils import construir_error
 
 paradas_bp = Blueprint("paradas", __name__)

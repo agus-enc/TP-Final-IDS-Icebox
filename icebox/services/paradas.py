@@ -1,5 +1,5 @@
 import json
-from ..db import obtener_usuario_por_viaje, insertar_parada_con_iman, obtener_ciudad_por_id
+from ..db import obtener_usuario_por_viaje, insertar_parada_con_iman, obtener_ciudad_por_id, eliminar_parada_por_id
 from ..validators.paradas import validar_body_parada
 from ..utils import validar_minimo
 
@@ -46,4 +46,4 @@ def crear_parada(id_viaje: int, body: dict) -> dict:
 
 def eliminar_parada(id_parada: int) -> bool:
     """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""
-    return db.eliminar_parada_por_id(id_parada)
+    return eliminar_parada_por_id(id_parada)
