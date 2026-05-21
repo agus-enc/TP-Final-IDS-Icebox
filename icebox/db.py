@@ -43,7 +43,14 @@ def ejecutar_mutacion(sql: str, parametros: dict) -> int:
         cursor.execute(sql, parametros or {})
         conn.commit()
 
-        return cursor.lastrowid or 0
+        sql_clean = sql.strip().upper()
+
+        if sql_clean.startswith("INSERT"):
+            return cursor.lastrowid or 0
+        elif sql_clean.startswith(("UPDATE", "DELETE")):
+            return cursor.rowcount or 0
+        
+        return 0
 
     finally:
         if cursor:
