@@ -24,3 +24,10 @@ def obtener_paises_visitados(id_usuario: int) -> dict:
         },
         "paises": paises_list
     }
+
+def obtener_paises() -> list:
+    resultados_db = db.obtener_todos_los_paises_db()
+
+    paises_list = [{"id_pais": f["id_pais"], "nombre": f["nombre"]} for f in resultados_db]
+    
+    return paises_list
