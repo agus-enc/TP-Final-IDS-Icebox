@@ -264,3 +264,10 @@ def eliminar_relato_parada(id_parada: int) -> bool:
     filas_afectadas = ejecutar_mutacion(sql_vaciar, {'id_parada': id_parada})
 
     return filas_afectadas > 0
+
+def obtener_todos_los_paises_db() -> list:
+    """Trae todos los países de la tabla"""
+    sql = "SELECT id_pais, nombre, continente FROM paises"
+    resultados = ejecutar_consulta(sql, None)
+
+    return resultados
