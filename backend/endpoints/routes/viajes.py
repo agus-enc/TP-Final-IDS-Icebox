@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ..validators.usuarios import validar_id_usuario
-from ..services.viajes import crear_viaje, eliminar_viaje
+from ..services.viajes import crear_viaje, eliminar_viaje, obtener_todos_los_viajes
 from ..validators.viajes import validar_id_viaje
 from ..utils import construir_error
 
@@ -43,3 +43,16 @@ def delete_viaje(id_viaje):
         )), 404
 
     return '', 204
+
+@viajes_bp.route("/viajes", methods=["GET"])
+def get_viajes():
+    try:
+        viajes_dto = obtener_todos_los_viajes()
+    except Exception as e:
+        return jsonify(construir_error(
+            code="SERVER_ERROR",
+            message="No se pudieron obtener los viajes",
+            description="Ocurrio error interno al procesar la solicitud."
+        )), 500
+
+    return jsonify(viajes_dto), 200
