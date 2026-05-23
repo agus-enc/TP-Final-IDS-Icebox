@@ -40,7 +40,6 @@ createControls();
 
 window.addEventListener("resize", updateSize);
 
-
 containerEl.addEventListener("touchstart", (e) => {
     isTouchScreen = true;
 });
@@ -55,7 +54,6 @@ function updateMousePosition(eX, eY) {
     pointer.x = (eX - containerEl.offsetLeft) / containerEl.offsetWidth * 2 - 1;
     pointer.y = -((eY - containerEl.offsetTop) / containerEl.offsetHeight) * 2 + 1;
 }
-
 
 function initScene() {
     renderer = new THREE.WebGLRenderer({canvas: canvasEl, alpha: true});
@@ -81,7 +79,6 @@ function initScene() {
     updateSize();
     gsap.ticker.add(render);
 }
-
 
 function createOrbitControls() {
     controls = new OrbitControls(camera, canvasEl);
@@ -136,18 +133,15 @@ function createGlobe() {
     globeStrokesMesh = new THREE.Mesh(globeGeometry, globeStrokeMaterial);
     
     globeStrokesMesh.renderOrder = 2;
-
-    globeGroup.add(globeStrokesMesh, globeSelectionOuterMesh, globeColorMesh);
+    globeGroup.add(globeStrokesMesh, globeColorMesh);
 }
 
 function setMapTexture(material, URI) {
-    textureLoader.load(
-        URI,
-        (t) => {
-            t.repeat.set(1, 1);
-            material.map = t;
-            material.needsUpdate = true;
-        });
+    textureLoader.load(URI, (t) => {
+        t.repeat.set(1, 1);
+        material.map = t;
+        material.needsUpdate = true;
+    });
 }
 
 function prepareHiResTextures() {
@@ -172,7 +166,8 @@ function prepareHiResTextures() {
             "width": svgViewBox[0] * params.hiResScalingFactor,
             "height": svgViewBox[1] * params.hiResScalingFactor,
         }
-    })
+    });
+
     svgData = new XMLSerializer().serializeToString(svgMapDomEl);
     staticMapUri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgData);
     setMapTexture(globeColorMesh.material, staticMapUri);
@@ -241,29 +236,17 @@ function updateSize() {
     renderer.setSize(side, side);
 }
 
-
 function createControls() {
     const gui = new GUI();
-	
-	gui.close();
-	
-    gui.addColor(params, "strokeColor")
-        .onChange(prepareHiResTextures)
-        .name("stroke")
-    gui.addColor(params, "defaultColor")
-        .onChange(prepareHiResTextures)
-        .name("color")
-    gui.addColor(params, "visitedColor")
-        .onChange(prepareLowResTextures)
-        .name("highlight")
-    gui.addColor(params, "fogColor")
-        .onChange(() => {
-            scene.fog = new THREE.Fog(params.fogColor, 0, params.fogDistance);
-        })
-        .name("fog");
-    gui.add(params, "fogDistance", 1, 4)
-        .onChange(() => {
-            scene.fog = new THREE.Fog(params.fogColor, 0, params.fogDistance);
-        })
-        .name("fog distance");
+    gui.close();
+    
+    gui.addColor(params, "strokeColor").onChange(prepareHiResTextures).name("stroke");
+    gui.addColor(params, "defaultColor").onChange(prepareHiResTextures).name("gris (no visitado)");
+    gui.addColor(params, "visitedColor").onChange(prepareHiResTextures).name("celeste (visitado)");
+    gui.addColor(params, "fogColor").onChange(() => {
+        scene.fog = new THREE.Fog(params.fogColor, 0, params.fogDistance);
+    }).name("fog");
+    gui.add(params, "fogDistance", 1, 4).onChange(() => {
+        scene.fog = new THREE.Fog(params.fogColor, 0, params.fogDistance);
+    }).name("fog distance");
 }
