@@ -64,3 +64,45 @@ def validar_id_parada(id_str: str) -> int:
     """Valida que el id de la parada recibido en la URL sea un entero válido y mayor a cero."""
     id_parada = validar_entero(id_str, 'id_parada')
     return validar_minimo(id_parada, MIN_ID, 'id_parada')
+
+def validar_relato(body: dict) -> dict:
+    """Valida el cambio parcial del relato de una parada"""
+    errores = []
+
+    if not isinstance(body, dict):
+        raise ValueError(
+            {"errors": [construir_error(
+                "invalid.body",
+                "El body debe ser un objeto JSON.",
+                "Formato incorrecto")]}, 400)
+
+    contenido = body.get('relato_texto')
+    if contenido is None:
+        errores.append(construir_error(
+            'missing.relato_texto',
+            'El campo relato_texto es requerido.',
+            'Requerido'))
+    else:
+        if not isinstance(contenido, list):
+            errores.append(
+                construir_error(
+                    'invalid.format',
+                    'El relato_texto debe ser una lista.',
+                    'Formato incorrecto'))
+        else:
+            for bloque in contenido:
+                if not isinstance(bloque, dict):
+                    errores.append(construir_error(
+                        'invalid.block', 
+                        'El bloque debe ser un diccionario.',
+                        'Estructura inválida'))
+                elif not isinstance(bloque.get('tipo'), str) or not isinstance(bloque.get('datos'), dict):
+                    errores.append(construir_error(
+                        'invalid.block', 
+                        'El tipo debe ser texto y los datos un objeto.',
+                        'Estructura inválida'))
+
+    if errores:
+        raise ValueError({"errors": errores}, 400)
+
+    return body
