@@ -75,3 +75,21 @@ def patch_relato(id_parada):
             message="No se pudo actualizar el relato de la parada.",
             description="Ocurrió un error interno en el servidor."
         )), 500
+
+@paradas_bp.route("/paradas/<int:id_parada>/ciudad", methods=["PATCH"])
+def patch_ciudad(id_parada):
+    """Endpoint para actualizar de forma parcial la ciudad de una parada."""
+    try:
+        body = request.get_json()
+        resultado = modificar_ciudad_parada(id_parada, body)
+        return jsonify(resultado), 200
+    except ValueError as e:
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
+    except Exception:
+        return jsonify(construir_error(
+            code="SERVER_ERROR",
+            message="No se pudo actualizar la ciudad de la parada.",
+            description="Ocurrió un error interno en el servidor."
+        )), 500

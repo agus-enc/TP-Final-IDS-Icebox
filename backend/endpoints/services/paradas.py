@@ -1,6 +1,6 @@
 import json
 from ..db import obtener_usuario_por_viaje, insertar_parada_con_iman, obtener_ciudad_por_id, eliminar_parada_por_id, actualizar_relato_parada_db
-from ..validators.paradas import validar_body_parada, validar_relato
+from ..validators.paradas import validar_body_parada, validar_relato, validar_ciudad
 from ..utils import validar_minimo
 
 def crear_parada(id_viaje: int, body: dict) -> dict:
@@ -59,3 +59,10 @@ def modificar_relato_parada(id_parada: int, body: dict) -> dict:
     actualizar_relato_parada_db(id_parada, relato_str)
     
     return {"status": "success", "message": "Relato de la parada actualizado correctamente."}
+
+def modificar_ciudad_parada(id_parada: int, body: dict) -> dict:
+    """Valida y actualiza únicamente la ciudad de la parada."""
+    body_validado = validar_ciudad(body)
+    actualizar_ciudad_parada_db(id_parada, body_validado['id_ciudad'])
+    
+    return {"status": "success", "message": "Ciudad de la parada actualizada correctamente."}

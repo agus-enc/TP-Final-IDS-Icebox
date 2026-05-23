@@ -106,3 +106,25 @@ def validar_relato(body: dict) -> dict:
         raise ValueError({"errors": errores}, 400)
 
     return body
+
+def validar_ciudad(body: dict) -> dict:
+    """Valida el cambio parcial de la ciudad de una parada de forma directa"""
+    
+    if not isinstance(body, dict):
+        raise ValueError({"errors": [construir_error(
+            "invalid.body", "El body debe ser un objeto JSON.", "Formato incorrecto"
+        )]}, 400)
+
+    id_ciudad = body.get('id_ciudad')
+    
+    if id_ciudad is None:
+        raise ValueError({"errors": [construir_error(
+            'missing.id_ciudad', 'El campo id_ciudad es requerido.', 'Requerido'
+        )]}, 400)
+
+    if type(id_ciudad) is not int or id_ciudad <= 0:
+        raise ValueError({"errors": [construir_error(
+            'invalid.id_ciudad', 'El id_ciudad debe ser entero positivo.', 'Requerido'
+        )]}, 400)
+
+    return body
