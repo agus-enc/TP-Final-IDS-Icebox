@@ -6,11 +6,10 @@ const containerEl = document.querySelector(".globe-wrapper");
 const canvasEl = containerEl.querySelector("#globe-3d");
 const svgMapDomEl = document.querySelector("#map");
 const svgCountries = Array.from(svgMapDomEl.querySelectorAll("path"));
-const svgCountryDomEl = document.querySelector("#country");
 const countryNameEl = document.querySelector(".info span");
 
 let renderer, scene, camera, rayCaster, pointer, controls;
-let globeGroup, globeColorMesh, globeStrokesMesh, globeSelectionOuterMesh;
+let globeGroup, globeColorMesh, globeStrokesMesh;
 
 const svgViewBox = [2000, 1000];
 const offsetY = -.1;
@@ -18,24 +17,23 @@ const offsetY = -.1;
 const params = {
     strokeColor: "#111111",
     defaultColor: "#9a9591",
-    hoverColor: "#00C9A2",
+    visitedColor: "#00C9A2", // Color predeterminado para los países visitados
     fogColor: "#e4e5e6",
     fogDistance: 2.6,
     strokeWidth: 2,
     hiResScalingFactor: 2,
-    lowResScalingFactor: .7
 }
 
 
-let hoveredCountryIdx = 6;
+let hoveredCountryIdx = 0;
 let isTouchScreen = false;
 let isHoverable = true;
 
 const textureLoader = new THREE.TextureLoader();
 let staticMapUri;
 const bBoxes = [];
-const dataUris = [];
 
+const paisesVisitados = ["China","Argentina"] // Simulación de Base de Datos
 
 initScene();
 createControls();
@@ -79,11 +77,8 @@ function initScene() {
     createOrbitControls();
     createGlobe();
     prepareHiResTextures();
-    prepareLowResTextures();
-
 
     updateSize();
-
     gsap.ticker.add(render);
 }
 
@@ -91,7 +86,7 @@ function initScene() {
 function createOrbitControls() {
     controls = new OrbitControls(camera, canvasEl);
     controls.enablePan = false;
-    // controls.enableZoom = false;
+    controls.enableZoom = false;
     controls.enableDamping = true;
     controls.minPolarAngle = .46 * Math.PI;
     controls.maxPolarAngle = .46 * Math.PI;
@@ -136,15 +131,10 @@ function createGlobe() {
         transparent: true,
         depthTest: false,
     });
-    const outerSelectionColorMaterial = new THREE.MeshBasicMaterial({
-        transparent: true,
-        side: THREE.DoubleSide
-    });
 
     globeColorMesh = new THREE.Mesh(globeGeometry, globeColorMaterial);
     globeStrokesMesh = new THREE.Mesh(globeGeometry, globeStrokeMaterial);
-    globeSelectionOuterMesh = new THREE.Mesh(globeGeometry, outerSelectionColorMaterial);
-
+    
     globeStrokesMesh.renderOrder = 2;
 
     globeGroup.add(globeStrokesMesh, globeSelectionOuterMesh, globeColorMesh);
@@ -162,12 +152,23 @@ function setMapTexture(material, URI) {
 
 function prepareHiResTextures() {
     let svgData;
+    // Se colorean todos los países
+    svgCountries.forEach((path, idx) => {
+        const countryName = path.getAttribute("data-name");
+        bBoxes[idx] = path.getBBox();
+        // Se colorean los paises visitados de celeste y los no visitados de gris dependiendo de su estado en la tabla 
+        if (paisesVisitados.includes(countryName)) {
+            path.setAttribute("fill", params.visitedColor);
+        } else {
+            path.setAttribute("fill", params.defaultColor);
+        }
+    });
+    
     gsap.set(svgMapDomEl, {
         attr: {
             "viewBox": "0 " + (offsetY * svgViewBox[1]) + " " + svgViewBox[0] + " " + svgViewBox[1],
             "stroke-width": params.strokeWidth,
             "stroke": params.strokeColor,
-            "fill": params.defaultColor,
             "width": svgViewBox[0] * params.hiResScalingFactor,
             "height": svgViewBox[1] * params.hiResScalingFactor,
         }
@@ -176,41 +177,17 @@ function prepareHiResTextures() {
     staticMapUri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgData);
     setMapTexture(globeColorMesh.material, staticMapUri);
 
+    svgCountries.forEach(path => path.setAttribute("fill", "none"));
     gsap.set(svgMapDomEl, {
-        attr: {
-            "fill": "none",
-            "stroke": params.strokeColor,
-        }
-    })
+        attr: { "stroke": params.strokeColor }
+    });
     svgData = new XMLSerializer().serializeToString(svgMapDomEl);
     staticMapUri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgData);
     setMapTexture(globeStrokesMesh.material, staticMapUri);
-    countryNameEl.innerHTML = svgCountries[hoveredCountryIdx].getAttribute("data-name");
-
-}
-
-function prepareLowResTextures() {
-    gsap.set(svgCountryDomEl, {
-        attr: {
-            "viewBox": "0 " + (offsetY * svgViewBox[1]) + " " + svgViewBox[0] + " " + svgViewBox[1],
-            "stroke-width": params.strokeWidth,
-            "stroke": params.strokeColor,
-            "fill": params.hoverColor,
-            "width": svgViewBox[0] * params.lowResScalingFactor,
-            "height": svgViewBox[1] * params.lowResScalingFactor,
-        }
-    })
-    svgCountries.forEach((path, idx) => {
-        bBoxes[idx] = path.getBBox();
-    })
-    svgCountries.forEach((path, idx) => {
-        svgCountryDomEl.innerHTML = "";
-        svgCountryDomEl.appendChild(svgCountries[idx].cloneNode(true));
-        const svgData = new XMLSerializer().serializeToString(svgCountryDomEl);
-        dataUris[idx] = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgData);
-    })
-    setMapTexture(globeSelectionOuterMesh.material, dataUris[hoveredCountryIdx]);
-
+    
+    if (svgCountries[hoveredCountryIdx]) {
+        countryNameEl.innerHTML = svgCountries[hoveredCountryIdx].getAttribute("data-name");
+    }
 }
 
 function updateMap(uv = {x: 0, y: 0}) {
@@ -221,16 +198,16 @@ function updateMap(uv = {x: 0, y: 0}) {
     for (let i = 0; i < svgCountries.length; i++) {
         const boundingBox = bBoxes[i];
         if (
-            pointObj.x > boundingBox.x ||
-            pointObj.x < boundingBox.x + boundingBox.width ||
-            pointObj.y > boundingBox.y ||
+            pointObj.x > boundingBox.x && //AND
+            pointObj.x < boundingBox.x + boundingBox.width &&
+            pointObj.y > boundingBox.y &&
             pointObj.y < boundingBox.y + boundingBox.height
         ) {
             const isHovering = svgCountries[i].isPointInFill(pointObj);
             if (isHovering) {
                 if (i !== hoveredCountryIdx) {
                     hoveredCountryIdx = i;
-                    setMapTexture(globeSelectionOuterMesh.material, dataUris[hoveredCountryIdx]);
+                    // solo cambia el texto 
                     countryNameEl.innerHTML = svgCountries[hoveredCountryIdx].getAttribute("data-name");
                     break;
                 }
@@ -268,7 +245,7 @@ function updateSize() {
 function createControls() {
     const gui = new GUI();
 	
-	 gui.close();
+	gui.close();
 	
     gui.addColor(params, "strokeColor")
         .onChange(prepareHiResTextures)
@@ -276,7 +253,7 @@ function createControls() {
     gui.addColor(params, "defaultColor")
         .onChange(prepareHiResTextures)
         .name("color")
-    gui.addColor(params, "hoverColor")
+    gui.addColor(params, "visitedColor")
         .onChange(prepareLowResTextures)
         .name("highlight")
     gui.addColor(params, "fogColor")
