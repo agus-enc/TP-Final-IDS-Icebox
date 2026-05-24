@@ -225,10 +225,19 @@ function render() {
 }
 
 function updateSize() {
-    const side = Math.min(500, Math.min(window.innerWidth, window.innerHeight) - 50);
+    // Tamaño del canvas para que ocupe el máximo espacio de la pantalla
+    const availableHeight = window.innerHeight;
+    const availableWidth = window.innerWidth;
+    const side = Math.min(availableWidth, availableHeight);
+    
     containerEl.style.width = side + "px";
     containerEl.style.height = side + "px";
-    renderer.setSize(side, side);
+    if (renderer) {
+        renderer.setSize(side, side);
+    }
+    if (camera) {
+        camera.updateProjectionMatrix();
+    }
 }
 
 function createControls() {
