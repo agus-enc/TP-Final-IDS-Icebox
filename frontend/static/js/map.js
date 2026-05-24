@@ -156,13 +156,14 @@ function prepareHiResTextures() {
         } else {
             path.setAttribute("fill", params.defaultColor);
         }
+        // Pinta el fondo y el borde al mismo tiempo (evitar problemas de aliasing)
+        path.setAttribute("stroke", params.strokeColor);
+        path.setAttribute("stroke-width", params.strokeWidth);
     });
     
     gsap.set(svgMapDomEl, {
         attr: {
             "viewBox": "0 " + (offsetY * svgViewBox[1]) + " " + svgViewBox[0] + " " + svgViewBox[1],
-            "stroke-width": params.strokeWidth,
-            "stroke": params.strokeColor,
             "width": svgViewBox[0] * params.hiResScalingFactor,
             "height": svgViewBox[1] * params.hiResScalingFactor,
         }
@@ -170,14 +171,8 @@ function prepareHiResTextures() {
 
     svgData = new XMLSerializer().serializeToString(svgMapDomEl);
     staticMapUri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgData);
+    
     setMapTexture(globeColorMesh.material, staticMapUri);
-
-    svgCountries.forEach(path => path.setAttribute("fill", "none"));
-    gsap.set(svgMapDomEl, {
-        attr: { "stroke": params.strokeColor }
-    });
-    svgData = new XMLSerializer().serializeToString(svgMapDomEl);
-    staticMapUri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgData);
     setMapTexture(globeStrokesMesh.material, staticMapUri);
     
     if (svgCountries[hoveredCountryIdx]) {
