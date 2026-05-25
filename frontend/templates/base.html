@@ -1,12 +1,79 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Icebox - Mi Heladera</title>
+    <title>{% block title %}Icebox Trips{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/heladera.css') }}">
+    {% block extra_css%}{% endblock %}
 </head>
 <body>
-    {% block content %}{% endblock %}
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category}}">
+                        <span>{{ message }}</span>
+                        <button onclick="this.parentElement.remove()">x</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="'main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <div class="router">
+        <ul>
+            <li class="list">
+                <a href="{{ url_for('logout') }}">
+                    <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+                    <span class="route">Salir</span>
+                </a>
+            </li>
+
+            <li class="list">
+                <a href="{{ url_for('mapa')}}">
+                    <span class="icon"><ion-icon name="send-outline"></ion-icon></span>
+                    <span class="route">Mapa</span>
+                </a>
+            </li>
+
+            <li class="list">
+                <a href="{{ url_for('creador')}}">
+                    <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                    <span class="route">Crear</span>
+                </a>
+            </li>
+
+            <li class="list">
+                <a href="{{ url_for('biblioteca')}}">
+                    <span class="icon"><ion-icon name="image-outline"></ion-icon></span>
+                    <span class="route">Libros</span>
+                </a>
+            </li>
+
+            <li class="list">
+                <a href="{{ url_for('cajon')}}">
+                    <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
+                    <span class="route">Cajón</span>
+                </a>
+            </li>
+
+            <div class="indicador"></div>
+        </ul>
+    </div>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule="" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    
+    <scipt src="{{ url_for('static', filename='js/main.js')}}"></scipt>
+    {% block_extra_js %}{% endblock %}
+
 </body>
 </html>
