@@ -1,10 +1,10 @@
 from flask import Flask
-from routes.imanes import imanes_bp
-from routes.lugares import lugares_bp
-from routes.usuarios import usuarios_bp
-from routes.viajes import viajes_bp
-from routes.imagenes import imagenes_bp
-from routes.paradas import paradas_bp
+from endpoints.routes.imanes import imanes_bp
+from endpoints.routes.lugares import lugares_bp
+from endpoints.routes.usuarios import usuarios_bp
+from endpoints.routes.viajes import viajes_bp
+from endpoints.routes.imagenes import imagenes_bp
+from endpoints.routes.paradas import paradas_bp
 
 app = Flask(__name__, static_folder='endpoints/static', static_url_path='/static')
 

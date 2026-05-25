@@ -1,5 +1,5 @@
 import json
-from ..db import obtener_usuario_por_viaje, insertar_parada_con_iman, obtener_ciudad_por_id, eliminar_parada_por_id, actualizar_relato_parada_db
+from ..db import obtener_usuario_por_viaje, insertar_parada_con_iman, obtener_ciudad_por_id, eliminar_parada_por_id, eliminar_relato_parada, actualizar_relato_parada_db
 from ..validators.paradas import validar_body_parada, validar_relato, validar_ciudad
 from ..utils import validar_minimo
 
@@ -50,7 +50,7 @@ def eliminar_parada(id_parada: int) -> bool:
 
 def eliminar_relato(id_parada: int) -> bool:
     """Busca la parada y pone su columna relato_texto en NULL. Retorna True si se modificó, False si la parada no existía."""
-    return db.eliminar_relato_parada(id_parada)
+    return eliminar_relato_parada(id_parada)
 
 def modificar_relato_parada(id_parada: int, body: dict) -> dict:
     """Valida y actualiza únicamente el relato de la parada."""

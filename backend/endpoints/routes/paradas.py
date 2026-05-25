@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from ..services.paradas import crear_parada, eliminar_parada, eliminar_relato
+from ..services.paradas import crear_parada, eliminar_parada, eliminar_relato, modificar_relato_parada, modificar_ciudad_parada
 from ..validators.paradas import  validar_id_parada
 from ..utils import construir_error
 
@@ -60,7 +60,9 @@ def delete_relato_parada(id_parada):
 def patch_relato(id_parada):
     """Endpoint para actualizar de forma parcial el relato de una parada."""
     try:
-        body = request.get_json()
+        body = request.get_json(silent=True)
+        if not body:
+            raise ValueError({"errors": [{"code": "missing.body", "message": "Falta el body JSON."}]}, 400)
         resultado = modificar_relato_parada(id_parada, body)
         return jsonify(resultado), 200
         
@@ -80,7 +82,9 @@ def patch_relato(id_parada):
 def patch_ciudad(id_parada):
     """Endpoint para actualizar de forma parcial la ciudad de una parada."""
     try:
-        body = request.get_json()
+        body = request.get_json(silent=True)
+        if not body:
+            raise ValueError({"errors": [{"code": "missing.body", "message": "Falta el body JSON."}]}, 400)
         resultado = modificar_ciudad_parada(id_parada, body)
         return jsonify(resultado), 200
     except ValueError as e:
