@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+body {
+    padding-bottom: 110px !important
+}
+
+/* Contenedor de la barra (Fijado abajo, flotante y centrado) */
+.router {
+    width: 400px;
+    height: 70px;
+    background: #ffffff;
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    border: 3px solid #333333; /* Estilo de borde grueso wireframe */
+    box-shadow: 5px 5px 0px #333333;
+    z-index: 9999;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.router ul {
+    display: flex;
+    width: 350px;
+    margin: 0;
+    padding: 0;
+}
+
+.router ul li {
+    position: relative;
+    list-style: none;
+    width: 70px;
+    height: 70px;
+    z-index: 1;
+}
+
+.router ul li a {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* El texto que aparece abajo del ícono */
+.router ul li a .route {
+    position: absolute;
+    color: #333333;
+    font-weight: bold;
+    font-size: 0.70em;
+    letter-spacing: 0.05em;
+    transition: 0.5s;
+    opacity: 0;
+    transform: translateY(28px);
+}
+
+/* El ícono centrado */
+.router ul li a .icon {
+    position: relative;
+    display: block;
+    line-height: 75px;
+    font-size: 1.5em;
+    text-align: center;
+    transition: 0.5s;
+    color: #333333;
+}
+
+/* --- ESTADOS ACTIVOS (Cuando el JS detecta la página) --- */
+.router ul li.active a .icon {
+    color: #ffffff;
+    transform: translateY(-32px); /* El ícono sube al círculo */
+}
+
+.router ul li.active a .route {
+    opacity: 1;
+    transform: translateY(15px); /* El texto aparece abajo */
+}
+
+/* --- ANIMACIÓN DEL DESPLAZAMIENTO DEL CÍRCULO --- */
+.router ul li:nth-child(1).active ~ .indicador { transform: translateX(calc(70px * 0)); }
+.router ul li:nth-child(2).active ~ .indicador { transform: translateX(calc(70px * 1)); }
+.router ul li:nth-child(3).active ~ .indicador { transform: translateX(calc(70px * 2)); }
+.router ul li:nth-child(4).active ~ .indicador { transform: translateX(calc(70px * 3)); }
+.router ul li:nth-child(5).active ~ .indicador { transform: translateX(calc(70px * 4)); }
+
+/* El círculo indicador (burbuja) */
+.indicador {
+    position: absolute;
+    top: -50%;
+    width: 70px;
+    height: 70px;
+    background: #b5e2b0; /* Color verde imán del boceto */
+    border-radius: 50%;
+    border: 4px solid #333333; /* Borde oscuro wireframe */
+    transition: 0.5s;
+    box-sizing: border-box;
+}
+
+/* Recortes curvos para simular la fusión con la barra (orejas) */
+.indicador::before {
+    content: "";
+    position: absolute;
+    top: 45%;
+    left: -22px;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border-top-right-radius: 20px;
+    box-shadow: 1px -10px 0 0 #333333;
+}
+
+.indicador::after {
+    content: "";
+    position: absolute;
+    top: 45%;
+    right: -22px;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border-top-left-radius: 20px;
+    box-shadow: -1px -10px 0 0 #333333;
+}
+
+/* Estilos extra para carteles de alerta (Flash) */
+.flash-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; width: 90%; max-width: 350px; }
+.flash-message { background: #fff; border: 3px solid #333; padding: 12px; display: flex; justify-content: space-between; box-shadow: 4px 4px 0px #333; font-weight: bold; font-family: 'Poppins', sans-serif; }
+.flash-message.error { background-color: #ffb7b2; }
+.flash-message.success { background-color: #a8ded9; }
