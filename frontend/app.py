@@ -3,14 +3,13 @@ from functools import wraps
 from datetime import timedelta
 
 app = Flask(__name__,
-            template_folder='templates', # Asegurate de que diga templates o template según tu carpeta
+            template_folder='templates',
             static_folder='static',
             static_url_path='/static')
 
 app.secret_key = 'icebox_trips_secretkey'
 app.permanent_session_lifetime = timedelta(hours=3)
 
-# Control de acceso
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -43,12 +42,10 @@ def logout():
     flash('Sesión cerrada.', 'success')
     return redirect(url_for('login'))
 
-# --- TU RUTA DE LA HELADERA INTEGRADA CON LOGIN ---
 @app.route('/')
 @app.route('/heladera')
 @login_required
 def mostrar_heladera():
-    # Mantenemos tus imanes de prueba para que dibuje la interfaz en pantalla
     viajes_prueba = [
         {"id": 1, "destino": "Bariloche ❄️", "posicion_x": 60, "posicion_y": 80, "fecha": "Ene 2024"},
         {"id": 2, "destino": "Mendoza 🍷", "posicion_x": 240, "posicion_y": 170, "fecha": "Mar 2025"},
@@ -80,4 +77,4 @@ def cajon():
     return render_template('cajon.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000) # Dejamos el puerto 8000 que usabas vos para no marearte
+    app.run(debug=True, port=8000) 
