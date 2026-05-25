@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 from endpoints.routes.imanes import imanes_bp
 from endpoints.routes.lugares import lugares_bp
 from endpoints.routes.usuarios import usuarios_bp
@@ -7,6 +8,8 @@ from endpoints.routes.imagenes import imagenes_bp
 from endpoints.routes.paradas import paradas_bp
 
 app = Flask(__name__, static_folder='endpoints/static', static_url_path='/static')
+
+CORS(app)
 
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024 # Limita las subidas a 10 MB máximo
 

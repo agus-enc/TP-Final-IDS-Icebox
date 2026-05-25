@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-proyecto">
+    <h2>📌 Mi Heladera de Recuerdos</h2>
+    <p>Arrastrá tus viajes para organizar tu tablero.</p>
+    
+    <div id="contenedor-heladera">
+        {% for viaje in viajes %}
+            <div class="iman" 
+                 id="iman-{{ viaje.id }}" 
+                 data-id="{{ viaje.id }}"
+                 data-x="{{ viaje.posicion_x }}"
+                 data-y="{{ viaje.posicion_y }}">
+                <div class="pin-decorativo">📍</div>
+                <div class="contenido-iman">
+                    <h4>{{ viaje.destino }}</h4>
+                    <span>{{ viaje.fecha or 'Recuerdo' }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>a
+
+    <div id="cajon-imanes">
+        <h3>🗄️ Cajón de Recuerdos</h3>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/heladera.js') }}"></script>
+{% endblock %}

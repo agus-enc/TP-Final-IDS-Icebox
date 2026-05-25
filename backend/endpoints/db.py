@@ -258,7 +258,7 @@ def obtener_paises_por_usuario(id_usuario: int) -> list:
 
     return ejecutar_consulta(sql, {"id_usuario": id_usuario})
 
-def eliminar_relato_parada(id_parada: int) -> bool:
+def eliminar_relato_parada_db(id_parada: int) -> bool:
     """Busca la parada y pone su columna relato_texto en NULL. Retorna True si se modificó, False si la parada no existía."""
     sql_vaciar = 'UPDATE paradas SET relato_texto = NULL WHERE id_parada = %(id_parada)s'
     filas_afectadas = ejecutar_mutacion(sql_vaciar, {'id_parada': id_parada})
@@ -271,3 +271,15 @@ def obtener_todos_los_paises_db() -> list:
     resultados = ejecutar_consulta(sql, None)
 
     return resultados
+
+# =========================================================================
+# FUNCIONES FALTANTES EN routes/paradas.py (COMPLETAR CON CONTENIDO CORRESPONDIENTE)
+# =========================================================================
+
+def actualizar_relato_parada_db(*args, **kwargs):
+    print("⚠️ [MOCK DB] Se llamó a la función faltante: actualizar_relato_parada_db")
+    return True
+
+def actualizar_ciudad_parada_db(*args, **kwargs):
+    print("⚠️ [MOCK DB] Se llamó a la función faltante: actualizar_ciudad_parada_db")
+    return True
