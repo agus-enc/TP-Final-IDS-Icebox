@@ -100,14 +100,14 @@ body {
     top: -50%;
     width: 70px;
     height: 70px;
-    background: #b5e2b0; /* Color verde imán del boceto */
+    background: #7485e6; 
     border-radius: 50%;
-    border: 4px solid #333333; /* Borde oscuro wireframe */
+    border: 4px solid #333333; 
     transition: 0.5s;
     box-sizing: border-box;
 }
 
-/* Recortes curvos para simular la fusión con la barra (orejas) */
+/* Recortes curvos para simular la fusión con la barra*/
 .indicador::before {
     content: "";
     position: absolute;
@@ -133,7 +133,31 @@ body {
 }
 
 /* Estilos extra para carteles de alerta (Flash) */
-.flash-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; width: 90%; max-width: 350px; }
-.flash-message { background: #fff; border: 3px solid #333; padding: 12px; display: flex; justify-content: space-between; box-shadow: 4px 4px 0px #333; font-weight: bold; font-family: 'Poppins', sans-serif; }
-.flash-message.error { background-color: #ffb7b2; }
-.flash-message.success { background-color: #a8ded9; }
+.flash-container { 
+    position: fixed; 
+    top: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    z-index: 10000; 
+    width: 90%; 
+    max-width: 350px; 
+}
+
+.flash-message { 
+    background: #fff; 
+    border: 3px solid #333; 
+    padding: 12px; 
+    display: flex; 
+    justify-content: space-between; 
+    box-shadow: 4px 4px 0px #333; 
+    font-weight: bold; 
+    font-family: 'Poppins', sans-serif; 
+}
+
+.flash-message.error { 
+    background-color: #ffb7b2; 
+}
+
+.flash-message.success { 
+    background-color: #a8ded9; 
+}
