@@ -76,5 +76,10 @@ def biblioteca():
 def cajon():
     return render_template('cajon.html')
 
+@app.route('/editor')
+def editor():
+    return render_template('editor.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=8000) 

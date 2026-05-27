@@ -1,0 +1,300 @@
+/* Variables de Diseño */
+:root {
+    --color-fondo: #f4f6f9;
+    --color-tarjeta: #ffffff;
+    --color-primario: #3498db;
+    --color-primario-hover: #2980b9;
+    --color-peligro: #e74c3c;
+    --color-texto: #2c3e50;
+    --color-borde: #dcdde1;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    margin: 0;
+    padding: 0;
+}
+
+.contenedor-viaje {
+    max-width: 1500px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Encabezado */
+.header-viaje {
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--color-borde);
+    padding-bottom: 15px;
+}
+.btn-volver {
+    color: var(--color-primario);
+    text-decoration: none;
+    font-weight: bold;
+}
+/* Título Editable */
+.contenedor-titulo-editable {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0 5px 0;
+    justify-content: center;
+}
+
+.input-titulo-viaje {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--color-texto);
+    border: none;
+    background: transparent;
+    padding: 5px 0;
+    width: 100%;
+    max-width: 700px;
+    font-family: inherit;
+    border-bottom: 2px solid;
+    border-color: #7f8c8d;
+    transition: border-color 0.2s;
+}
+
+/* Cuando el usuario hace clic para editar */
+.input-titulo-viaje:focus {
+    outline: none;
+    border-bottom-color: var(--color-primario);
+    background-color: rgba(52, 152, 219, 0.03);
+}
+
+.btn-guardar-titulo {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s, transform 0.2s;
+}
+.btn-guardar-titulo:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.fecha-viaje {
+    color: #7f8c8d;
+    margin: 0;
+}
+
+/* Estructura de Tarjetas */
+.linea-tiempo {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.tarjeta-parada {
+    background-color: var(--color-tarjeta);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--color-borde);
+    overflow: hidden;
+}
+
+/* Oculta el botón de eliminar ÚNICAMENTE en la primera tarjeta de la lista */
+.linea-tiempo .tarjeta-parada:first-child .btn-eliminar-parada {
+    display: none;
+}
+
+/* Encabezado de Tarjeta */
+.tarjeta-header {
+    background-color: #fafbfc;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-borde);
+}
+.selector-ciudad label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+.select-ciudad {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--color-borde);
+    font-size: 14px;
+}
+
+.btn-eliminar-parada {
+    background: none;
+    border: none;
+    color: #95a5a6;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.btn-eliminar-parada:hover {
+    color: var(--color-peligro);
+}
+
+/* Cuerpo de la Tarjeta */
+.tarjeta-cuerpo {
+    display: flex;
+    gap: 25px;
+    padding: 20px;
+}
+
+.seccion-editor {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.textarea-elegante {
+    width: 100%;
+    min-height: 200px;
+    border: none;
+    resize: vertical; /* Permite al usuario estirarlo hacia abajo pero no a los lados */
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-texto);
+    background-color: transparent;
+}
+.textarea-elegante:focus {
+    outline: none; /* Quita el borde azul molesto al hacer clic */
+}
+
+/* Sección Imán (Columna Izquierda) */
+.seccion-iman {
+    flex: 0 0 160px; /* Ancho fijo para la columna del imán */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-left: 1px solid #f1f2f6;
+    padding-left: 20px;
+}
+
+.contenedor-foto-iman {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    border: 2px dashed var(--color-borde);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: #fcfcfc;
+    overflow: hidden;
+    text-align: center;
+    cursor: pointer;
+}
+
+.contenedor-foto-iman:hover .btn-cambiar-iman {
+    opacity: 1;
+}
+
+/* Ranura de Imán Vacío (Símbolo +) */
+.contenedor-foto-iman.vacio {
+    color: #95a5a6;
+    transition: all 0.2s;
+}
+.contenedor-foto-iman.vacio:hover {
+    border-color: var(--color-primario);
+    color: var(--color-primario);
+    background-color: #f7faff;
+}
+.icono-mas {
+    font-size: 36px;
+    font-weight: 300;
+    margin-bottom: -5px;
+}
+.contenedor-foto-iman.vacio p {
+    font-size: 12px;
+    margin: 0;
+}
+
+.foto-iman {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-cambiar-iman {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    padding: 5px 0;
+    font-size: 11px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+/* Footer de la Tarjeta */
+.tarjeta-footer {
+    background-color: #fafbfc;
+    padding: 12px 20px;
+    border-top: 1px solid #f1f2f6;
+    display: flex;
+    justify-content: flex-end;
+}
+.btn-guardar-parada {
+    background-color: var(--color-primario);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btn-guardar-parada:hover {
+    background-color: var(--color-primario-hover);
+}
+
+.contenedor-alertas {
+    margin-bottom: 20px;
+}
+.alerta {
+    padding: 15px 20px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.alerta.success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left: 5px solid #28a745;
+}
+.alerta.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left: 5px solid #dc3545;
+}
+
+/* Botones Globales */
+.acciones-globales {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+.btn-principal {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2);
+}
+.btn-principal:hover {
+    background-color: #27ae60;
+}
+.btn-principal:active {
+    transform: scale(0.98); /* Pequeño efecto de hundimiento al hacer clic */
+}
