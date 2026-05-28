@@ -1,6 +1,9 @@
 from flask import Flask, render_template, redirect, url_for, session, flash, request
 from functools import wraps
 from datetime import timedelta
+import json
+import urllib.request as cliente_http 
+from urllib.error import URLError, HTTPError
 
 app = Flask(__name__,
             template_folder='templates',
@@ -30,7 +33,7 @@ def login():
             session.permanent = True
             session['user_id'] = 100
             flash('Sesión iniciada correctamente', 'success')
-            return redirect(url_for('mostrar_heladera')) # Redirige a tu ruta de la heladera
+            return redirect(url_for('mostrar_heladera')) 
         else:
             flash('Credenciales inválidas.', 'error')
         
@@ -46,13 +49,16 @@ def logout():
 @app.route('/heladera')
 @login_required
 def mostrar_heladera():
-    viajes_prueba = [
-        {"id": 1, "destino": "Bariloche ❄️", "posicion_x": 60, "posicion_y": 80, "fecha": "Ene 2024"},
-        {"id": 2, "destino": "Mendoza 🍷", "posicion_x": 240, "posicion_y": 170, "fecha": "Mar 2025"},
-        {"id": 3, "destino": "Salta 🌵", "posicion_x": 420, "posicion_y": 100, "fecha": "Oct 2023"}
-    ]
-    return render_template('heladera.html', viajes=viajes_prueba)
+    usuario_id = session.get('usuario_id')
+    imanes_heladera = []
+    return render_template('heladera.html', imanes=imanes_heladera, usuario_id=usuario_id)
 
+@app.route('/cajon')
+@login_required
+def cajon():
+    usuario_id = session.get('usuario_id')
+    imanes_cajon = []
+    return render_template('cajon.html', imanes=imanes_cajon, usuario_id=usuario_id)
 
 @app.route('/map')
 @login_required
@@ -70,11 +76,6 @@ def creador():
 @login_required
 def biblioteca():
     return render_template('biblioteca.html')
-
-@app.route('/cajon')
-@login_required
-def cajon():
-    return render_template('cajon.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000) 

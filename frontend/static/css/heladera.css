@@ -1,71 +1,226 @@
-/* Contenedor principal de la vista */
-.container-proyecto {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* LA HELADERA: El contenedor de coordenadas */
-#contenedor-heladera {
-    width: 100%;
-    height: 500px;
-    background-color: #f1f5f9;
-    border: 3px solid #cbd5e1;
-    border-radius: 12px;
-    position: relative; /* CRÍTICO: Mantiene a los imanes adentro */
+/* =========================================================================
+   1. CONTENEDOR GENERAL (Capa 0: Fondo Absoluto con UNA SEXTA IMAGEN)
+   ========================================================================= */
+.vista-heladera-contexto {
+    display: flex; 
+    height: 100vh;
     overflow: hidden;
-    margin-bottom: 20px;
-    box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
-    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-    background-size: 20px 20px;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    
+    /* El fondo beige original */
+    background-color: #F2E9E4; 
+    
+    /* 🔥 REFERENCIA A UNA SOLA IMAGEN */
+    background-image: url('../images/fondo_heladera.png'); 
+    background-repeat: no-repeat;
+    
+    /* La centramos perfectamente detrás de la heladera */
+    background-position: center center; 
+    
+    /* 'contain' hace que se adapte al alto de la pantalla sin cortarse */
+    background-size: contain; 
 }
 
-/* LOS IMANES: Elementos arrastrables */
-.iman {
-    width: 130px;
-    padding: 10px;
-    background-color: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    position: absolute; /* CRÍTICO: Permite posicionar por X e Y */
-    cursor: grab;
-    user-select: none;
-    transition: box-shadow 0.2s ease;
-}
-
-.iman:active {
-    cursor: grabbing;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-/* Estilos internos del imán */
-.pin-decorativo {
-    text-align: center;
-    font-size: 14px;
-    margin-bottom: 4px;
-}
-
-.contenido-iman h4 {
-    margin: 0 0 4px 0;
-    font-size: 14px;
-    color: #1e293b;
-    text-align: center;
-}
-
-.contenido-iman span {
-    display: block;
-    font-size: 11px;
-    color: #64748b;
-    text-align: center;
-}
-
-/* Espacio inferior para el cajón */
-#cajon-imanes {
-    background-color: #f8fafc;
-    border: 2px dashed #e2e8f0;
-    border-radius: 12px;
+.heladera-seccion-derecha {
+    flex-grow: 1; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
     padding: 20px;
+    position: relative; 
+    overflow: hidden;
+}
+
+/* Envoltura central reguladora de tamaños */
+.heladera-wrapper {
+    display: flex;
+    align-items: center; 
+    position: relative; 
+    height: 600px; 
+    width: 1050px; 
+}
+
+/* =========================================================================
+   2. EL GABINETE DE LA HELADERA (Capa 1: Estructura Intermedia Flotante)
+   ========================================================================= */
+.refrigerator, #puerta {
+    background-color: #4a4848; /* Gris oscuro base */
+    border-radius: 25px 25px 0px 0px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 4px solid #22223B;
+    position: relative; 
+    overflow: visible; 
+    
+    /* Sombras paralelas profundas para proyectar relieve sobre el fondo de viajes */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35), 0 10px 20px rgba(0, 0, 0, 0.2);
+    
+    /* Reflejo metálico sutil sobre el chasis */
+    background-image: linear-gradient(
+        180deg, 
+        rgba(255, 255, 255, 0.12) 0%, 
+        rgba(255, 255, 255, 0.05) 35%, 
+        rgba(0, 0, 0, 0.08) 100%
+    );
+}
+
+/* Puertas estéticas absolutas */
+.refrigerator-door {
+    background-color: #666769;
+    border: 3px solid #22223B;
+    position: absolute; 
+    left: 8px;
+    right: 8px;
+    box-sizing: border-box;
+}
+
+/* Puerta superior (Freezer) */
+.refrigerator-door.top {
+    border-radius: 18px 18px 0 0;
+    top: 8px;
+    height: 76%;
+    box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.15);
+}
+
+/* Puerta inferior (Heladera común) */
+.refrigerator-door.bottom {
+    border-radius: 0px;
+    bottom: -10px;
+    height: 18%;
+    box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+}
+
+/* Manijas */
+.refrigerator-handle {
+    background-color: #cbd5e1;
+    border: 2px solid #4A4E69;
+    border-radius: 4px;
+    position: absolute;
+    width: 10px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+.top .refrigerator-handle {
+    height: 200px;
+    bottom: 20px;
+    left: 15px;
+}
+
+.bottom .refrigerator-handle {
+    height: 120px;
+    top: 50px;
+    left: 15px;
+}
+
+/* =========================================================================
+   3. GAVETA DE ARCHIVADO (ZONA DERECHA)
+   ========================================================================= */
+.gaveta-guardar {
+    width: 100px;
+    height: 90%; 
+    position: relative;
+    right: -30px; 
+    flex-shrink: 0;
+    
+    background-color: #9A8C98;
+    border: 3px solid #22223B;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
     text-align: center;
+    box-shadow: 5px 5px 0px #C9ADA7; 
+    box-sizing: border-box;
+    transition: all 0.25s ease;
+}
+
+.gaveta-guardar.active {
+    background-color: #e95f5f; 
+    border-style: solid;
+    border-color: #22223B;
+    transform: scale(1.03);
+}
+
+.gaveta-guardar.active .gaveta-icono {
+    transform: scale(1.3) translateY(-5px);
+}
+.gaveta-icono {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    transition: 0.3s;
+}
+.gaveta-texto {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #333333;
+    writing-mode: vertical-lr;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* =========================================================================
+   4. ESTILO DE LOS IMANES (Capa 2: Frente Absoluto con relieve)
+   ========================================================================= */
+.iman-viaje {
+    position: absolute; 
+    background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 75%, #e2e8f0 100%);
+    border: 2.5px solid #333333;
+    box-shadow: 4px 4px 0px #333333;
+    cursor: grab;
+    
+    width: 75px; 
+    height: 75px; 
+    border-radius: 50%;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    box-sizing: border-box;
+    user-select: none;
+    z-index: 10; /* Z-Index base en reposo */
+}
+
+.iman-viaje:active {
+    cursor: grabbing;
+    transform: scale(1.1); 
+    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.45);
+    z-index: 1000; /* JavaScript lo sube dinámicamente al frente de todo */
+}
+
+.iman-pin {
+    width: 6px;
+    height: 6px;
+    background-color: #ef4444; 
+    border: 1.5px solid #232931;
+    border-radius: 50%;
+    margin-bottom: 2px;
+}
+
+.iman-destino { 
+    font-weight: 700; 
+    font-size: 0.65rem; 
+    color: #232931; 
+    text-align: center; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 90%;
+}
+
+.iman-fecha { 
+    font-size: 0.5rem; 
+    color: #64748b; 
+    text-align: center; 
+    font-weight: 500;
+}
+
+#puerta .iman-viaje * {
+    pointer-events: none;
 }

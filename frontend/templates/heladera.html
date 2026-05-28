@@ -1,30 +1,53 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container-proyecto">
-    <h2>📌 Mi Heladera de Recuerdos</h2>
-    <p>Arrastrá tus viajes para organizar tu tablero.</p>
+<div class="vista-heladera-contexto">
     
-    <div id="contenedor-heladera">
-        {% for viaje in viajes %}
-            <div class="iman" 
-                 id="iman-{{ viaje.id }}" 
-                 data-id="{{ viaje.id }}"
-                 data-x="{{ viaje.posicion_x }}"
-                 data-y="{{ viaje.posicion_y }}">
-                <div class="pin-decorativo">📍</div>
-                <div class="contenido-iman">
-                    <h4>{{ viaje.destino }}</h4>
-                    <span>{{ viaje.fecha or 'Recuerdo' }}</span>
+    <div class="heladera-seccion-derecha">
+        <div class="heladera-wrapper">
+
+            <div class="refrigerator" id="puerta" data-backend="http://127.0.0.1:5000" data-usuario="{{ usuario_id }}">
+                
+                <div class="refrigerator-door top">
+                    <div class="refrigerator-handle"></div>
                 </div>
+                
+                <div class="refrigerator-door bottom">
+                    <div class="refrigerator-handle"></div>
+                </div>
+
+                {% for iman in imanes %}
+                <div class="iman-viaje" id="iman-{{ iman.id }}" data-id="{{ iman.id }}" style="left: {{ iman.posicion_x }}px; top: {{ iman.posicion_y }}px;">
+                    <div class="iman-pin"></div>
+                    <div class="iman-destino">{{ iman.destino }}</div>
+                    <div class="iman-fecha">{{ iman.fecha if iman.fecha else '' }}</div>
+                </div>
+                {% endfor %}
+
+                <div class="iman-viaje" id="iman-prueba-1" data-id="999" style="left: 50px; top: 60px;">
+                    <div class="iman-pin"></div>
+                    <div class="iman-destino">Bariloche</div>
+                    <div class="iman-fecha">Ene 2024</div>
+                </div>
+
+                <div class="iman-viaje" id="iman-prueba-2" data-id="888" style="left: 120px; top: 250px;">
+                    <div class="iman-pin"></div>
+                    <div class="iman-destino">Río de Janeiro</div>
+                    <div class="iman-fecha">Mar 2025</div>
+                </div>
+
+            </div> 
+
+            <div class="gaveta-guardar" id="zona-guardar">
+                <div class="gaveta-icono">
+                    <ion-icon name="arrow-forward-circle-outline"></ion-icon>
+                </div>
+                <span class="gaveta-texto">Soltá el imán acá para archivar en el cajón</span>
             </div>
-        {% endfor %}
-    </div>a
 
-    <div id="cajon-imanes">
-        <h3>🗄️ Cajón de Recuerdos</h3>
+        </div>
     </div>
-</div>
 
+</div>
 <script src="{{ url_for('static', filename='js/heladera.js') }}"></script>
 {% endblock %}

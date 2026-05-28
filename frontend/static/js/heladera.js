@@ -1,106 +1,120 @@
-// URL base del backend de tus compañeros (Puerto 5000)
-const BACKEND_API_URL = 'http://127.0.0.1:5000';
+document.addEventListener("DOMContentLoaded", () => {
+    const puerta = document.getElementById("puerta");
+    const zonaGuardar = document.getElementById("zona-guardar");
+    if (!puerta || !zonaGuardar) return;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const imanes = document.querySelectorAll('.iman');
-    const heladera = document.getElementById('contenedor-heladera');
+    const backendUrl = puerta.getAttribute("data-backend") || "http://127.0.0.1:5000";
+    
+    let usuarioId = puerta.getAttribute("data-usuario");
+    if (!usuarioId || usuarioId === "" || usuarioId === "None") {
+        usuarioId = "100"; 
+    }
 
-    // --- POSICIONAR IMANES DESDE LOS ATRIBUTOS DATA ---
-    imanes.forEach(iman => {
-        const xInicial = iman.getAttribute('data-x');
-        const yInicial = iman.getAttribute('data-y');
+    let imanSeleccionado = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    puerta.addEventListener("mousedown", (e) => {
+        const iman = e.target.closest(".iman-viaje");
+        if (!iman) return;
+
+        e.preventDefault();
+        imanSeleccionado = iman;
         
-        iman.style.left = `${xInicial}px`;
-        iman.style.top = `${yInicial}px`;
-    });
-    // ----------------------------------------------------------------------------------
-
-    // Configurar el evento de arrastre para cada imán
-    imanes.forEach(iman => {
-        iman.addEventListener('mousedown', iniciarArrastre);
-    });
-
-    function iniciarArrastre(e) {
-        const iman = e.currentTarget;
+        const rect = imanSeleccionado.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
         
-        // Calculamos el desfase inicial del clic dentro del imán
-        let offsetX = e.clientX - iman.getBoundingClientRect().left;
-        let offsetY = e.clientY - iman.getBoundingClientRect().top;
+        imanSeleccionado.style.zIndex = "1000";
 
-        function moverMouse(e) {
-            const contenedorRect = heladera.getBoundingClientRect();
-            
-            // Calculamos la posición X e Y relativa a la heladera
-            let nuevaX = e.clientX - contenedorRect.left - offsetX;
-            let nuevaY = e.clientY - contenedorRect.top - offsetY;
+        document.addEventListener("mousemove", mover);
+        document.addEventListener("mouseup", soltar);
+    });
 
-            // Límites para que el imán no se escape de la heladera (o del tablero completo)
-            const limiteMaxX = contenedorRect.width - iman.offsetWidth;
-            const limiteMaxY = contenedorRect.height - iman.offsetHeight;
-
-            if (nuevaX < 0) nuevaX = 0;
-            if (nuevaY < 0) nuevaY = 0;
-            if (nuevaX > limiteMaxX) nuevaX = limiteMaxX;
-            if (nuevaY > limiteMaxY) nuevaY = limiteMaxY;
-
-            // Aplicamos los estilos en tiempo real mientras arrastramos
-            iman.style.left = `${nuevaX}px`;
-            iman.style.top = `${nuevaY}px`;
+    function mover(ev) {
+        if (!imanSeleccionado) return;
+        
+        const rectPuerta = puerta.getBoundingClientRect();
+        let x = ev.clientX - rectPuerta.left - offsetX;
+        let y = ev.clientY - rectPuerta.top - offsetY;
+        
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        if (y > rectPuerta.height - imanSeleccionado.offsetHeight) {
+            y = rectPuerta.height - imanSeleccionado.offsetHeight;
+        }
+        
+        const limDerecho = rectPuerta.width - imanSeleccionado.offsetWidth;
+        if (x > limDerecho + 100) { 
+            x = limDerecho + 100;
         }
 
-        function soltarMouse() {
-            document.removeEventListener('mousemove', moverMouse);
-            document.removeEventListener('mouseup', soltarMouse);
+        imanSeleccionado.style.left = `${x}px`;
+        imanSeleccionado.style.top = `${y}px`;
 
-            // Obtenemos el ID del imán (viaje) desde el atributo HTML data-id
-            const idIman = iman.getAttribute('data-id');
+        const rectGaveta = zonaGuardar.getBoundingClientRect();
+        const rectIman = imanSeleccionado.getBoundingClientRect();
+
+        if (
+            rectIman.right > rectGaveta.left &&
+            rectIman.left < rectGaveta.right &&
+            rectIman.bottom > rectGaveta.top &&
+            rectIman.top < rectGaveta.bottom
+        ) {
+            zonaGuardar.classList.add("active");
+        } else {
+            zonaGuardar.classList.remove("active");
+        }
+    }
+
+    function soltar() {
+        if (!imanSeleccionado) return;
+        
+        document.removeEventListener("mousemove", mover);
+        document.removeEventListener("mouseup", soltar);
+        
+        const idIman = imanSeleccionado.getAttribute("data-id");
+        const rectGaveta = zonaGuardar.getBoundingClientRect();
+        const rectIman = imanSeleccionado.getBoundingClientRect();
+
+        if (
+            rectIman.right > rectGaveta.left &&
+            rectIman.left < rectGaveta.right &&
+            rectIman.bottom > rectGaveta.top &&
+            rectIman.top < rectGaveta.bottom
+        ) {
+            imanSeleccionado.style.display = "none";
+            actualizarEstadoUbicacionBackend(idIman, false, 0, 0); 
+        } else {
+            const xFinal = parseInt(imanSeleccionado.style.left);
+            const yFinal = parseInt(imanSeleccionado.style.top);
             
-            // Leemos la posición final entera (sin 'px')
-            const xFinal = parseInt(iman.style.left, 10);
-            const yFinal = parseInt(iman.style.top, 10);
-
-            // 💡 LÓGICA TEMPORAL PARA EL CAJÓN:
-            // Por ahora, asumimos que si se está moviendo acá adentro está en la heladera (true).
-            // Cuando armemos el contenedor del cajón, acá calcularemos si cayó fuera o dentro.
-            const estaEnHeladera = true;
-
-            // Disparamos la sincronización con el Backend oficial
-            guardarPosicionEnBackend(idIman, xFinal, yFinal, estaEnHeladera);
+            const rectPuerta = puerta.getBoundingClientRect();
+            const limDerecho = rectPuerta.width - imanSeleccionado.offsetWidth;
+            
+            if (xFinal > limDerecho) {
+                imanSeleccionado.style.left = `${limDerecho}px`;
+                actualizarEstadoUbicacionBackend(idIman, true, limDerecho, yFinal);
+            } else {
+                actualizarEstadoUbicacionBackend(idIman, true, xFinal, yFinal);
+            }
         }
 
-        document.addEventListener('mousemove', moverMouse);
-        document.addEventListener('mouseup', soltarMouse);
+        imanSeleccionado.style.zIndex = "10"; 
+        zonaGuardar.classList.remove("active");
+        imanSeleccionado = null;
+    }
+
+    function actualizarEstadoUbicacionBackend(idIman, enHeladera, posX, posY) {
+        fetch(`${backendUrl}/imanes/${idIman}/posicion`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                ubicacion_heladera: enHeladera,
+                posicion_x: posX,
+                posicion_y: posY,
+                id_usuario: parseInt(usuarioId)
+            })
+        }).catch(err => console.log("Fetch controlado. Servidor central offline."));
     }
 });
-
-// FUNCIÓN DE RED: Conexión optimizada con el backend oficial de tus compañeros
-function guardarPosicionEnBackend(idIman, x, y, estaEnHeladera) {
-    const urlDestino = `${BACKEND_API_URL}/endpoints/imanes/${idIman}/posicion`;
-
-    console.log(`[Fetch] Enviando a API oficial... (Imán ID: ${idIman}, Heladera: ${estaEnHeladera})`);
-
-    fetch(urlDestino, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            posicion_x: x,
-            posicion_y: y,
-            ubicacion_heladera: estaEnHeladera // <-- Agregado para cumplir la validación del backend
-        })
-    })
-    .then(response => {
-        // El backend oficial devuelve status 204 (No Content) cuando todo sale bien
-        if (response.status === 204) {
-            console.log(`✅ [Base de Datos] ¡Posición del imán ${idIman} guardada con éxito (204)!`);
-            return;
-        }
-        if (!response.ok) {
-            throw new Error(`Error en el servidor de Flask. Status: ${response.status}`);
-        }
-    })
-    .catch(error => {
-        console.error('❌ [Error de Red] Revisa la conexión con el puerto 5000:', error);
-    });
-}

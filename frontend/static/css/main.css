@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
 body {
-    background-color: antiquewhite;
-    padding-bottom: 110px !important
+    background-color: #F2E9E4;
+    padding-bottom: 110px !important;
+    overflow: hidden;
 }
 
 /* Contenedor de la barra (Fijado abajo, flotante y centrado) */
@@ -68,18 +69,27 @@ body {
 /* El ícono centrado */
 .router ul li a .icon {
     position: relative;
-    display: block;
-    line-height: 75px;
+    display: flex;              /* flexbox centra el SVG real */
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: auto;
     font-size: 1.5em;
-    text-align: center;
     transition: 0.5s;
     color: #333333;
+}
+
+.router ul li a .icon ion-icon {
+    display: block !important;
+    width: 24px !important;
+    height: 24px !important;
+    overflow: visible !important;
 }
 
 /* --- ESTADOS ACTIVOS (Cuando el JS detecta la página) --- */
 .router ul li.active a .icon {
     color: #ffffff;
-    transform: translateY(-32px); /* El ícono sube al círculo */
+    transform: translateY(-35px); /* El ícono sube al círculo */
 }
 
 .router ul li.active a .route {

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Cajón de Recuerdos - Icebox Trips{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cajon.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="vista-cajon-contexto">
+    <div class="cajon-wrapper">
+        
+        <div class="cajon-marco">
+            <h2>Cajón de Imanes Archivados</h2>
+            
+            <div class="grilla-cajon" 
+                 id="cajon-archivado"
+                 data-backend="http://127.0.0.1:5000"
+                 data-usuario="{{ usuario_id }}">
+                 
+                 <div class="iman-viaje" data-id="prueba-1">
+                     <div class="iman-pin"></div>
+                     <div class="iman-destino">Barcelona</div>
+                     <div class="iman-fecha">Dic 2025</div>
+                 </div>
+
+                 <div class="iman-viaje" data-id="prueba-2">
+                     <div class="iman-pin"></div>
+                     <div class="iman-destino">Madrid</div>
+                     <div class="iman-fecha">May 2024</div>
+                 </div>
+                 
+                 {% for iman in imanes %}
+                 <div class="iman-viaje" data-id="{{ iman.id }}">
+                     <div class="iman-pin"></div>
+                     <div class="iman-destino">{{ iman.destino }}</div>
+                     <div class="iman-fecha">{{ iman.fecha if iman.fecha else '' }}</div>
+                 </div>
+                 {% else %}
+                 {% endfor %}
+                 
+            </div>
+        </div>
+
+        <div class="gaveta-devolucion" id="zona-devolver">
+            <div class="gaveta-icono">
+                <ion-icon name="arrow-back-circle-outline"></ion-icon>
+            </div>
+            <span class="gaveta-texto">Soltá acá el imán para enviarlo a la Heladera</span>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/cajon.js') }}"></script>
+{% endblock %}

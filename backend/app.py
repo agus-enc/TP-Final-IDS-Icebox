@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask
 from flask_cors import CORS
 from endpoints.routes.imanes import imanes_bp
 from endpoints.routes.lugares import lugares_bp
