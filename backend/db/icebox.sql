@@ -11,16 +11,16 @@ CREATE TABLE usuarios (
 
 CREATE TABLE paises (
     id_pais INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    continente VARCHAR(50) NOT NULL -- sacar en caso de no ser necesaria
+    nombre VARCHAR(100) UNIQUE NOT NULL,
+    bandera VARCHAR(255) NOT NULL,
+    codigo VARCHAR(3) NOT NULL
 );
 
 CREATE TABLE ciudades (
     id_ciudad INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_pais INT NOT NULL,
     nombre VARCHAR(100) NOT NULL,
-    latitud DECIMAL(10, 8), -- (M (Precisión), D (Escala))
-    longitud DECIMAL(11, 8),
+    UNIQUE(id_pais, nombre),
     FOREIGN KEY (id_pais) REFERENCES paises(id_pais) ON DELETE CASCADE
 );
 
@@ -37,7 +37,7 @@ CREATE TABLE paradas (
     id_viaje INT NOT NULL,
     id_ciudad INT NOT NULL,
     orden_en_ruta INT NOT NULL, -- saber el orden de las paradas
-    relato_texto JSON,
+    relato_texto TEXT,
     FOREIGN KEY (id_viaje) REFERENCES viajes(id_viaje) ON DELETE CASCADE,
     FOREIGN KEY (id_ciudad) REFERENCES ciudades(id_ciudad)
 );
