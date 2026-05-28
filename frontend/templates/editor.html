@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icebox - Prueba de Diseño</title>
+
+    <link rel="stylesheet" href="/static/css/editor.css">
+</head>
+<body>
+
+    <div class="contenedor-viaje">
+
+        <header class="header-viaje">
+            <a href="#" class="btn-volver">← Volver a Biblioteca</a>
+
+            <div class="contenedor-titulo-editable">
+                <input type="text" class="input-titulo-viaje" placeholder="Dale un nombre a tu viaje">
+                <button type="button" class="btn-guardar-titulo" title="Guardar nuevo título">💾</button>
+            </div>
+        </header>
+
+        <div class="linea-tiempo">
+
+            <div class="tarjeta-parada">
+                <div class="tarjeta-header">
+                    <div class="selector-ciudad">
+                        <label>Parada:</label>
+                        <select name="ciudad_parada_1" class="select-ciudad">
+                            <option>Seleccionar Ciudad</option>
+                            <option>Madrid, España</option>
+                            <option>Roma, Italia</option>
+                        </select>
+                    </div>
+                    <button class="btn-eliminar-parada">×</button>
+                </div>
+
+                <div class="tarjeta-cuerpo">
+                    <div class="seccion-editor">
+                        <textarea name="texto_parada_1" class="textarea-elegante" placeholder="¿Cómo la pasaste?"></textarea>
+                    </div>
+
+                    <div class="seccion-iman">
+                        <label for="foto-parada-1" class="contenedor-foto-iman vacio">
+                            <span class="icono-mas">+</span>
+                            <p>Subir Imán</p>
+                        </label>
+                        <input type="file" id="foto-parada-1" name="foto_parada_1" accept="image/png, image/jpeg" style="display: none;">
+                    </div>
+                </div>
+
+                <div class="tarjeta-footer">
+                    <button type="button" class="btn-guardar-parada">Guardar</button>
+                </div>
+            </div>
+        </div> <div class="acciones-globales">
+            <button type="button" class="btn-principal">+ Agregar Nueva Parada</button>
+        </div>
+
+    </div>
+    <script src="/static/js/editor.js"></script>
+</body>
+</html>
