@@ -1,4 +1,5 @@
-from .. import db
+from ..dao.usuarios import obtener_usuario
+from ..dao.lugares import obtener_paises_por_usuario, obtener_todos_los_paises_db, obtener_ciudad_por_id
 from ..validators.usuarios import validar_id_usuario
 from ..validators.lugares import validar_id_pais
 from ..utils import construir_error
@@ -6,7 +7,7 @@ from ..utils import construir_error
 def obtener_paises_visitados(id_usuario: int) -> dict:
     id_usuario = validar_id_usuario(id_usuario)
 
-    usuario = db.obtener_usuario(id_usuario)
+    usuario = obtener_usuario(id_usuario)
     if not usuario:
         raise ValueError({"errors": [
             construir_error(
@@ -14,7 +15,7 @@ def obtener_paises_visitados(id_usuario: int) -> dict:
                 "El usuario no existe.",
                 "No se encontró el recurso solicitado.")]}, 404)
 
-    resultados_db = db.obtener_paises_por_usuario(id_usuario)
+    resultados_db = obtener_paises_por_usuario(id_usuario)
 
     paises_list = [{"id_pais": f["id_pais"], "nombre": f["nombre"]} for f in resultados_db]
 
@@ -27,7 +28,7 @@ def obtener_paises_visitados(id_usuario: int) -> dict:
     }
 
 def obtener_paises() -> list:
-    resultados_db = db.obtener_todos_los_paises_db()
+    resultados_db = obtener_todos_los_paises_db()
 
     paises_list = [{"id_pais": f["id_pais"], "nombre": f["nombre"]} for f in resultados_db]
     
@@ -37,6 +38,6 @@ def obtener_ciudades_por_pais(id_pais: int) -> list:
     """Valida el ID del país y obtiene sus ciudades desde la base de datos."""
     id_pais_validado = validar_id_pais(id_pais)
 
-    resultados_db = db.obtener_ciudades_por_pais_db(id_pais_validado)
+    resultados_db = obtener_ciudad_por_id(id_pais_validado)
     
     return [{"id_ciudad": f["id_ciudad"], "nombre": f["nombre"]} for f in resultados_db]

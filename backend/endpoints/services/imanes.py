@@ -1,4 +1,4 @@
-from ..db import actualizar_posicion_iman, obtener_imanes_usuario
+from ..dao.imanes import actualizar_posicion_iman, obtener_imanes_usuario, eliminar_iman_por_id
 
 def modificar_posicion_iman(id_iman: int, ubicacion_heladera: bool, posicion_x: float, posicion_y: float) -> bool:
     return actualizar_posicion_iman(id_iman, ubicacion_heladera, posicion_x, posicion_y)
@@ -18,4 +18,4 @@ def listar_imanes(id_usuario: int, ubicacion_param: str = None) -> list:
 
 def eliminar_iman(id_iman: int) -> bool:
     """Elimina un iman por id. Retorna True si existía y fue eliminado, False si no existía."""
-    return db.eliminar_iman_por_id(id_iman)
+    return eliminar_iman_por_id(id_iman)

@@ -1,5 +1,7 @@
 import json
-from ..db import obtener_usuario_por_viaje, insertar_parada_con_iman, obtener_ciudad_por_id, eliminar_parada_por_id, eliminar_relato_parada_db, actualizar_relato_parada_db, actualizar_ciudad_parada_db
+from ..dao.usuarios import obtener_usuario_por_viaje
+from ..dao.lugares import obtener_ciudad_por_id
+from ..dao.paradas import insertar_parada_con_iman, eliminar_parada_por_id, eliminar_relato_parada_db, actualizar_relato_parada_db, actualizar_ciudad_parada_db
 from ..validators.paradas import validar_body_parada, validar_relato, validar_ciudad
 from ..utils import validar_minimo
 
