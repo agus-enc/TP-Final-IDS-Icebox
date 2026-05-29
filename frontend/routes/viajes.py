@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from ..auth import login_required
+from auth import login_required
 
 viajes_bp = Blueprint('viajes', __name__)
 

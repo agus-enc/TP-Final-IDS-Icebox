@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, session
-from ..auth import login_required
+from auth import login_required
 
 imanes_bp = Blueprint('imanes', __name__)
 

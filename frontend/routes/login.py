@@ -13,7 +13,7 @@ def login():
             session.permanent = True
             session['user_id'] = 100
             flash('Sesión iniciada correctamente', 'success')
-            return redirect(url_for('mostrar_heladera'))
+            return redirect(url_for('imanes.mostrar_heladera'))
         else:
             flash('Credenciales inválidas.', 'error')
 
