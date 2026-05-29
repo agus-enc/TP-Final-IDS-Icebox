@@ -10,14 +10,8 @@
     
     /* El fondo beige original */
     background-color: #F2E9E4; 
-    
-    /* 🔥 REFERENCIA A UNA SOLA IMAGEN */
-    background-image: url('../images/fondo_heladera.png'); 
     background-repeat: no-repeat;
-    
-    /* La centramos perfectamente detrás de la heladera */
     background-position: center center; 
-    
     /* 'contain' hace que se adapte al alto de la pantalla sin cortarse */
     background-size: contain; 
 }
@@ -46,7 +40,9 @@
    ========================================================================= */
 .refrigerator, #puerta {
     background-color: #4a4848; /* Gris oscuro base */
-    border-radius: 25px 25px 0px 0px;
+    background-image: url("../images/fondo_heladera.png");
+    background-size: cover;
+    border-radius: 10px 10px 0px 0px;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
@@ -58,18 +54,15 @@
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35), 0 10px 20px rgba(0, 0, 0, 0.2);
     
     /* Reflejo metálico sutil sobre el chasis */
-    background-image: linear-gradient(
-        180deg, 
-        rgba(255, 255, 255, 0.12) 0%, 
-        rgba(255, 255, 255, 0.05) 35%, 
-        rgba(0, 0, 0, 0.08) 100%
-    );
+   
 }
 
 /* Puertas estéticas absolutas */
 .refrigerator-door {
     background-color: #666769;
-    border: 3px solid #22223B;
+    background-image: url("../images/heladera.png");
+    background-size: cover;
+    border: 3px solid #000000;
     position: absolute; 
     left: 8px;
     right: 8px;
@@ -78,7 +71,7 @@
 
 /* Puerta superior (Freezer) */
 .refrigerator-door.top {
-    border-radius: 18px 18px 0 0;
+    border-radius: 8px 8px 8px 8px;
     top: 8px;
     height: 76%;
     box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.15);
@@ -86,7 +79,7 @@
 
 /* Puerta inferior (Heladera común) */
 .refrigerator-door.bottom {
-    border-radius: 0px;
+    border-radius: 8px 8px;
     bottom: -10px;
     height: 18%;
     box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.08);
@@ -96,23 +89,24 @@
 /* Manijas */
 .refrigerator-handle {
     background-color: #cbd5e1;
-    border: 2px solid #4A4E69;
-    border-radius: 4px;
+    background-image: url("../images/manija.png");
+    border: 2px solid #000000;
+    border-radius: 2px;
     position: absolute;
-    width: 10px;
+    width: 12px;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
 }
 
 .top .refrigerator-handle {
     height: 200px;
-    bottom: 20px;
-    left: 15px;
+    bottom: 35px;
+    left: 35px;
 }
 
 .bottom .refrigerator-handle {
-    height: 120px;
-    top: 50px;
-    left: 15px;
+    height: 60px;
+    top: 35px;
+    left: 35px;
 }
 
 /* =========================================================================
@@ -143,7 +137,7 @@
     background-color: #e95f5f; 
     border-style: solid;
     border-color: #22223B;
-    transform: scale(1.03);
+    transform: scale(1.05) translateY(-5px);
 }
 
 .gaveta-guardar.active .gaveta-icono {
@@ -173,8 +167,8 @@
     box-shadow: 4px 4px 0px #333333;
     cursor: grab;
     
-    width: 75px; 
-    height: 75px; 
+    width: 110px; 
+    height: 110px; 
     border-radius: 50%;
     
     display: flex;
@@ -190,23 +184,23 @@
 .iman-viaje:active {
     cursor: grabbing;
     transform: scale(1.1); 
-    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.45);
+    box-shadow: 8px 8px 0px #333333;
     z-index: 1000; /* JavaScript lo sube dinámicamente al frente de todo */
 }
 
 .iman-pin {
-    width: 6px;
-    height: 6px;
+    width: 12px;
+    height: 12px;
     background-color: #ef4444; 
-    border: 1.5px solid #232931;
+    border: 1.5px solid #22223B;
     border-radius: 50%;
-    margin-bottom: 2px;
+    margin-bottom: 18px;
 }
 
 .iman-destino { 
     font-weight: 700; 
-    font-size: 0.65rem; 
-    color: #232931; 
+    font-size: 0.85rem; 
+    color: #22223B; 
     text-align: center; 
     white-space: nowrap;
     overflow: hidden;
@@ -215,8 +209,8 @@
 }
 
 .iman-fecha { 
-    font-size: 0.5rem; 
-    color: #64748b; 
+    font-size: 0.65rem; 
+    color: #4A4E69; 
     text-align: center; 
     font-weight: 500;
 }

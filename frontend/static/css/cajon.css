@@ -26,14 +26,17 @@
     width: 100%;
     min-height: 100%;
     box-sizing: border-box;
+    background-image: url("../images/madera.png");
+    background-size: cover;
+    background-position: center;
 }
 
 .cajon-marco h2 {
     font-size: 1.4rem;
     margin-top: 0;
-    border-bottom: 3px solid #ece9e9;
+    border-bottom: 3px solid #22223B;
     padding-bottom: 8px;
-    color: #ece9e9;
+    color: #22223B;
 }
 
 .grilla-cajon {
@@ -50,8 +53,8 @@
    ========================================================================= */
 .iman-viaje {
     /* Forzamos dimensiones rígidas para evitar el efecto elipse al arrastrar */
-    width: 75px !important;   
-    height: 75px !important;  
+    width: 100px !important;   
+    height: 100px !important;  
     border-radius: 50% !important;
     
     background: #ffffff;
@@ -85,18 +88,18 @@
 }
 
 .iman-pin {
-    width: 6px;
-    height: 6px;
-    background-color: #0e75ca; /* Gris indicando que está guardado en el cajón */
+    width: 10px;
+    height: 10px;
+    background-color: #0e75ca; 
     border: 2px solid #333333;
     border-radius: 50%;
-    margin-bottom: 4px;
+    margin-bottom: 18px;
 }
 
 .iman-destino { 
     font-weight: 600; 
-    font-size: 0.7rem; 
-    color: #333; 
+    font-size: 0.85rem; 
+    color: #22223B; 
     text-align: center; 
     white-space: nowrap;
     overflow: hidden;
@@ -105,8 +108,8 @@
 }
 
 .iman-fecha { 
-    font-size: 0.55rem; 
-    color: #777; 
+    font-size: 0.65rem; 
+    color: #4A4E69; 
     text-align: center; 
     margin-top: 1px;
 }
@@ -158,6 +161,7 @@
     background: #4cd137; /* Verde de éxito al arrastrar */
     border-color: #22223B;
     border-right: 3px solid #22223B; /* Recupera el borde al expandirse */
+    transform: scale(1.001) translateY(-3px);
 }
 
 .gaveta-devolucion.active .gaveta-texto {
