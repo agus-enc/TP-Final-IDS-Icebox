@@ -7,6 +7,7 @@ from urllib.error import URLError, HTTPError
 from routes.login import login_bp
 from routes.imanes import imanes_bp
 from routes.viajes import viajes_bp
+from routes.mapa import mapa_bp
 
 app = Flask(__name__,
             template_folder='templates',
@@ -19,6 +20,7 @@ app.permanent_session_lifetime = timedelta(hours=3)
 app.register_blueprint(login_bp)
 app.register_blueprint(imanes_bp)
 app.register_blueprint(viajes_bp)
+app.register_blueprint(mapa_bp)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000) 

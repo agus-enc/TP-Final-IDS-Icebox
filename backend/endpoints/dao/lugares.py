@@ -7,7 +7,7 @@ def obtener_ciudad_por_id(id_ciudad: int) -> int | None:
 
 def obtener_paises_por_usuario(id_usuario: int) -> list:
     sql = """
-    SELECT DISTINCT p.id_pais, p.nombre
+    SELECT DISTINCT p.id_pais, p.nombre, p.codigo
     FROM paises p
     JOIN ciudades c ON p.id_pais = c.id_pais
     JOIN paradas pa ON c.id_ciudad = pa.id_ciudad
