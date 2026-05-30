@@ -11,26 +11,48 @@
 
     <div class="contenedor-viaje">
 
-        <header class="header-viaje">
-            <a href="#" class="btn-volver">← Volver a Biblioteca</a>
+        <header class="header-viaje" id="header-portada">
+            <div class="overlay-portada"></div>
+            <input type="file" id="foto-portada" name="foto_portada" accept="image/png, image/jpeg" style="display: none;">
+            <div class="acciones-header">
+                <a href="#" class="btn-volver">← Volver a Biblioteca</a>
+                <div class="acciones-portada">
 
+                    <label for="foto-portada" class="btn-icono-portada" title="Cambiar Portada">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </label>
+
+                    <button type="button" class="btn-icono-portada btn-eliminar-portada" id="btn-borrar-portada" title="Eliminar Portada">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+
+                </div>
+            </div>
             <div class="contenedor-titulo-editable">
-                <input type="text" class="input-titulo-viaje" placeholder="Dale un nombre a tu viaje">
-                <button type="button" class="btn-guardar-titulo" title="Guardar nuevo título">💾</button>
+                <input type="text" id="titulo-viaje" name="titulo_viaje" class="input-titulo-viaje" placeholder="Dale un nombre a tu viaje">
             </div>
         </header>
+
+        <div class="galeria">
+            <button type="button" class="btn-diario-fotos"> Diario de Fotos</button>
+        </div>
 
         <div class="linea-tiempo">
 
             <div class="tarjeta-parada">
                 <div class="tarjeta-header">
                     <div class="selector-ciudad">
-                        <label>Parada:</label>
-                        <select id="ciudad-parada-1" name="ciudad_parada_1" class="select-ciudad">
-                            <option>Seleccionar Ciudad</option>
-                            <option>Madrid, España</option>
-                            <option>Roma, Italia</option>
-                        </select>
+                        <div class="buscador-ciudad-wrapper" id="wrapper-ciudad-1">
+                            <input type="text" class="input-buscador-ciudad" id="input-ciudad-1" placeholder="¿Qué ciudad visitaste?" autocomplete="off">
+                            <input type="hidden" name="ciudad_parada_1" id="hidden-ciudad-1" value="">
+                            <ul class="lista-resultados-ciudad" id="resultados-ciudad-1"></ul>
+                        </div>
                     </div>
                     <button class="btn-eliminar-parada">×</button>
                 </div>
@@ -58,6 +80,14 @@
         </div>
 
     </div>
+
+    <div id="overlay-enfoque-texto" class="visor-oculto"></div>
+
+    <div id="visor-foto-modal" class="visor-oculto">
+        <button class="btn-cerrar-visor" title="Cerrar">×</button>
+        <img id="imagen-visor" src="" alt="Vista previa en grande">
+    </div>
+
     <script src="/static/js/editor.js"></script>
 </body>
 </html>
