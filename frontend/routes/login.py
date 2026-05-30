@@ -10,8 +10,10 @@ def login():
 
         # Validación provisoria local
         if username == 'fiuba' and password == 'ids':
+            
             session.permanent = True
-            session['user_id'] = 100
+            
+            session['usuario_id'] = 100
             flash('Sesión iniciada correctamente', 'success')
             return redirect(url_for('imanes.mostrar_heladera'))
         else:
@@ -23,4 +25,4 @@ def login():
 def logout():
     session.clear()
     flash('Sesión cerrada.', 'success')
-    return redirect(url_for('login'))
+    return redirect(url_for('login.login'))

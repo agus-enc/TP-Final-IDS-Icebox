@@ -4,7 +4,7 @@ from functools import wraps
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
+        if 'usuario_id' not in session:
             flash('Por favor, inicie sesión para acceder.', 'error')
             return redirect(url_for('login.login')) # 'login.' es el nombre del Blueprint
         return f(*args, **kwargs)
