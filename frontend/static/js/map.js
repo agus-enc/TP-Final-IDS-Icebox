@@ -38,11 +38,12 @@ fetch(urlPaises)
   .then(data => {
     geojson = L.geoJson(data, {
       style: function(feature) {
+        const esVisitado = PAISES_VISITADOS.includes(feature.id);
         return {
-          color: "#2b2b2b29", // Color de la frontera
+          color: "#2b2b2b29", 
           weight: 1.5,
-          fillColor: "#2b81c800", // Color del país
-          fillOpacity: 0.1
+          fillColor: esVisitado ? "#2b81c8" : "#2b81c800", // Azul si fue, transparente si no
+          fillOpacity: esVisitado ? 0.6 : 0.1
         };
       },
       onEachFeature: function(feature, layer) {
