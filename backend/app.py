@@ -5,6 +5,7 @@ from endpoints.routes.usuarios import usuarios_bp
 from endpoints.routes.viajes import viajes_bp
 from endpoints.routes.imagenes import imagenes_bp
 from endpoints.routes.paradas import paradas_bp
+from endpoints.routes.admin import admin_bp
 
 app = Flask(__name__, static_folder='endpoints/static', static_url_path='/static')
 
@@ -16,6 +17,7 @@ app.register_blueprint(lugares_bp, url_prefix='/endpoints')
 app.register_blueprint(usuarios_bp, url_prefix='/endpoints')
 app.register_blueprint(viajes_bp, url_prefix='/endpoints')
 app.register_blueprint(paradas_bp, url_prefix='/endpoints')
+app.register_blueprint(admin_bp, url_prefix=' /endpoints')
 
 if __name__ == '__main__':
     app.run(debug=True)
