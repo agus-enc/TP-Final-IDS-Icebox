@@ -1,3 +1,4 @@
+alert("¡EL JAVASCRIPT ESTÁ CORRIENDO!");
 const map = L.map('map', { // Limites del mapa 
   minZoom: 2,
   maxBounds: [
@@ -48,8 +49,24 @@ fetch(urlPaises)
       },
       onEachFeature: function(feature, layer) {
         layer.on({
-            mouseover: highlightFeature,
-            mouseout: resetHighlight
+          click: function(e) {
+            const esVisitado = PAISES_VISITADOS.includes(feature.id);
+
+            if (!esVisitado) { // Popup para países no visitados
+              L.popup() 
+                .setLatLng(e.latlng)
+                .setContent(`<b>Este país no ha sido visitado</b>`)
+                .openOn(map);
+            } else { // Sidebar para países visitados
+              const sidebar = document.getElementById('sidebar');
+              if (sidebar) {
+                sidebar.classList.add('active');
+                console.log("Abriendo panel:", feature.properties.name);
+              }
+            }
+          },
+          mouseover: highlightFeature,
+          mouseout: resetHighlight
         });
       }
     }).addTo(map);

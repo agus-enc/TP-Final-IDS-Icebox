@@ -13,14 +13,32 @@ body {
 }
 
 .info {
-    padding: 6px 8px;
-    font: 14px/16px Arial, Helvetica, sans-serif;
-    background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
 }
 .info h4 {
-    margin: 0 0 5px;
-    color: #777;
+  margin: 0 0 5px;
+  color: #777;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -350px; /* Escondido */
+  width: 350px;
+  height: 100vh;
+  background-color: #ffffff;
+  box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+  z-index: 99999;
+  transition: right 0.3s ease; 
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.sidebar.active {
+  right: 0;
 }

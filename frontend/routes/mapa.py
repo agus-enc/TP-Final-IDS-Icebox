@@ -7,7 +7,7 @@ BACKEND_URL = "http://localhost:5000"
 mapa_bp = Blueprint('mapa', __name__)
 
 @mapa_bp.route('/mapa')
-@login_required 
+# @login_required  
 def mostrar_mapa():
     id_usuario = session.get('user_id')
 
@@ -23,3 +23,4 @@ def mostrar_mapa():
         print(f"Error de conexión con el backend de lugares: {e}")
 
     return render_template('map.html', paises_visitados=paises_codigos)
+
