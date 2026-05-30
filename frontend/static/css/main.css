@@ -171,3 +171,46 @@ body {
 .flash-message.success { 
     background-color: #a8ded9; 
 }
+
+/* Contenedor del desplegable (Posicionado justo arriba del ícono de usuario) */
+.user-dropdown {
+    position: absolute;
+    bottom: 85px; /* Se eleva por encima de la barra router */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffffff;
+    min-width: 140px;
+    border: 3px solid #333333; /* Mismo borde grueso neubrutalista */
+    box-shadow: 4px 4px 0px #333333; /* Sombra sólida haciendo juego */
+    border-radius: 8px;
+    z-index: 99999;
+    box-sizing: border-box;
+    display: none; /* Arranca oculto */
+}
+
+/* El enlace de Cerrar Sesión interno */
+.user-dropdown .dropdown-item {
+    color: #ff6b6b !important; /* Rojo llamativo estilo wireframe */
+    padding: 10px 12px;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85em;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+}
+
+/* Hover del botón */
+.user-dropdown .dropdown-item:hover {
+    background-color: #f7f7f7;
+    border-radius: 4px;
+}
+
+/* Clase que inyecta JavaScript para mostrar el menú */
+.user-dropdown.show {
+    display: block !important;
+}

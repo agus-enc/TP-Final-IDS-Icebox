@@ -29,3 +29,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Lógica para el menú desplegable del usuario
+document.addEventListener('DOMContentLoaded', function() {
+    const userMenuTrigger = document.getElementById('user-menu-trigger');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    if (userMenuTrigger && userDropdown) {
+        // Al hacer clic en el botón de usuario, muestra u oculta
+        userMenuTrigger.addEventListener('click', function(event) {
+            event.preventDefault(); // Frena el '#' para que no salte la pantalla
+            event.stopPropagation(); // Evita que el evento "explote" hacia el window
+            userDropdown.classList.toggle('show');
+        });
+
+        // Si hacen clic en cualquier otro lado de la pantalla, se cierra solo
+        window.addEventListener('click', function(event) {
+            if (!userMenuTrigger.contains(event.target)) {
+                userDropdown.classList.remove('show');
+            }
+        });
+    }
+});
