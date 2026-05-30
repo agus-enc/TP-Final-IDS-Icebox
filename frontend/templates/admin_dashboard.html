@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Panel Admin - Icebox{% endblock %}
+
+{% block content%}
+<div style="padding : 40px; text-align: center; font-family: 'Poppins', sans-serif; background-color: #F2E9E4; min-height: 100vh; box-sizing: border-box; padding-bottom: 120px;">
+    <h1 style="border: 3px solid #333333; display: inline-block; padding: 12px 24px; background: #ffffff; box-shadow: 5px 5px 0px #333333; margin-top: 20px;">
+        Panel de Control: Administrador        
+    </h1>
+    
+    <div style="margin: 40px auto; border: 3px solid #333333; background: white; max-width: 550px; padding: 20px; box-shadow: 6px 6px 0px #333333; border-radius: 8px;">
+        <h3 style="margin-top: 0; color: #333333;">Estadísticas de Viajes Globales</h3>
+
+        <img src=""{{ url_for('static', filename='images/grafico_admin.png') }} alt="Gráfico de estadísticas" style="width: 100%; border: 2px solid #333333;">
+    </div>
+
+    <a href="/endpoints/admin/descargar-reporte" style="text-decoration: none; display: inline-block; background: #a8ded9; color: #333333; font-weight: bold; padding: 15px 30px; border: 3px solid #333333; box-shadow: 4px 4px 0px #333333; border-radius: 5px; font-size: 16px;">
+        Descargar Reporte en PDF
+    </a>
+</div>
+{% endblock %}
