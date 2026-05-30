@@ -1,5 +1,5 @@
-from ..dao.viajes import insertar_viaje, eliminar_viaje_por_id
-from ..validators.viajes import validar_body_viaje
+from ..dao.viajes import insertar_viaje, eliminar_viaje_por_id, actualizar_titulo_viaje, obtener_viaje
+from ..validators.viajes import validar_body_viaje, validar_minimo
 
 def construir_viaje_dto(viaje: dict) -> dict:
     """ Construye el dict de respuesta básico de un viaje. """
@@ -9,6 +9,12 @@ def construir_viaje_dto(viaje: dict) -> dict:
         "titulo": viaje["titulo"],
         "fecha_viaje": viaje["fecha_viaje"]
     }
+
+def obtener_viaje_por_id(id_viaje: int) -> dict:
+    viaje = obtener_viaje(id_viaje)
+    if not viaje:
+        raise ValueError({"errors": [{"code": "not_found", "message": "Viaje no encontrado"}]}, 404)
+    return construir_viaje_dto(viaje)
 
 def crear_viaje(body: dict, id_usuario: int) -> dict:
     """ Crea un nuevo viaje aplicando validaciones de DTO """
@@ -33,4 +39,10 @@ def eliminar_viaje(id_viaje: int) -> bool:
 
 def obtener_todos_los_viajes() -> list:
     """Obtiene la lista completa de viajes desde la base de datos"""
-    return obtener_todos_los_viajes_db()
+    return "" # obtener_todos_los_viajes_db()
+
+def editar_titulo_viaje(id_viaje: int, body: dict) -> bool:
+    """Valida y actualiza el titulo de viaje existente"""
+    datos_viaje = validar_body_viaje(body)
+    titulo_limpio = datos_viaje.get("titulo")
+    return actualizar_titulo_viaje(id_viaje, titulo_limpio)

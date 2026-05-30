@@ -1,6 +1,4 @@
-from ..constants import (
-    MIN_ID
-)
+from ..constants import (MIN_ID)
 from ..utils import validar_formato_fecha, construir_error, validar_entero, validar_minimo
 
 def validar_body_viaje(body: dict) -> dict:
@@ -26,17 +24,18 @@ def validar_body_viaje(body: dict) -> dict:
         )['errors'][0])
 
     fecha_viaje = body.get("fecha_viaje")
-    if not fecha_viaje or not isinstance(fecha_viaje, str):
-        errores.append(construir_error(
-            code='invalid.date',
-            message=f'Campo requerido: Fecha.',
-            description=f"La fecha es un campo obligatorio."
-        )['errors'][0])
-    else:
-        try:
-            validar_formato_fecha(fecha_viaje)
-        except ValueError as e:
-            errores.extend(e.args[0]['errors'])
+    if fecha_viaje:
+        if not isinstance(fecha_viaje, str):
+            errores.append(construir_error(
+                code='invalid.date',
+                message=f'Campo requerido: Fecha.',
+                description=f"La fecha es un campo obligatorio."
+            )['errors'][0])
+        else:
+            try:
+                validar_formato_fecha(fecha_viaje)
+            except ValueError as e:
+                errores.extend(e.args[0]['errors'])
 
     if errores:
         raise ValueError({"errors": errores})

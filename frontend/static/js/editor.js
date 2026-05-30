@@ -5,17 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const lineaTiempo = document.querySelector('.linea-tiempo');
     let contadorParadas = document.querySelectorAll('.tarjeta-parada').length + 1;
 
-    // MOCKUP DE DATOS (Simulando la base de datos temporalmente)
-    const ciudadesMockup = [
-        { id: 101, nombre: "Madrid, España" },
-        { id: 102, nombre: "Barcelona, España" },
-        { id: 205, nombre: "Roma, Italia" },
-        { id: 206, nombre: "Milán, Italia" },
-        { id: 310, nombre: "París, Francia" },
-        { id: 415, nombre: "Londres, Reino Unido" },
-        { id: 501, nombre: "Buenos Aires, Argentina" }
-    ];
-
     let textareaActivo = null;
     const overlayTexto = document.getElementById('overlay-enfoque-texto');
 
@@ -68,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const coincidencias = ciudadesMockup.filter(ciudad =>
+            const coincidencias = CIUDADES_DB.filter(ciudad =>
                 ciudad.nombre.toLowerCase().includes(valorBuscado)
             );
 
@@ -79,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     li.addEventListener('click', function() {
                         inputVisible.value = ciudad.nombre;
-                        inputOculto.value = ciudad.id;
+                        inputOculto.value = ciudad.id_ciudad;
                         listaResultados.classList.remove('activa');
                     });
 
@@ -184,6 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const inputVisibleClonado = nuevaTarjeta.querySelector('.input-buscador-ciudad');
         const inputOcultoClonado = nuevaTarjeta.querySelector('input[type="hidden"]');
         const listaResultadosClonado = nuevaTarjeta.querySelector('.lista-resultados-ciudad');
+        const inputIdParada = nuevaTarjeta.querySelector('.hidden-id-parada');
 
         if (wrapperBuscadorClonado) {
             wrapperBuscadorClonado.id = "wrapper-ciudad-" + contadorParadas;
@@ -196,6 +186,11 @@ document.addEventListener('DOMContentLoaded', function() {
             listaResultadosClonado.innerHTML = '';
             listaResultadosClonado.classList.remove('activa');
             inicializarBuscadorCiudad(wrapperBuscadorClonado);
+        }
+
+        if (inputIdParada) {
+            inputIdParada.name = "id_parada_" + contadorParadas;
+            inputIdParada.value = ""; // VITAL: Le borramos el ID porque es una parada NUEVA
         }
 
         // Clonar Textarea

@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template
+import requests
+from flask import Blueprint, render_template, request, redirect, url_for
 from auth import login_required
+BACKEND_URL = "http://localhost:5000/endpoints"
 
 viajes_bp = Blueprint('viajes', __name__)
 
@@ -13,9 +15,66 @@ def creador():
 def biblioteca():
     return render_template('biblioteca.html')
 
-@viajes_bp.route('/editor')
-def editor():
-    return render_template('editor.html')
+@viajes_bp.route('/viajes/<int:id_viaje>/editar', methods=['GET', 'POST'])
+def editor(id_viaje):
+    if request.method == 'POST':
+        # 1. ACTUALIZAR TÍTULO
+        titulo_nuevo = request.form.get('titulo_viaje')
+        requests.put(f"{BACKEND_URL}/viajes/{id_viaje}", json={"titulo": titulo_nuevo})
+
+        # 2. OBTENER PARADAS ORIGINALES
+        resp = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/paradas")
+        paradas_originales = resp.json() if resp.status_code == 200 else []
+        ids_originales = {str(p['id_parada']) for p in paradas_originales}
+
+        # 3. PROCESAR FORMULARIO (Actualizar y Crear)
+        ids_recibidos = set()
+
+        for key in request.form.keys():
+            if key.startswith('texto_parada_'):
+                indice = key.split('_')[-1]
+                id_parada = request.form.get(f'id_parada_{indice}')
+                id_ciudad = request.form.get(f'ciudad_parada_{indice}')
+                texto = request.form.get(f'texto_parada_{indice}')
+
+                payload_parada = {
+                    "id_viaje": id_viaje,
+                    "id_ciudad": int(id_ciudad) if id_ciudad else 0,
+                    "orden_en_ruta": int(indice),
+                    "texto_resena": texto
+                }
+
+                if id_parada:
+                    # Editar preexistente
+                    ids_recibidos.add(str(id_parada))
+                    requests.put(f"{BACKEND_URL}/paradas/{id_parada}", json=payload_parada)
+                else:
+                    # SOLUCIÓN CREACIÓN: Apuntamos a la URL correcta del POST
+                    requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada)
+
+        # 4. ELIMINAR PARADAS
+        ids_a_borrar = ids_originales - ids_recibidos
+        for id_borrar in ids_a_borrar:
+            requests.delete(f"{BACKEND_URL}/paradas/{id_borrar}")
+
+        return redirect(url_for('viajes.editor', id_viaje=id_viaje))
+
+    # ==========================================
+    # MODO GET: CARGAR LA PÁGINA
+    # ==========================================
+    # 1. Traemos el Viaje
+    resp_viaje = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
+    viaje_real = resp_viaje.json() if resp_viaje.status_code == 200 else {}
+
+    # 2. Traemos las Paradas
+    resp_paradas = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/paradas")
+    paradas_reales = resp_paradas.json() if resp_paradas.status_code == 200 else []
+
+    # 3. SOLUCIÓN CIUDADES: El endpoint real es /ciudades
+    resp_lugares = requests.get(f"{BACKEND_URL}/ciudades")
+    lugares_reales = resp_lugares.json() if resp_lugares.status_code == 200 else []
+
+    return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales, lugares=lugares_reales)
 
 @viajes_bp.route('/map')
 @login_required

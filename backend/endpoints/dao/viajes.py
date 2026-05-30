@@ -15,6 +15,12 @@ def obtener_viaje(id_viaje: int) -> dict | None:
 
     return resultados[0] if resultados else None
 
+def actualizar_titulo_viaje(id_viaje: int, titulo: str) -> bool:
+    """Actualiza el título de un viaje. Retorna True si se modificó."""
+    sql = 'UPDATE viajes SET titulo = %(titulo)s WHERE id_viaje = %(id_viaje)s'
+    filas_afectadas = ejecutar_mutacion(sql, {"id_viaje": id_viaje, "titulo": titulo})
+    return filas_afectadas > 0
+
 def eliminar_viaje_por_id(id_viaje: int) -> bool:
     """Elimina un viaje por id. Retorna True si existía y fue eliminado, False si no existía."""
     sql = 'DELETE FROM viajes WHERE id_viaje = %(id_viaje)s'

@@ -1,8 +1,8 @@
 import json
 from ..dao.usuarios import obtener_usuario_por_viaje
 from ..dao.lugares import obtener_ciudad_por_id
-from ..dao.paradas import insertar_parada_con_iman, eliminar_parada_por_id, eliminar_relato_parada_db, actualizar_relato_parada_db, actualizar_ciudad_parada_db
-from ..validators.paradas import validar_body_parada, validar_relato, validar_ciudad
+from ..dao.paradas import insertar_parada_con_iman, eliminar_parada_por_id, eliminar_relato_parada_db, actualizar_relato_parada_db, actualizar_ciudad_parada_db, actualizar_parada_completa, obtener_paradas_por_viaje
+from ..validators.paradas import validar_body_parada, validar_relato, validar_ciudad, validar_edicion_parada
 from ..utils import validar_minimo
 
 def crear_parada(id_viaje: int, body: dict) -> dict:
@@ -21,7 +21,7 @@ def crear_parada(id_viaje: int, body: dict) -> dict:
     imagen_url = datos_limpios.get('imagen_url')
     predeterminado = True if not imagen_url or not imagen_url.strip() else False
 
-    relato_str = json.dumps(datos_limpios['relato_texto']) if datos_limpios.get('relato_texto') else None
+    relato_str = datos_limpios.get('texto_resena')
 
     ids_generados = insertar_parada_con_iman(
         id_viaje=id_viaje,
@@ -46,6 +46,25 @@ def crear_parada(id_viaje: int, body: dict) -> dict:
         }
     }
 
+def obtener_paradas_de_viaje(id_viaje: int) -> list:
+    """Obtiene las paradas y mapea las llaves para compatibilidad con el frontend."""
+    validar_minimo(id_viaje, 1, 'id_viaje')
+
+    paradas_db = obtener_paradas_por_viaje(id_viaje)
+
+    resultados_formateados = []
+    for parada in paradas_db:
+        resultados_formateados.append({
+            "id_parada": parada["id_parada"],
+            "id_viaje": parada["id_viaje"],
+            "id_ciudad": parada["id_ciudad"],
+            "nombre_ciudad": parada["nombre_ciudad"],
+            "texto_resena": parada["relato_texto"],  # Renombra a lo que espera Jinja
+            "orden_en_ruta": parada["orden_en_ruta"]
+        })
+
+    return resultados_formateados
+
 def eliminar_parada(id_parada: int) -> bool:
     """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""
     return eliminar_parada_por_id(id_parada)
@@ -68,3 +87,16 @@ def modificar_ciudad_parada(id_parada: int, body: dict) -> dict:
     actualizar_ciudad_parada_db(id_parada, body_validado['id_ciudad'])
     
     return {"status": "success", "message": "Ciudad de la parada actualizada correctamente."}
+
+def editar_parada_completa(id_parada: int, body: dict) -> bool:
+    """Valida y actualiza ciudad y texto de una parada existente."""
+    datos_limpios = validar_edicion_parada(body)
+
+    if not obtener_ciudad_por_id(datos_limpios['id_ciudad']):
+        raise ValueError({"errors": [{"code": "not_found", "message": "La ciudad no existe."}]}, 404)
+
+    return actualizar_parada_completa(
+        id_parada=id_parada,
+        id_ciudad=datos_limpios['id_ciudad'],
+        texto_resena=datos_limpios.get('texto_resena', '')
+    )

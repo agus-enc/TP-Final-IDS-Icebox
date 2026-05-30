@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <div class="contenedor-viaje">
+    <form class="contenedor-viaje" id="formulario-viaje-maestro" method="POST" action="/viajes/{{ viaje.id_viaje }}/editar" enctype="multipart/form-data">
 
         <header class="header-viaje" id="header-portada">
             <div class="overlay-portada"></div>
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="contenedor-titulo-editable">
-                <input type="text" id="titulo-viaje" name="titulo_viaje" class="input-titulo-viaje" placeholder="Dale un nombre a tu viaje">
+                <input type="text" id="titulo-viaje" name="titulo_viaje" class="input-titulo-viaje" placeholder="Dale un nombre a tu viaje" value="{{ viaje.titulo }}">
             </div>
         </header>
 
@@ -45,41 +45,48 @@
 
         <div class="linea-tiempo">
 
+            {% for parada in paradas %}
             <div class="tarjeta-parada">
+
                 <div class="tarjeta-header">
                     <div class="selector-ciudad">
-                        <div class="buscador-ciudad-wrapper" id="wrapper-ciudad-1">
-                            <input type="text" class="input-buscador-ciudad" id="input-ciudad-1" placeholder="¿Qué ciudad visitaste?" autocomplete="off">
-                            <input type="hidden" name="ciudad_parada_1" id="hidden-ciudad-1" value="">
-                            <ul class="lista-resultados-ciudad" id="resultados-ciudad-1"></ul>
+                        <div class="buscador-ciudad-wrapper" id="wrapper-ciudad-{{ loop.index }}">
+                            <input type="text" class="input-buscador-ciudad" id="input-ciudad-{{ loop.index }}" placeholder="¿Qué ciudad visitaste?" autocomplete="off" value="{{ parada.nombre_ciudad }}">
+                            <input type="hidden" name="ciudad_parada_{{ loop.index }}" id="hidden-ciudad-{{ loop.index }}" value="{{ parada.id_ciudad }}">
+                            <input type="hidden" class="hidden-id-parada" name="id_parada_{{ loop.index }}" value="{{ parada.id_parada }}">
+                            <ul class="lista-resultados-ciudad" id="resultados-ciudad-{{ loop.index }}"></ul>
                         </div>
                     </div>
-                    <button class="btn-eliminar-parada">×</button>
+                    <button type="button" class="btn-eliminar-parada">×</button>
                 </div>
 
                 <div class="tarjeta-cuerpo">
                     <div class="seccion-editor">
-                        <textarea id="texto-parada-1" name="texto_parada_1" class="textarea-elegante" placeholder="¿Cómo la pasaste?"></textarea>
+                        <textarea id="texto-parada-{{ loop.index }}" name="texto_parada_{{ loop.index }}" class="textarea-elegante" placeholder="¿Cómo la pasaste?">{{ parada.texto_resena }}</textarea>
                     </div>
 
                     <div class="seccion-iman">
-                        <label for="foto-parada-1" class="contenedor-foto-iman vacio">
+                        <label for="foto-parada-{{ loop.index }}" class="contenedor-foto-iman vacio">
                             <span class="icono-mas">+</span>
                             <p>Subir Imán</p>
                         </label>
-                        <input type="file" id="foto-parada-1" name="foto_parada_1" accept="image/png, image/jpeg" style="display: none;">
+                        <input type="file" id="foto-parada-{{ loop.index }}" name="foto_parada_{{ loop.index }}" accept="image/png, image/jpeg" style="display: none;">
                     </div>
                 </div>
 
                 <div class="tarjeta-footer">
                     <button type="button" class="btn-guardar-parada">Guardar</button>
                 </div>
+
             </div>
+            {% endfor %}
+
         </div> <div class="acciones-globales">
-            <button type="button" class="btn-principal">+ Agregar Nueva Parada</button>
+            <button type="button" class="btn-principal" id="btn-agregar-parada">+ Agregar Nueva Parada</button>
+            <button type="submit" class="btn-principal" style="background-color: #3498db; margin-left: 15px;">💾 Finalizar y Guardar Viaje</button>
         </div>
 
-    </div>
+    </form>
 
     <div id="overlay-enfoque-texto" class="visor-oculto"></div>
 
@@ -87,6 +94,10 @@
         <button class="btn-cerrar-visor" title="Cerrar">×</button>
         <img id="imagen-visor" src="" alt="Vista previa en grande">
     </div>
+
+    <script>
+        const CIUDADES_DB = {{ lugares | tojson | safe }};
+    </script>
 
     <script src="/static/js/editor.js"></script>
 </body>

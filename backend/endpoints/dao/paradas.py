@@ -1,4 +1,4 @@
-from ..db import ejecutar_mutacion, obtener_transaccion
+from ..db import ejecutar_mutacion, obtener_transaccion, ejecutar_consulta
 
 def insertar_parada_con_iman(id_viaje: int, id_usuario: int, id_ciudad: int, orden_en_ruta: int, relato_str: str | None, imagen_url: str | None, predeterminado: bool) -> dict:
     with obtener_transaccion() as cursor:
@@ -24,6 +24,20 @@ def insertar_parada_con_iman(id_viaje: int, id_usuario: int, id_ciudad: int, ord
         id_iman = cursor.lastrowid
 
         return {"id_parada": id_parada, "id_iman": id_iman}
+
+def obtener_paradas_por_viaje(id_viaje: int) -> list:
+    """
+    Obtiene todas las paradas de un viaje en orden.
+    """
+    sql = '''
+        SELECT p.id_parada, p.id_viaje, p.id_ciudad, p.orden_en_ruta, p.relato_texto,
+               c.nombre AS nombre_ciudad
+        FROM paradas p
+        JOIN ciudades c ON p.id_ciudad = c.id_ciudad
+        WHERE p.id_viaje = %(id_viaje)s
+        ORDER BY p.orden_en_ruta ASC
+    '''
+    return ejecutar_consulta(sql, {'id_viaje': id_viaje})
 
 def eliminar_relato_parada_db(id_parada: int) -> bool:
     """Busca la parada y pone su columna relato_texto en NULL. Retorna True si se modificó, False si la parada no existía."""
@@ -58,4 +72,18 @@ def actualizar_ciudad_parada_db(id_parada: int, id_ciudad: int) -> bool:
         'id_parada': id_parada
     })
 
+    return filas_afectadas > 0
+
+def actualizar_parada_completa(id_parada: int, id_ciudad: int, texto_resena: str) -> bool:
+    """Actualiza la ciudad y el texto de una parada al mismo tiempo."""
+    sql = '''
+        UPDATE paradas 
+        SET id_ciudad = %(id_ciudad)s, relato_texto = %(texto_resena)s 
+        WHERE id_parada = %(id_parada)s
+    '''
+    filas_afectadas = ejecutar_mutacion(sql, {
+        'id_ciudad': id_ciudad,
+        'texto_resena': texto_resena,
+        'id_parada': id_parada
+    })
     return filas_afectadas > 0

@@ -1,5 +1,5 @@
 from ..dao.usuarios import obtener_usuario
-from ..dao.lugares import obtener_paises_por_usuario, obtener_todos_los_paises_db, obtener_ciudad_por_id
+from ..dao.lugares import obtener_paises_por_usuario, obtener_todos_los_paises_db, obtener_ciudad_por_id, obtener_todas_las_ciudades_db
 from ..validators.usuarios import validar_id_usuario
 from ..validators.lugares import validar_id_pais
 from ..utils import construir_error
@@ -41,3 +41,6 @@ def obtener_ciudades_por_pais(id_pais: int) -> list:
     resultados_db = obtener_ciudad_por_id(id_pais_validado)
     
     return [{"id_ciudad": f["id_ciudad"], "nombre": f["nombre"]} for f in resultados_db]
+
+def obtener_todas_las_ciudades() -> list:
+    return obtener_todas_las_ciudades_db()

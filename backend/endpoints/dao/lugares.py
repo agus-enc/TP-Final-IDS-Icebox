@@ -23,3 +23,7 @@ def obtener_todos_los_paises_db() -> list:
     resultados = ejecutar_consulta(sql, None)
 
     return resultados
+
+def obtener_todas_las_ciudades_db() -> list:
+    sql = 'SELECT id_ciudad, nombre FROM ciudades'
+    return ejecutar_consulta(sql, None)

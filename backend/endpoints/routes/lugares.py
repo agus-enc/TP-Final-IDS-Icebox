@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from ..services.lugares import obtener_paises_visitados, obtener_paises, obtener_ciudades_por_pais
+from ..services.lugares import obtener_paises_visitados, obtener_paises, obtener_ciudades_por_pais, obtener_todas_las_ciudades
 from ..utils import construir_error
 
 lugares_bp = Blueprint("lugares", __name__)
@@ -41,3 +41,11 @@ def get_ciudades(id_pais):
             message="No se pudieron obtener las ciudades",
             description="Ocurri un error interno al procesar la solicitud."
         )), 500
+
+@lugares_bp.route("/ciudades", methods=["GET"])
+def get_todas_ciudades():
+    try:
+        ciudades_list = obtener_todas_las_ciudades()
+        return jsonify(ciudades_list), 200
+    except Exception:
+        return jsonify({"error": "Error interno"}), 500

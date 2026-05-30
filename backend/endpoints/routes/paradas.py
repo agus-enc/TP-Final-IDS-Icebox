@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from ..services.paradas import crear_parada, eliminar_parada, eliminar_relato, modificar_relato_parada, modificar_ciudad_parada
+from ..services.paradas import crear_parada, eliminar_parada, eliminar_relato, modificar_relato_parada, modificar_ciudad_parada, editar_parada_completa, obtener_paradas_de_viaje
 from ..validators.paradas import  validar_id_parada
 from ..utils import construir_error
 
@@ -20,7 +20,25 @@ def post_parada(id_viaje):
         status = e.args[1] if len(e.args) > 1 else 400
         return jsonify(error_dict), status
 
-@paradas_bp.route('/viajes/paradas/<int:id_parada>', methods=['DELETE'])
+@paradas_bp.route("/viajes/<int:id_viaje>/paradas", methods=["GET"])
+def get_paradas_viaje(id_viaje):
+    """Endpoint para obtener todas las paradas ordenadas de un viaje específico."""
+    try:
+        paradas = obtener_paradas_de_viaje(id_viaje)
+        return jsonify(paradas), 200
+
+    except ValueError as e:
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
+    except Exception as e:
+        return jsonify(construir_error(
+            code="SERVER_ERROR",
+            message="No se pudieron obtener las paradas.",
+            description="Ocurrió un error interno en la base de datos."
+        )), 500
+
+@paradas_bp.route('/paradas/<int:id_parada>', methods=['DELETE'])
 def delete_parada(id_parada):
     try:
         id_parada_validada = validar_id_parada(id_parada)
@@ -97,3 +115,28 @@ def patch_ciudad(id_parada):
             message="No se pudo actualizar la ciudad de la parada.",
             description="Ocurrió un error interno en el servidor."
         )), 500
+
+@paradas_bp.route("/paradas/<int:id_parada>", methods=["PUT"])
+def put_parada(id_parada):
+    """Endpoint unificado para actualizar ciudad y texto de una parada."""
+    try:
+        id_parada_validada = validar_id_parada(id_parada)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+
+    try:
+        body = request.get_json(silent=True)
+        if not body:
+            raise ValueError({"errors": [{"code": "missing.body", "message": "Falta el body JSON."}]}, 400)
+
+        modificado = editar_parada_completa(id_parada_validada, body)
+
+        if not modificado:
+            return jsonify(construir_error("NOT_FOUND", "Parada no encontrada", "No existe la parada.")), 404
+
+        return '', 204
+
+    except ValueError as e:
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status

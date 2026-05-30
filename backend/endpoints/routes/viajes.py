@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ..validators.usuarios import validar_id_usuario
-from ..services.viajes import crear_viaje, eliminar_viaje, obtener_todos_los_viajes
+from ..services.viajes import crear_viaje, eliminar_viaje, obtener_todos_los_viajes, editar_titulo_viaje, obtener_viaje_por_id
 from ..validators.viajes import validar_id_viaje
 from ..utils import construir_error
 
@@ -56,3 +56,34 @@ def get_viajes():
         )), 500
 
     return jsonify(viajes_dto), 200
+
+@viajes_bp.route("/viajes/<int:id_viaje>", methods=["GET"])
+def get_viaje(id_viaje):
+    try:
+        viaje_dto = obtener_viaje_por_id(id_viaje)
+        return jsonify(viaje_dto), 200
+    except ValueError as e:
+        return jsonify(e.args[0]), e.args[1]
+
+@viajes_bp.route('/viajes/<int:id_viaje>', methods=['PUT'])
+def put_viaje(id_viaje):
+    try:
+        id_viaje_validado = validar_id_viaje(id_viaje)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+
+    body = request.get_json(silent=True)
+
+    try:
+        modificado = editar_titulo_viaje(id_viaje_validado, body)
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+
+    if not modificado:
+        return jsonify(construir_error(
+            code="VIAJE_NOT_FOUND_OR_UNCHANGED",
+            message='Viaje no modificado',
+            description='No existe el viaje o el título es el mismo.'
+        )), 404
+
+    return '', 204 # 204 No Content es el estándar para un PUT exitoso sin devolver datos
