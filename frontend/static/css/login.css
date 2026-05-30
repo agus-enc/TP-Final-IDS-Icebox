@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+#msform {
+    width: 420px;
+    margin: 100px auto;
+    text-align: center;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#msform fieldset {
+    background: #ffffff;
+    border: 0 none;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 30px 30px;
+    box-sizing: border-box;
+    width: 86%;
+    margin: 0 7%;
+    
+    /* Se muestra fijo de entrada */
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Inputs de texto */
+#msform input[type="text"], 
+#msform input[type="password"] {
+    padding: 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    color: #2C3E50;
+    font-size: 14px;
+}
+
+#msform input:focus {
+    border-color: #27AE60;
+    outline: none;
+}
+
+/* Botón Verde de Ingresar */
+#msform .action-button {
+    width: 100%; /* Ocupa todo el ancho para que quede más armónico */
+    background: #27AE60;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 14px;
+    margin-top: 10px;
+    font-size: 16px;
+    transition: background 0.2s ease;
+}
+
+#msform .action-button:hover {
+    background: #219653;
+}
+
+.fs-title {
+    font-size: 20px;
+    text-transform: uppercase;
+    color: #2C3E50;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.fs-subtitle {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 25px;
+}
