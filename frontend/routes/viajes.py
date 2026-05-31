@@ -1,5 +1,5 @@
 import requests
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from auth import login_required
 BACKEND_URL = "http://localhost:5000/endpoints"
 
@@ -33,14 +33,18 @@ def editor(id_viaje):
             else:
                 print("PORTADA SUBIDA CON ÉXITO")
 
-        # 2. OBTENER PARADAS ORIGINALES
-        resp = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/paradas")
-        paradas_originales = resp.json() if resp.status_code == 200 else []
-        ids_originales = {str(p['id_parada']) for p in paradas_originales}
+        # 2. PROCESAR BORRADO DE PORTADA Y PARADAS
+        if request.form.get('borrar_portada') == 'true':
+            requests.delete(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes/header")
 
-        # 3. PROCESAR FORMULARIO
-        ids_recibidos = set()
+        str_borradas = request.form.get('paradas_borradas')
+        if str_borradas:
+            ids_a_borrar = str_borradas.split(',')
+            for id_p in ids_a_borrar:
+                if id_p.strip():
+                    requests.delete(f"{BACKEND_URL}/paradas/{id_p.strip()}")
 
+        # 4. PROCESAR FORMULARIO
         for key in request.form.keys():
             if key.startswith('texto_parada_'):
                 indice = key.split('_')[-1]
@@ -56,16 +60,9 @@ def editor(id_viaje):
                 }
 
                 if id_parada:
-                    # Editar preexistente
-                    ids_recibidos.add(str(id_parada))
                     requests.put(f"{BACKEND_URL}/paradas/{id_parada}", json=payload_parada)
                 else:
                     requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada)
-
-        # 4. ELIMINAR PARADAS
-        ids_a_borrar = ids_originales - ids_recibidos
-        for id_borrar in ids_a_borrar:
-            requests.delete(f"{BACKEND_URL}/paradas/{id_borrar}")
 
         return redirect(url_for('viajes.editor', id_viaje=id_viaje))
 
@@ -86,8 +83,3 @@ def editor(id_viaje):
     viaje_real['url_portada'] = next((img['imagen_url'] for img in imagenes_reales if img['tipo'] == 'header'), None)
 
     return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales, lugares=lugares_reales)
-
-@viajes_bp.route('/map')
-@login_required
-def map():
-    return render_template('map.html')

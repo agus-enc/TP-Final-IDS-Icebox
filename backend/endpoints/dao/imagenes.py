@@ -29,3 +29,7 @@ def actualizar_portada_viaje_db(id_viaje: int, nueva_url: str) -> bool:
     """Sobrescribe la portada vieja por la nueva en BD"""
     sql = "UPDATE imagenes SET imagen_url = %(nueva_url)s WHERE id_viaje = %(id_viaje)s AND tipo = 'header'"
     return ejecutar_mutacion(sql, {'id_viaje': id_viaje, 'nueva_url': nueva_url}) > 0
+
+def eliminar_portada_viaje_db(id_viaje: int) -> bool:
+    sql = "DELETE FROM imagenes WHERE id_viaje = %(id_viaje)s AND tipo = 'header'"
+    return ejecutar_mutacion(sql, {'id_viaje': id_viaje}) > 0

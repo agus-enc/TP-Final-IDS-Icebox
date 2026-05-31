@@ -75,15 +75,8 @@ def put_viaje(id_viaje):
     body = request.get_json(silent=True)
 
     try:
-        modificado = editar_titulo_viaje(id_viaje_validado, body)
+        editar_titulo_viaje(id_viaje_validado, body)
     except ValueError as e:
         return jsonify(e.args[0]), 400
-
-    if not modificado:
-        return jsonify(construir_error(
-            code="VIAJE_NOT_FOUND_OR_UNCHANGED",
-            message='Viaje no modificado',
-            description='No existe el viaje o el título es el mismo.'
-        )), 404
 
     return '', 204 # 204 No Content es el estándar para un PUT exitoso sin devolver datos

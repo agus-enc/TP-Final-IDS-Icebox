@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
             btnBorrarPortada.addEventListener('click', function() {
                 headerPortada.style.backgroundImage = 'none';
                 inputPortada.value = "";
+                document.getElementById('flag-borrar-portada').value = 'true';
             });
         }
     }
@@ -159,6 +160,33 @@ document.addEventListener('DOMContentLoaded', function() {
                         labelIman.innerHTML = '';
                     }
                 }
+            }
+        });
+    }
+
+    // Delegación de eventos para Eliminar Parada (Sirve para viejas y nuevas)
+    if (lineaTiempo) {
+        lineaTiempo.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-eliminar-parada')) {
+                const tarjeta = e.target.closest('.tarjeta-parada');
+                const inputId = tarjeta.querySelector('.hidden-id-parada');
+
+                // Si la tarjeta ya existía en la BD (tiene ID), anotamos su ID para borrarlo
+                if (inputId && inputId.value) {
+                    const inputBorradas = document.getElementById('input-paradas-borradas');
+                    if (inputBorradas.value) {
+                        inputBorradas.value += ',' + inputId.value; // Ej: "101,105"
+                    } else {
+                        inputBorradas.value = inputId.value; // Ej: "101"
+                    }
+                }
+
+                // Limpiar localStorage para que no reviva el texto fantasma
+                const textarea = tarjeta.querySelector('.textarea-elegante');
+                if (textarea && textarea.id) localStorage.removeItem(textarea.id);
+
+                // Eliminar visualmente y quitar del formulario
+                tarjeta.remove();
             }
         });
     }
@@ -218,15 +246,6 @@ document.addEventListener('DOMContentLoaded', function() {
             inputIman.id = "foto-parada-" + contadorParadas;
             inputIman.name = "foto_parada_" + contadorParadas;
         }
-
-        // Clonar Botones (Guardar y Eliminar)
-        const botonEliminarNuevo = nuevaTarjeta.querySelector('.btn-eliminar-parada');
-        botonEliminarNuevo.addEventListener('click', function() {
-            if (textareaClonado) {
-                localStorage.removeItem(textareaClonado.id);
-            }
-            nuevaTarjeta.remove();
-        });
 
         const botonGuardarNuevo = nuevaTarjeta.querySelector('.btn-guardar-parada');
         if (botonGuardarNuevo) {

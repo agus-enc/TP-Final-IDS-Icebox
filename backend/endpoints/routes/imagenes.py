@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from ..services.imagenes import agregar_imagen_viaje
 from ..validators.imagenes import validar_datos_imagen_viaje
 from ..services.imagenes import remover_fondo
-from ..dao.imagenes import obtener_imagenes_viaje_db
+from ..dao.imagenes import obtener_imagenes_viaje_db, eliminar_portada_viaje_db
 from ..utils import construir_error
 
 imagenes_bp = Blueprint("imagenes", __name__)
@@ -66,3 +66,12 @@ def post_imagenes_imanes():
         error_dict = e.args[0]
         status = e.args[1] if len(e.args) > 1 else 400
         return jsonify(error_dict), status
+
+@imagenes_bp.route("/viajes/<string:id_viaje_str>/imagenes/header", methods=["DELETE"])
+def delete_portada(id_viaje_str):
+    try:
+        id_viaje = int(id_viaje_str)
+        eliminar_portada_viaje_db(id_viaje)
+        return '', 204
+    except ValueError:
+        return jsonify({"errors": [{"message": "ID Inválido"}]}), 400
