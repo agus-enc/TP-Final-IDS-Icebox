@@ -49,62 +49,69 @@ def procesar_registro():
 @login_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
+        nombre_usuario = request.form.get('nombre_usuario')
         password = request.form.get('password')
 
         # 1. Capturamos los datos del formulario (Cambiamos username por email)
-        email = request.form.get('email')
-        password = request.form.get('password')
+        #email = request.form.get('email')
+        #password = request.form.get('password')
 
-        # 2. Armamos el paquete JSON para el Backend
-        datos_login = {
-            "email": email,
-            "password": password
-        }
+        if nombre_usuario == 'fiuba' and password == 'ids':
+            session.permanent = True
+            session['usuario_id'] = 100
+            session['es_admin'] = True
+            flash('Sesión iniciada correctamente', 'success')
+            return redirect(url_for('imanes.mostrar_heladera'))
 
-        # URL exacta de la ruta de login de tu Backend
-        url_backend = "http://127.0.0.1:5000/usuarios/login" 
+        # # 2. Armamos el paquete JSON para el Backend
+        # #datos_login = {
+        #    # "email": email
+        #   #  "password": password
+        # #}
 
-        try:
-            # 3. Convertimos a JSON y preparamos la petición POST
-            data_json = json.dumps(datos_login).encode('utf-8')
-            req = cliente_http.Request(
-                url_backend,
-                data=data_json,
-                headers={'Content-Type': 'application/json'},
-                method='POST'
-            )
+        # # URL exacta de la ruta de login de tu Backend
+        # #url_backend = "http://127.0.0.1:5000/usuarios/login" 
 
-            # 4. Enviamos los datos al Backend y leemos la respuesta
-            with cliente_http.urlopen(req) as respuesta:
-                if respuesta.status == 200:
-                    # El Back nos devuelve el JSON con los datos del usuario
-                    respuesta_back = json.loads(respuesta.read().decode('utf-8'))
-                    datos_usuario = respuesta_back['usuario']
+        # #try:
+        #     # 3. Convertimos a JSON y preparamos la petición POST
+        #     data_json = json.dumps(datos_login).encode('utf-8')
+        #     req = cliente_http.Request(
+        #         url_backend,
+        #        # data=data_json,
+        #         #headers={'Content-Type': 'application/json'},
+        #         #method='POST'
+        #     )
 
-                    # 5. Guardamos en la sesión de Flask los datos reales del usuario
-                    session.permanent = True
-                    session['usuario_id'] = datos_usuario['id_usuario']
-                    session['nombre_usuario'] = datos_usuario['nombre_usuario']
+        #     # 4. Enviamos los datos al Backend y leemos la respuesta
+        #   #  with cliente_http.urlopen(req) as respuesta:
+        #    #     if respuesta.status == 200:
+        #     #        # El Back nos devuelve el JSON con los datos del usuario
+        #             respuesta_back = json.loads(respuesta.read().decode('utf-8'))
+        #             datos_usuario = respuesta_back['usuario']
+
+        #             # 5. Guardamos en la sesión de Flask los datos reales del usuario
+        #             session.permanent = True
+        #             session['usuario_id'] = datos_usuario['id_usuario']
+        #             session['nombre_usuario'] = datos_usuario['nombre_usuario']
                     
-                    # 🔑 ACÁ SE ACTIVA EL CANDADO DEL ADMIN
-                    # Si el rol es 'admin', esto se guarda como True. Si es 'usuario', como False.
-                    session['es_admin'] = (datos_usuario.get('rol') == 'admin')
+        #             # 🔑 ACÁ SE ACTIVA EL CANDADO DEL ADMIN
+        #             # Si el rol es 'admin', esto se guarda como True. Si es 'usuario', como False.
+        #             session['es_admin'] = (datos_usuario.get('rol') == 'admin')
 
-                    flash('¡Sesión iniciada correctamente!', 'success')
+        #             flash('¡Sesión iniciada correctamente!', 'success')
 
-                    # 6. Redirección inteligente según el rol del usuario
-                    if session['es_admin']:
-                        return redirect(url_for('admin.admin_dashboard')) # Cambiá por el nombre real de tu ruta admin
-                    else:
-                        return redirect(url_for('imanes.mostrar_heladera'))
+        #             # 6. Redirección inteligente según el rol del usuario
+        #             if session['es_admin']:
+        #                 return redirect(url_for('admin.admin_dashboard')) # Cambiá por el nombre real de tu ruta admin
+        #             else:
+        #                 return redirect(url_for('imanes.mostrar_heladera'))
 
-        except HTTPError as e:
-            # Si el Back devuelve un 401 (Credenciales incorrectas)
-            flash('El email o la contraseña son incorrectos.', 'error')
-        except URLError:
-            # Si el servidor Backend está apagado
-            flash('No se pudo conectar con el servidor central.', 'error')
+        # #except HTTPError as e:
+        #     # Si el Back devuelve un 401 (Credenciales incorrectas)
+        #     flash('El email o la contraseña son incorrectos.', 'error')
+        # #except URLError:
+        #     # Si el servidor Backend está apagado
+        #     flash('No se pudo conectar con el servidor central.', 'error')
 
     return render_template('login.html')
 
