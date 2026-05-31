@@ -9,7 +9,7 @@
 }
 
 #msform fieldset {
-    background: #ffffff;
+    background: #F2E9E4;
     border: 0 none;
     border-radius: 8px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
@@ -46,7 +46,7 @@
 /* Botón Verde de Ingresar */
 #msform .action-button {
     width: 100%; /* Ocupa todo el ancho para que quede más armónico */
-    background: #27AE60;
+    background: #4A4E64;
     font-weight: bold;
     color: white;
     border: none;
