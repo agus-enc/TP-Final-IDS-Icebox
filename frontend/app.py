@@ -8,6 +8,7 @@ from routes.login import login_bp
 from routes.imanes import imanes_bp
 from routes.viajes import viajes_bp
 from routes.map import mapa_bp
+from routes.admin import admin_bp
 
 app = Flask(__name__,
             template_folder='templates',
@@ -21,6 +22,7 @@ app.register_blueprint(login_bp)
 app.register_blueprint(imanes_bp)
 app.register_blueprint(viajes_bp)
 app.register_blueprint(mapa_bp)
+app.register_blueprint(admin_bp)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000) 
