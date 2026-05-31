@@ -7,7 +7,7 @@ from urllib.error import URLError, HTTPError
 from routes.login import login_bp
 from routes.imanes import imanes_bp
 from routes.viajes import viajes_bp
-from routes.map import mapa_bp
+from routes.mapa import mapa_bp
 from routes.admin import admin_bp
 
 app = Flask(__name__,
