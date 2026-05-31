@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     // DATOS Y VARIABLES GLOBALES
-    const botonAgregar = document.querySelector('.btn-principal');
+    const botonAgregar = document.getElementById('btn-agregar-parada');
     const lineaTiempo = document.querySelector('.linea-tiempo');
     let contadorParadas = document.querySelectorAll('.tarjeta-parada').length + 1;
 
@@ -105,18 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
             protegerConAutoguardado(texto);
             habilitarModoZen(texto);
         }
-    }
-
-    // Iniciar Botones de Guardar Base (Limpiar memoria)
-    const botonesGuardarBase = document.querySelectorAll('.btn-guardar-parada');
-    for (const btn of botonesGuardarBase) {
-        btn.addEventListener('click', function() {
-            const tarjetaPadre = this.closest('.tarjeta-parada');
-            const textareaLocal = tarjetaPadre.querySelector('.textarea-elegante');
-            if (textareaLocal && textareaLocal.id) {
-                localStorage.removeItem(textareaLocal.id);
-            }
-        });
     }
 
     // HEADER / PORTADA
@@ -245,15 +233,6 @@ document.addEventListener('DOMContentLoaded', function() {
             contenedorIman.setAttribute('for', "foto-parada-" + contadorParadas);
             inputIman.id = "foto-parada-" + contadorParadas;
             inputIman.name = "foto_parada_" + contadorParadas;
-        }
-
-        const botonGuardarNuevo = nuevaTarjeta.querySelector('.btn-guardar-parada');
-        if (botonGuardarNuevo) {
-            botonGuardarNuevo.addEventListener('click', function() {
-                if (textareaClonado) {
-                    localStorage.removeItem(textareaClonado.id);
-                }
-            });
         }
 
         contadorParadas++;

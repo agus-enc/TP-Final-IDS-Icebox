@@ -181,7 +181,7 @@ body {
 
 .tarjeta-parada {
     background-color: var(--color-tarjeta);
-    border-radius: 10px;
+    border-radius: 24px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     margin-bottom: 30px;
     overflow: hidden;
@@ -195,12 +195,20 @@ body {
 
 /* --- Cabecera de la Tarjeta (Buscador) --- */
 .tarjeta-header {
-    background-color: #fafbfc;
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--color-borde);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.tarjeta-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #2c3e50;
+    text-align: center;
 }
 
 .selector-ciudad {
@@ -286,12 +294,16 @@ body {
 }
 
 .btn-eliminar-parada {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
     border: none;
-    color: #a4b0be;
-    font-size: 24px;
+    color: #e74c3c;
+    font-size: 1.5rem;
     cursor: pointer;
-    transition: color 0.2s;
+    padding: 0 5px;
     line-height: 1;
 }
 
@@ -379,31 +391,6 @@ body {
     margin: 0;
     font-weight: bold;
     font-size: 14px;
-}
-
-/* --- Footer de la Tarjeta --- */
-.tarjeta-footer {
-    background-color: #fafbfc;
-    padding: 12px 20px;
-    border-top: 1px solid #f1f2f6;
-    display: flex;
-    justify-content: center;
-}
-
-.btn-guardar-parada {
-    background-color: var(--color-primario);
-    color: white;
-    border: none;
-    font-size: 15px;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.btn-guardar-parada:hover {
-    background-color: var(--color-primario-hover);
 }
 
 /* Acciones globales inferiores */
@@ -516,4 +503,50 @@ body {
 
 .btn-cerrar-visor:hover {
     color: #FF8B94;
+}
+
+/* --- BOTONES FLOTANTES (FABs) BASE --- */
+.btn-flotante {
+    position: fixed;
+    right: 40px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    color: white;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 9999;
+    transition: all 0.3s ease;
+}
+
+/* Animación compartida de flotar */
+.btn-flotante:hover {
+    transform: translateY(-5px) scale(1.05);
+}
+
+/* --- FAB: GUARDAR VIAJE (Azul, abajo) --- */
+.btn-flotante-guardar {
+    bottom: 40px;
+    background-color: #3498db;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+}
+
+.btn-flotante-guardar:hover {
+    background-color: #2980b9;
+    box-shadow: 0 8px 25px rgba(41, 128, 185, 0.6);
+}
+
+/* --- FAB: AGREGAR PARADA (Verde, apilado arriba) --- */
+.btn-flotante-agregar {
+    bottom: 120px; /* 40px del piso + 65px del botón de guardar + 15px de espacio */
+    background-color: #2ecc71;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+}
+
+.btn-flotante-agregar:hover {
+    background-color: #27ae60;
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.6);
 }
