@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Icebox - Prueba de Diseño</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="/static/css/editor.css">
-</head>
-<body>
+{% block title %}Editor de Viaje - Icebox{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/editor.css') }}">
+{% endblock %}
+
+{% block content %}
 
     <form class="contenedor-viaje" id="formulario-viaje-maestro" method="POST" action="/viajes/{{ viaje.id_viaje }}/editar" enctype="multipart/form-data">
 
@@ -18,7 +17,7 @@
             <div class="overlay-portada"></div>
             <input type="file" id="foto-portada" name="foto_portada" accept="image/png, image/jpeg" style="display: none;">
             <div class="acciones-header">
-                <a href="#" class="btn-volver">← Volver a Biblioteca</a>
+                <a href="{{ url_for('viajes.biblioteca') }}" class="btn-volver">← Volver a Biblioteca</a>
                 <div class="acciones-portada">
 
                     <label for="foto-portada" class="btn-icono-portada" title="Cambiar Portada">
@@ -105,10 +104,11 @@
         <img id="imagen-visor" src="" alt="Vista previa en grande">
     </div>
 
+{% endblock %}
+
+{% block extra_js %}
     <script>
         const CIUDADES_DB = {{ lugares | tojson | safe }};
     </script>
-
-    <script src="/static/js/editor.js"></script>
-</body>
-</html>
+    <script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+{% endblock %}
