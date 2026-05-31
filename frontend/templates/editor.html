@@ -11,7 +11,7 @@
 
     <form class="contenedor-viaje" id="formulario-viaje-maestro" method="POST" action="/viajes/{{ viaje.id_viaje }}/editar" enctype="multipart/form-data">
 
-        <header class="header-viaje" id="header-portada">
+        <header class="header-viaje" id="header-portada" {% if viaje.url_portada %} style="background-image: url('{{ viaje.url_portada }}');" {% endif %}>
             <div class="overlay-portada"></div>
             <input type="file" id="foto-portada" name="foto_portada" accept="image/png, image/jpeg" style="display: none;">
             <div class="acciones-header">

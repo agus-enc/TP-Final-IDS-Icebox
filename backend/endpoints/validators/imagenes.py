@@ -1,34 +1,24 @@
 from ..utils import construir_error
-from ..constants import EXTENSIONES_PERMITIDAS, MIME_TYPES_PERMITIDOS
 
-def validar_imagen(archivo) -> None:
-    """  Verifica el nombre, la extension y el MIME Type de la imagen """
-    if archivo.filename == '':
-        raise ValueError(construir_error(
-            code='invalid.file',
-            message='El archivo no tiene nombre.',
-            description='Se requiere un archivo válido.'
-        ), 400)
+def validar_datos_imagen_viaje(id_viaje_str, tipo: str) -> dict:
+    """Valida la forma de los datos de entrada para subir una imagen."""
+    errores = []
 
-    if '.' not in archivo.filename:
-        raise ValueError(construir_error(
-            code='invalid.extension',
-            message='El archivo no tiene extensión.',
-            description='Formato desconocido.'
-        ), 400)
+    try:
+        id_viaje = int(id_viaje_str)
+        if id_viaje <= 0:
+            errores.append(construir_error("invalid.id", "El ID del viaje debe ser positivo.", "Error"))
+    except (ValueError, TypeError):
+        errores.append(construir_error("invalid.id", "El ID del viaje debe ser numérico.", "Error"))
 
-    extension = archivo.filename.rsplit('.', 1)[1].lower()
+    tipo_limpio = str(tipo).strip().lower()
+    if tipo_limpio not in ['header', 'diario']:
+        errores.append(construir_error("invalid.tipo", "El tipo debe ser 'header' o 'diario'.", "Error"))
 
-    if extension not in EXTENSIONES_PERMITIDAS:
-        raise ValueError(construir_error(
-            code='invalid.extension',
-            message=f'Extensión no permitida: {extension}',
-            description=f'Formatos válidos: {EXTENSIONES_PERMITIDAS}'
-        ), 400)
+    if errores:
+        raise ValueError({"errors": errores}, 400)
 
-    if archivo.mimetype not in MIME_TYPES_PERMITIDOS:
-        raise ValueError(construir_error(
-            code='invalid.file_type',
-            message=f'El archivo no es una imagen real',
-            description=f'Formatos válidos: {EXTENSIONES_PERMITIDAS}'
-        ), 400)
+    return {
+        "id_viaje": id_viaje,
+        "tipo": tipo_limpio
+    }

@@ -129,10 +129,7 @@ def put_parada(id_parada):
         if not body:
             raise ValueError({"errors": [{"code": "missing.body", "message": "Falta el body JSON."}]}, 400)
 
-        modificado = editar_parada_completa(id_parada_validada, body)
-
-        if not modificado:
-            return jsonify(construir_error("NOT_FOUND", "Parada no encontrada", "No existe la parada.")), 404
+        editar_parada_completa(id_parada_validada, body)
 
         return '', 204
 

@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask
 from endpoints.routes.imanes import imanes_bp
 from endpoints.routes.lugares import lugares_bp
@@ -17,7 +20,7 @@ app.register_blueprint(lugares_bp, url_prefix='/endpoints')
 app.register_blueprint(usuarios_bp, url_prefix='/endpoints')
 app.register_blueprint(viajes_bp, url_prefix='/endpoints')
 app.register_blueprint(paradas_bp, url_prefix='/endpoints')
-app.register_blueprint(admin_bp, url_prefix=' /endpoints')
+app.register_blueprint(admin_bp, url_prefix='/endpoints')
 
 if __name__ == '__main__':
     app.run(debug=True)

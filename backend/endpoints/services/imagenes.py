@@ -1,31 +1,42 @@
 import os
 import uuid
 from werkzeug.utils import secure_filename
-from ..validators.imagenes import validar_imagen
 from ..constants import UPLOAD_FOLDER, STATIC_URL_PATH
+from ..dao.imagenes import contar_imagenes_viaje_por_tipo_db, insertar_imagen_viaje_db, actualizar_portada_viaje_db
+from ..dao.viajes import obtener_viaje
+from ..dao.usuarios import obtener_usuario_por_viaje
+from ..services.storage import subir_imagen_parada
 from rembg import remove
 from PIL import Image
 from ..utils import construir_error
 
-def subir_imagen(archivo) -> dict:
-    """ Guarda físicamente la imagen en el servidor y retorna su DTO asegurandose que se cumplen las reglas de negocio """
-    validar_imagen(archivo)
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+def agregar_imagen_viaje(id_viaje: int, tipo: str, archivo_imagen) -> dict:
+    """Orquesta las reglas de negocio (límites), la subida a Supabase y el guardado en BD."""
 
-    # Genera nombre único seguro
-    nombre_seguro = secure_filename(archivo.filename)
-    nombre_unico = f"{uuid.uuid4().hex[:8]}_{nombre_seguro}"
+    # 1. Regla de Negocio: Existencia
+    if not obtener_viaje(id_viaje):
+        raise ValueError({"errors": [{"code": "not_found", "message": "El viaje no existe."}]}, 404)
 
-    ruta_absoluta = os.path.join(UPLOAD_FOLDER, nombre_unico)
-    archivo.save(ruta_absoluta)
+    id_usuario = obtener_usuario_por_viaje(id_viaje)
 
-    return {
-        "url": f"{STATIC_URL_PATH}{nombre_unico}"
-    }
+    # 2. Regla de Negocio: Límites Máximos
+    cantidad_actual = contar_imagenes_viaje_por_tipo_db(id_viaje, tipo)
+
+    if tipo == 'header' and cantidad_actual >= 1:
+        url_publica = subir_imagen_parada(archivo_imagen, id_viaje) # Sobrescribe la imagen del header
+        actualizar_portada_viaje_db(id_viaje, url_publica)
+        return {"mensaje": "Portada actualizada", "url": url_publica, "tipo": tipo}
+
+    if tipo == 'diario' and cantidad_actual >= 10:
+        raise ValueError({"errors": [{"code": "limit_reached", "message": "Límite de 10 imágenes alcanzado."}]}, 403)
+
+    url_publica = subir_imagen_parada(archivo_imagen, id_viaje)
+    insertar_imagen_viaje_db(id_usuario, id_viaje, url_publica, tipo)
+
+    return {"mensaje": "Imagen subida", "url": url_publica, "tipo": tipo}
 
 def remover_fondo(archivo) -> dict:
     """ Le saca el fondo a la imagen, la guarda como .png en el disco y devuelve su DTO  """
-    validar_imagen(archivo)
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     imagen_original = Image.open(archivo.stream)
 

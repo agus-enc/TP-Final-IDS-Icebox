@@ -22,12 +22,23 @@ def editor(id_viaje):
         titulo_nuevo = request.form.get('titulo_viaje')
         requests.put(f"{BACKEND_URL}/viajes/{id_viaje}", json={"titulo": titulo_nuevo})
 
+        foto_portada = request.files.get('foto_portada')
+        if foto_portada and foto_portada.filename != '':
+            archivos = {'imagen': (foto_portada.filename, foto_portada.read(), foto_portada.content_type)}
+            datos = {'tipo': 'header'}
+            res_img = requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data=datos)
+
+            if res_img.status_code not in [200, 201]:
+                print(f"ERROR AL SUBIR PORTADA: {res_img.status_code} - {res_img.text}")
+            else:
+                print("PORTADA SUBIDA CON ÉXITO")
+
         # 2. OBTENER PARADAS ORIGINALES
         resp = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/paradas")
         paradas_originales = resp.json() if resp.status_code == 200 else []
         ids_originales = {str(p['id_parada']) for p in paradas_originales}
 
-        # 3. PROCESAR FORMULARIO (Actualizar y Crear)
+        # 3. PROCESAR FORMULARIO
         ids_recibidos = set()
 
         for key in request.form.keys():
@@ -49,7 +60,6 @@ def editor(id_viaje):
                     ids_recibidos.add(str(id_parada))
                     requests.put(f"{BACKEND_URL}/paradas/{id_parada}", json=payload_parada)
                 else:
-                    # SOLUCIÓN CREACIÓN: Apuntamos a la URL correcta del POST
                     requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada)
 
         # 4. ELIMINAR PARADAS
@@ -59,20 +69,21 @@ def editor(id_viaje):
 
         return redirect(url_for('viajes.editor', id_viaje=id_viaje))
 
-    # ==========================================
-    # MODO GET: CARGAR LA PÁGINA
-    # ==========================================
-    # 1. Traemos el Viaje
+    # GET: CARGAR LA PÁGINA
     resp_viaje = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
     viaje_real = resp_viaje.json() if resp_viaje.status_code == 200 else {}
 
-    # 2. Traemos las Paradas
     resp_paradas = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/paradas")
     paradas_reales = resp_paradas.json() if resp_paradas.status_code == 200 else []
 
-    # 3. SOLUCIÓN CIUDADES: El endpoint real es /ciudades
     resp_lugares = requests.get(f"{BACKEND_URL}/ciudades")
     lugares_reales = resp_lugares.json() if resp_lugares.status_code == 200 else []
+
+    resp_imagenes = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes")
+    imagenes_reales = resp_imagenes.json() if resp_imagenes.status_code == 200 else []
+
+    # Busca si existe alguna imagen de tipo "header" y extrae su URL
+    viaje_real['url_portada'] = next((img['imagen_url'] for img in imagenes_reales if img['tipo'] == 'header'), None)
 
     return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales, lugares=lugares_reales)
 

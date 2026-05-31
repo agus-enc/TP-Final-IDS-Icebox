@@ -47,5 +47,5 @@ def validar_body_viaje(body: dict) -> dict:
 
 def validar_id_viaje(id_str: str) -> int:
     """Valida que el id del viaje recibido en la URL sea un entero válido y mayor a cero."""
-    id_viaje = validar_entero(id_str, 'id_viaje')
+    id_viaje = validar_entero(id_str)
     return validar_minimo(id_viaje, MIN_ID, 'id_viaje')
