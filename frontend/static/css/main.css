@@ -312,6 +312,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #e3cec2;
 }
 
 .header-creador .input-titulo-viaje {
