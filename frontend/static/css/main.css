@@ -290,15 +290,15 @@ body {
 .header-creador {
     position: relative;
     width: 100%;
-    min-height: 100px;
-    background-color: #e1ece9;
+    height: 100px;
+    background-color: #DFD0CB;
     border-radius: 20px 20px 0 0;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 .acciones-header-creador {
@@ -310,36 +310,44 @@ body {
 
 .header-creador .contenedor-titulo-editable {
     width: 100%;
+    height: 100%;
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #e3cec2;
+    background-color: transparent;
 }
 
 .header-creador .input-titulo-viaje {
     width: 80%;
     max-width: 600px;
+    height: 60px;
+    line-height: 56px;
+    padding: 0 15px;
     background: transparent;
     border: none;
     text-align: center;
     font-size: 1.7rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: white;
     font-family: inherit;
     outline: none;
-    padding: 10px;
+
     border-bottom: 2px solid transparent;
+    border-top: 2px solid transparent;
     transition: border-bottom 0.3s ease;
     box-sizing: border-box;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5)
 }
 
 .header-creador .input-titulo-viaje:focus {
-    border-bottom: 2px solid #3498db;
+    border-bottom: 2px solid #c3bcb9;
 }
 
 .header-creador .input-titulo-viaje::placeholder {
-    color: #7f8c8d;
+    color: rgba(255, 255, 255, 0.8);
     font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5)
 }
 
 /* --- Línea de Tiempo y Tarjetas --- */
@@ -437,21 +445,19 @@ body {
 }
 
 .btn-primario-creador {
-    background-color: #3498db;
+    background-color: #313040;
     color: white;
 }
 
 .btn-primario-creador:hover {
-    background-color: #2980b9;
     transform: translateY(-2px);
 }
 
 .btn-secundario-creador {
-    background-color: #2ecc71;
+    background-color: #4B5065;
     color: white;
 }
 
 .btn-secundario-creador:hover {
-    background-color: #27ae60;
     transform: translateY(-2px);
 }

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="vista-biblioteca-contexto">
+    <div class="biblioteca-seccion-derecha">
+        <div class="biblioteca-wrapper">
+            <div class="panel-estanteria">
+                <button id="btn-abrir-eliminar" class="btn-biblioteca-accion">🗑️ Eliminar Viaje</button>
+            </div>
+
+            <div class="booksparent" id="mueble-libros">
+                <div class="shelf"><div id="estanteria-dinamica-1" class="subshelf">
+                    <div class="book color1" data-id="1" data-destino="Bariloche"><div class="texto-lomo">Bariloche</div></div>
+                    <div class="book color2" data-id="2" data-destino="Río de Janeiro"><div class="texto-lomo">Río de Janeiro</div></div>
+                    <div class="book color3" data-id="3" data-destino="Mendoza"><div class="texto-lomo">Mendoza</div></div>
+                    <div class="book color1" data-id="4" data-destino="Cataratas"><div class="texto-lomo">Cataratas</div></div>
+                    <div class="book color2" data-id="5" data-destino="Córdoba"><div class="texto-lomo">Córdoba</div></div>
+                    <div class="book color3" data-id="6" data-destino="Salta"><div class="texto-lomo">Salta</div></div>
+                    <div class="book color1" data-id="7" data-destino="Ushuaia"><div class="texto-lomo">Ushuaia</div></div>
+                    <div class="book color2" data-id="8" data-destino="Madryn"><div class="texto-lomo">Madryn</div></div>
+                    <div class="book color3" data-id="9" data-destino="San Martín de los Andes"><div class="texto-lomo">San Martín</div></div>
+                    <div class="book color1" data-id="10" data-destino="Mar del Plata"><div class="texto-lomo">Mar del Plata</div></div>
+                    <div class="book color2" data-id="11" data-destino="Tandil"><div class="texto-lomo">Tandil</div></div>
+                    <div class="book color3" data-id="12" data-destino="La Cumbrecita"><div class="texto-lomo">La Cumbrecita</div></div>
+                </div></div>
+                <div class="shelf"><div id="estanteria-dinamica-2" class="subshelf"></div></div>
+                <div class="shelf"><div id="estanteria-dinamica-3" class="subshelf"></div></div>
+                <div class="shelf"><div id="estanteria-dinamica-4" class="subshelf"></div></div>
+                <div class="shelf"><div id="estanteria-dinamica-5" class="subshelf"></div></div>
+            </div> 
+        </div>
+    </div>
+
+    <div id="modal-eliminar" class="oculto">
+        <div class="contenedor-modal">
+            <h3>Eliminar un Viaje</h3>
+            <p class="texto-instruccion-modal">Seleccioná el libro que querés sacar de la biblioteca.</p>
+            <div id="lista-viajes-eliminar" class="caja-lista-scroll"></div>
+            <div class="contenedor-boton-modal">
+                <button id="btn-cerrar-eliminar" class="btn-modal-cancelar" type="button">Volver</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/biblioteca.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='js/biblioteca.js') }}"></script>
+{% endblock %}

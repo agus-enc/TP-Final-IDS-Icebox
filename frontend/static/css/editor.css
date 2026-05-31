@@ -1,16 +1,14 @@
 /* VARIABLES GLOBALES Y RESET */
 :root {
-    --color-fondo: #f4f6f9;
-    --color-tarjeta: #ffffff;
+    --color-tarjeta: #F3EAE5;
     --color-primario: #3498db;
     --color-primario-hover: #2980b9;
     --color-peligro: #e74c3c;
     --color-texto: #2c3e50;
-    --color-borde: #dcdde1;
+    --color-borde: #DFD0CB;
 }
 
 body {
-    background-color: var(--color-fondo);
     color: var(--color-texto);
     margin: 0;
     padding: 0;
@@ -28,7 +26,7 @@ body {
     position: relative;
     width: 100%;
     min-height: 250px;
-    background-color: #e1ece9;
+    background-color: #DFD0CB;
     background-size: cover;
     background-position: center;
     border-radius: 0 0 20px 20px;
@@ -51,7 +49,6 @@ body {
 .overlay-portada {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.6) 100%);
     z-index: 1;
 }
 
@@ -65,9 +62,17 @@ body {
 }
 
 .btn-volver {
-    color: var(--color-primario);
-    text-decoration: none;
+    color: var(--color-texto);
+    text-decoration: solid;
     font-weight: bold;
+    background-color: #F3EAE5;
+    border: 2px solid var(--color-borde);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
 }
 
 .acciones-portada {
@@ -152,7 +157,7 @@ body {
 }
 
 .btn-diario-fotos {
-    background-color: white;
+    background-color: #F3EAE5;
     color: var(--color-texto);
     border: 2px solid var(--color-borde);
     padding: 12px 24px;
@@ -165,9 +170,9 @@ body {
 }
 
 .btn-diario-fotos:hover {
-    background-color: var(--color-primario);
-    color: white;
-    border-color: var(--color-primario);
+    background-color: #F3EAE5;
+    color: var(--color-texto);;
+    border-color: #F3EAE5;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(52, 152, 219, 0.2);
 }
@@ -195,6 +200,7 @@ body {
 
 /* --- Cabecera de la Tarjeta (Buscador) --- */
 .tarjeta-header {
+    background-color: #e3cec2;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -231,6 +237,7 @@ body {
 }
 
 .input-buscador-ciudad {
+    background-color: #e3cec2;
     width: 100%;
     padding: 8px 12px;
     border: transparent;
@@ -241,10 +248,11 @@ body {
     transition: border-color 0.2s;
     font-family: inherit;
     text-align: center;
+    color: #252436;
 }
 
 .input-buscador-ciudad:focus {
-    border-color: var(--color-primario);
+    border-color: var(--color-texto);
 }
 
 .lista-resultados-ciudad {
@@ -285,7 +293,7 @@ body {
 
 .lista-resultados-ciudad li:hover {
     background-color: #f4f6f9;
-    color: var(--color-primario);
+    color: var(--color-texto);
     font-weight: bold;
 }
 
@@ -334,11 +342,12 @@ body {
     line-height: 1.5;
     box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #fbf8f6
 }
 
 .textarea-elegante:focus {
     outline: none;
-    border-color: var(--color-primario);
+    border-color: var(--color-texto);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
@@ -375,7 +384,7 @@ body {
 }
 
 .contenedor-foto-iman:hover {
-    border-color: var(--color-primario);
+    border-color: var(--color-borde);
 }
 
 .contenedor-foto-iman.vacio {
@@ -450,7 +459,7 @@ body {
     padding: 40px;
     border-radius: 16px;
     box-shadow: 0 25px 50px rgba(0,0,0,0.6);
-    background-color: white;
+    background-color: #fbf8f6;
     resize: none;
     transition: all 0.3s ease;
 }
@@ -530,23 +539,23 @@ body {
 /* --- FAB: GUARDAR VIAJE (Azul, abajo) --- */
 .btn-flotante-guardar {
     bottom: 40px;
-    background-color: #3498db;
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    background-color: #252436;
+    box-shadow: 0 4px 10px rgb(26.7, 26.3, 39.2);
 }
 
 .btn-flotante-guardar:hover {
-    background-color: #2980b9;
-    box-shadow: 0 8px 25px rgba(41, 128, 185, 0.6);
+    background-color: #252436;
+    box-shadow: 0 8px 20px rgb(26.7, 26.3, 39.2);
 }
 
 /* --- FAB: AGREGAR PARADA (Verde, apilado arriba) --- */
 .btn-flotante-agregar {
     bottom: 120px; /* 40px del piso + 65px del botón de guardar + 15px de espacio */
-    background-color: #2ecc71;
-    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+    background-color: #4B5065;
+    box-shadow: 0 4px 10px rgb(29.4, 31.4, 39.6);
 }
 
 .btn-flotante-agregar:hover {
-    background-color: #27ae60;
-    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.6);
+    background-color: #4B5065;
+    box-shadow: 0 8px 20px rgb(29.4, 31.4, 39.6);
 }

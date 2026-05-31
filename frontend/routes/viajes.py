@@ -78,3 +78,7 @@ def editor(id_viaje):
     viaje_real['url_portada'] = next((img['imagen_url'] for img in imagenes_reales if img['tipo'] == 'header'), None)
 
     return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales, lugares=lugares_reales)
+
+@viajes_bp.route('/mockup-diario')
+def mockup_diario():
+    return render_template('diario.html')
