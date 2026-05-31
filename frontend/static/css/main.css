@@ -11,7 +11,7 @@ body {
 /* --- BARRA DE NAVEGACIÓN (ROUTER) --------- */
 
 .router {
-    width: 400px;
+    width: 480px;
     height: 70px;
     background: #f2E9E4;
     position: fixed;
@@ -31,7 +31,7 @@ body {
 
 .router ul {
     display: flex;
-    width: 350px;
+    width: 420px;
     margin: 0;
     padding: 0;
 }
@@ -104,6 +104,7 @@ body {
 .router ul li:nth-child(3).active ~ .indicador { transform: translateX(calc(70px * 2)); }
 .router ul li:nth-child(4).active ~ .indicador { transform: translateX(calc(70px * 3)); }
 .router ul li:nth-child(5).active ~ .indicador { transform: translateX(calc(70px * 4)); }
+.router ul li:nth-child(6).active ~ .indicador { transform: translateX(calc(70px * 5)); }
 
 .indicador {
     position: absolute;

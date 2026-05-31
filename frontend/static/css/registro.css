@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+/* Contenedor principal alineado con el login */
 .registro-wrapper {
-    padding: 40px;
+    padding: 0;
+    margin: 0 auto;
     text-align: center;
-    font-family: 'Poppins', sans-serif;
-    background-color: #F2E9E4;
+    font-family: 'Montserrat', sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -10,65 +13,97 @@
     align-items: center;
 }
 
+/* La caja principal idéntica al #msform fieldset */
 .registro-card {
-    border: 3px solid #333333;
-    background: white;
-    width: 100%;
-    max-width: 400px;
-    padding: 30px;
-    box-shadow: 8px 8px 0px #333333;
+    background: #F2E9E4;
+    border: 0 none;
     border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 30px;
     box-sizing: border-box;
-}
-
-.registro-card h2 {
-    margin-top: 0;
-    color: #333333;
-    border-bottom: 3px solid #333333;
-    padding-bottom: 10px;
-    display: inline-block;
-}
-
-.form-group {
-    text-align: left;
-    margin-bottom: 15px;
-}
-
-.form-group-last {
-    text-align: left;
-    margin-bottom: 25px;
-}
-
-.form-group label, .form-group-last label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-}
-
-.registro-input {
     width: 100%;
-    padding: 10px;
-    border: 2px solid #333333;
-    box-shadow: 3px 3px 0px #333333;
-    box-sizing: border-box;
-    border-radius: 4px;
+    max-width: 420px; /* Mismo ancho que el login */
+    font-family: 'Montserrat', sans-serif;
 }
 
+/* Título igual al .fs-title del login */
+.registro-card h2 {
+    font-size: 20px;
+    text-transform: uppercase;
+    color: #2C3E50;
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-weight: 600;
+    border-bottom: none; /* Chau línea gruesa brutalista */
+    display: block;
+}
+
+/* Espaciado de los campos */
+.form-group, .form-group-last {
+    text-align: left;
+    margin-bottom: 14px;
+}
+
+/* Textos arriba de los casilleros */
+.form-group label, .form-group-last label {
+    font-size: 14px;
+    color: #7f8c8d; /* Gris suave, como el subtítulo del login */
+    margin-bottom: 8px;
+    font-weight: 600;
+    display: block;
+}
+
+/* Casilleros idénticos a los del login */
+.registro-input {
+    padding: 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    color: #2C3E50;
+    font-size: 14px;
+    box-shadow: none; /* Chau sombra negra dura */
+}
+
+/* Borde verde al hacer click en un casillero */
+.registro-input:focus {
+    border-color: #27AE60;
+    outline: none;
+}
+
+/* Botón idéntico al .action-button del login */
 .btn-registro {
     width: 100%;
-    background: #7485e6;
-    color: white;
+    background: #4A4E64;
     font-weight: bold;
-    padding: 12px;
-    border: 3px solid #333333;
-    box-shadow: 4px 4px 0px #333333;
-    font-size: 16px;
-    cursor: pointer;
+    color: white;
+    border: none;
     border-radius: 4px;
+    cursor: pointer;
+    padding: 14px;
+    margin-top: 10px;
+    font-size: 16px;
+    transition: background 0.2s ease;
+    box-shadow: none; /* Chau sombra negra dura */
+    font-family: 'Montserrat', sans-serif;
 }
 
+/* Cambio a verde cuando pasas el mouse por el botón */
+.btn-registro:hover {
+    background: #219653;
+}
+
+/* Link para volver atrás */
 .back-link {
-    color: #333333;
+    color: #7f8c8d;
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.back-link:hover {
+    color: #2C3E50;
 }

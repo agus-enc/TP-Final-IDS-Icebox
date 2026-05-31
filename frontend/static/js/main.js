@@ -12,21 +12,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     });
 
-    // 2. LÓGICA DE DETECCIÓN DE RUTA DE FLASK
+    // 2. LÓGICA DE DETECCIÓN DE RUTA DE FLASK Y CLICKS EN VIVO
     const list = document.querySelectorAll('.router ul .list');
     const currentUrl = window.location.pathname;
 
     list.forEach((item) => {
-        // Limpiamos cualquier clase active previa
+        // --- PARTE A: Lo que pasa cuando la página recién carga ---
         item.classList.remove('active');
-
-        // Sacamos la dirección a la que apunta el botón
         const link = item.querySelector('a').getAttribute('href');
        
-        // Comparamos si la URL actual coincide con el botón o si estamos en la raíz (home)
         if (currentUrl.includes(link) || (currentUrl === '/' && link.includes('heladera'))) {
             item.classList.add('active');
         }
+
+        // --- PARTE B: Lo que pasa cuando haces clic (NUEVO) ---
+        item.addEventListener('click', function() {
+            // Le sacamos la clase active a todos los botones
+            list.forEach(li => li.classList.remove('active'));
+            // Se la ponemos solo al que acabas de clickear
+            this.classList.add('active');
+        });
     });
 });
 
@@ -38,6 +43,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (userMenuTrigger && userDropdown) {
         // Al hacer clic en el botón de usuario, muestra u oculta
         userMenuTrigger.addEventListener('click', function(event) {
+
+            //Si el clic vino de un enlace del dropdown (Cerrar Sesión), dejamos que siga viaje
+            if (event.target.closest('.dropdown-item')) {
+                return; // Corta esta función acá y permite que el href funcione
+            }
+
             event.preventDefault(); // Frena el '#' para que no salte la pantalla
             event.stopPropagation(); // Evita que el evento "explote" hacia el window
             userDropdown.classList.toggle('show');
