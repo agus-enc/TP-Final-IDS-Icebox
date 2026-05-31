@@ -24,9 +24,17 @@ def agregar_imagen_viaje(id_viaje: int, tipo: str, archivo_imagen) -> dict:
     cantidad_actual = contar_imagenes_viaje_por_tipo_db(id_viaje, tipo)
 
     if tipo == 'header' and cantidad_actual >= 1:
-        url_publica = subir_imagen_parada(archivo_imagen, id_viaje) # Sobrescribe la imagen del header
-        actualizar_portada_viaje_db(id_viaje, url_publica)
-        return {"mensaje": "Portada actualizada", "url": url_publica, "tipo": tipo}
+        # Buscar la URL de la portada vieja ANTES de sobrescribirla
+        imagenes_existentes = obtener_imagenes_viaje_db(id_viaje)
+        url_portada_vieja = next((img['imagen_url'] for img in imagenes_existentes if img['tipo'] == 'header'), None)
+
+        url_publica_nueva = subir_imagen_parada(archivo_imagen, id_viaje)
+        actualizar_portada_viaje_db(id_viaje, url_publica_nueva)
+
+        if url_portada_vieja:
+            borrar_imagen_supabase(url_portada_vieja)
+
+        return {"mensaje": "Portada actualizada", "url": url_publica_nueva, "tipo": tipo}
 
     if tipo == 'diario' and cantidad_actual >= 10:
         raise ValueError({"errors": [{"code": "limit_reached", "message": "Límite de 10 imágenes alcanzado."}]}, 403)
