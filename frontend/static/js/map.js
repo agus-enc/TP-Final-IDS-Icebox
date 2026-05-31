@@ -43,7 +43,7 @@ fetch(urlPaises)
         return {
           color: "#2b2b2b29", 
           weight: 1.5,
-          fillColor: esVisitado ? "#2b81c8" : "#2b81c800", // Azul si fue, transparente si no
+          fillColor: esVisitado ? "#9A8C98" : "#2b81c800", // Azul si fue, transparente si no
           fillOpacity: esVisitado ? 0.6 : 0.1
         };
       },

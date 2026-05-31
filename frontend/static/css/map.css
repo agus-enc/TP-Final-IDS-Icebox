@@ -12,6 +12,7 @@ body {
   background-color: #aad3df
 }
 
+
 .info {
   padding: 6px 8px;
   font: 14px/16px Arial, Helvetica, sans-serif;
@@ -31,7 +32,7 @@ body {
   right: -350px; /* Escondido */
   width: 350px;
   height: 100vh;
-  background-color: #ffffff;
+  background-color: #fbf8f6;
   box-shadow: -5px 0 15px rgba(0,0,0,0.3);
   z-index: 99999;
   transition: right 0.3s ease; 
@@ -41,4 +42,12 @@ body {
 
 .sidebar.active {
   right: 0;
+}
+
+.leaflet-popup-content-wrapper {
+    background-color: #fbf8f6; 
+}
+
+.leaflet-popup-tip {
+    background-color: #fbf8f6; 
 }
