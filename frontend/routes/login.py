@@ -57,7 +57,7 @@ def login():
         #password = request.form.get('password')
 
         if nombre_usuario == 'fiuba' and password == 'ids':
-            session.permanent = True
+            session.permanent = False
             session['usuario_id'] = 100
             session['es_admin'] = True
             flash('Sesión iniciada correctamente', 'success')
