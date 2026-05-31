@@ -290,7 +290,7 @@ body {
     position: relative;
     width: 100%;
     min-height: 100px;
-    background-color: #e1ece9;
+    background-color: #DFD0CB;
     border-radius: 20px 20px 0 0;
     display: flex;
     flex-direction: column;
@@ -333,7 +333,7 @@ body {
 }
 
 .header-creador .input-titulo-viaje:focus {
-    border-bottom: 2px solid #3498db;
+    border-bottom: 2px solid #747880;
 }
 
 .header-creador .input-titulo-viaje::placeholder {
@@ -436,21 +436,19 @@ body {
 }
 
 .btn-primario-creador {
-    background-color: #3498db;
+    background-color: #313040;
     color: white;
 }
 
 .btn-primario-creador:hover {
-    background-color: #2980b9;
     transform: translateY(-2px);
 }
 
 .btn-secundario-creador {
-    background-color: #2ecc71;
+    background-color: #4B5065;
     color: white;
 }
 
 .btn-secundario-creador:hover {
-    background-color: #27ae60;
     transform: translateY(-2px);
 }
