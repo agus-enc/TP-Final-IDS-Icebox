@@ -2,10 +2,11 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 from ..constants import UPLOAD_FOLDER, STATIC_URL_PATH
-from ..dao.imagenes import contar_imagenes_viaje_por_tipo_db, insertar_imagen_viaje_db, actualizar_portada_viaje_db
+from ..dao.imagenes import contar_imagenes_viaje_por_tipo_db, insertar_imagen_viaje_db, actualizar_portada_viaje_db, obtener_imagenes_viaje_db, eliminar_portada_viaje_db
 from ..dao.viajes import obtener_viaje
 from ..dao.usuarios import obtener_usuario_por_viaje
 from ..services.storage import subir_imagen_parada
+from .storage import borrar_imagen_supabase
 from rembg import remove
 from PIL import Image
 from ..utils import construir_error
@@ -34,6 +35,19 @@ def agregar_imagen_viaje(id_viaje: int, tipo: str, archivo_imagen) -> dict:
     insertar_imagen_viaje_db(id_usuario, id_viaje, url_publica, tipo)
 
     return {"mensaje": "Imagen subida", "url": url_publica, "tipo": tipo}
+
+def eliminar_portada_viaje(id_viaje: int) -> bool:
+    # 1. Buscar la URL de la portada ANTES de borrarla
+    imagenes = obtener_imagenes_viaje_db(id_viaje)
+    url_portada = next((img['imagen_url'] for img in imagenes if img['tipo'] == 'header'), None)
+
+    eliminado_db = eliminar_portada_viaje_db(id_viaje)
+
+    # 2. Si se borró de MySQL y existía una URL, borrarla de Supabase
+    if eliminado_db and url_portada:
+        borrar_imagen_supabase(url_portada)
+
+    return eliminado_db
 
 def remover_fondo(archivo) -> dict:
     """ Le saca el fondo a la imagen, la guarda como .png en el disco y devuelve su DTO  """

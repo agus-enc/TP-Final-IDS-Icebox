@@ -39,3 +39,37 @@ def subir_imagen_parada(archivo_flask, id_viaje: int) -> str:
     url_publica = f"{SUPABASE_URL}/storage/v1/object/public/{BUCKET_NAME}/{ruta_en_bucket}"
 
     return url_publica
+
+def borrar_imagen_supabase(url_publica: str) -> bool:
+    """
+    Toma la URL pública de Supabase, extrae la ruta interna y ejecuta un HTTP DELETE.
+    """
+    if not url_publica:
+        return False
+
+    try:
+        # 1. Extrae la ruta exacta del archivo cortando la URL pública
+        separador = f"/object/public/{BUCKET_NAME}/"
+        if separador not in url_publica:
+            return False
+        ruta_en_bucket = url_publica.split(separador)[1]
+
+        # 2. Arma la petición de borrado a la API
+        url_delete = f"{SUPABASE_URL}/storage/v1/object/{BUCKET_NAME}/{ruta_en_bucket}"
+
+        headers = {
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}"
+        }
+
+        respuesta = requests.delete(url_delete, headers=headers)
+
+        if not respuesta.ok:
+            print(f"ERROR AL BORRAR EN SUPABASE: {respuesta.text}")
+            return False
+
+        return True
+
+    except Exception as e:
+        print(f"Error interno al intentar borrar imagen: {str(e)}")
+        return False
