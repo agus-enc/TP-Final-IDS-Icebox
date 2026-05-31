@@ -1,14 +1,9 @@
 import requests
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for
 from auth import login_required
 BACKEND_URL = "http://localhost:5000/endpoints"
 
 viajes_bp = Blueprint('viajes', __name__)
-
-@viajes_bp.route('/viaje/creador')
-@login_required
-def creador():
-    return render_template('creador.html')
 
 @viajes_bp.route('/biblioteca')
 @login_required

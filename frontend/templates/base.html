@@ -54,7 +54,7 @@
             </li>
 
             <li class="list">
-                <a href="{{ url_for('viajes.creador')}}">
+                <a href="#" id="btn-nav-crear">
                     <span class="icon"><ion-icon name="add-circle-outline"></ion-icon></span>
                     <span class="route">Crear</span>
                 </a>
@@ -82,6 +82,67 @@
     
     <script src="{{ url_for('static', filename='js/main.js')}}"></script>
     {% block extra_js %}{% endblock %}
+
+    <div id="modal-creador-viajes" class="modal-creador-oculto">
+        <div class="modal-creador-contenido">
+
+            <button type="button" id="btn-cerrar-creador" class="btn-cerrar-modal" title="Cerrar">&times;</button>
+
+            <form id="form-creador-viaje">
+
+                <header class="header-creador" id="header-creador-portada">
+                    <div class="contenedor-titulo-editable">
+                        <input type="text" id="titulo-viaje-creador" class="input-titulo-viaje" placeholder="Dale un nombre a tu viaje" required>
+                    </div>
+                </header>
+
+                <div id="linea-tiempo-creador" class="linea-tiempo-creador">
+
+                    <div class="tarjeta-parada-creador">
+                        <div class="tarjeta-header">
+                            <div class="selector-ciudad">
+                                <div class="buscador-ciudad-wrapper">
+                                    <input type="text" class="input-buscador-ciudad" placeholder="¿Qué ciudad visitarás?" autocomplete="off" required>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-eliminar-parada" title="Eliminar Parada">&times;</button>
+                        </div>
+
+                        <div class="tarjeta-cuerpo-reducido">
+                            <div class="seccion-iman-creador">
+                                <label for="foto-parada-creador-1" class="contenedor-foto-iman vacio">
+                                    <span class="icono-mas">+</span>
+                                    <p>Subir Imán</p>
+                                </label>
+                                <input type="file" id="foto-parada-creador-1" accept="image/png, image/jpeg" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="acciones-creador">
+                    <button type="button" id="btn-crear-parada-creador" class="btn-secundario-creador">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Crear Parada
+                    </button>
+
+                    <button type="submit" id="btn-guardar-viaje-creador" class="btn-primario-creador">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                        Crear Viaje
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
 
 </body>
 </html>

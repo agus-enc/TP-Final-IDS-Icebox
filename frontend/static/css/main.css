@@ -1,12 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
+/* --- GLOBALES ----------------------------- */
+
 body {
     background-color: #F2E9E4;
     padding-bottom: 110px !important;
     overflow: hidden;
 }
 
-/* Contenedor de la barra (Fijado abajo, flotante y centrado) */
+/* --- BARRA DE NAVEGACIÓN (ROUTER) --------- */
+
 .router {
     width: 400px;
     height: 70px;
@@ -19,7 +22,7 @@ body {
     justify-content: center;
     align-items: center;
     border-radius: 10px;
-    border: 3px solid #333333; /* Estilo de borde grueso wireframe */
+    border: 3px solid #333333;
     box-shadow: 5px 5px 0px #333333;
     z-index: 9999;
     box-sizing: border-box;
@@ -54,7 +57,6 @@ body {
     text-decoration: none;
 }
 
-/* El texto que aparece abajo del ícono */
 .router ul li a .route {
     position: absolute;
     color: #333333;
@@ -66,10 +68,9 @@ body {
     transform: translateY(28px);
 }
 
-/* El ícono centrado */
 .router ul li a .icon {
     position: relative;
-    display: flex;              /* flexbox centra el SVG real */
+    display: flex;
     justify-content: center;
     align-items: center;
     width: auto;
@@ -86,38 +87,36 @@ body {
     overflow: visible !important;
 }
 
-/* --- ESTADOS ACTIVOS (Cuando el JS detecta la página) --- */
+/* Estados Activos */
 .router ul li.active a .icon {
     color: #ffffff;
-    transform: translateY(-35px); /* El ícono sube al círculo */
+    transform: translateY(-35px);
 }
 
 .router ul li.active a .route {
     opacity: 1;
-    transform: translateY(15px); /* El texto aparece abajo */
+    transform: translateY(15px);
 }
 
-/* --- ANIMACIÓN DEL DESPLAZAMIENTO DEL CÍRCULO --- */
+/* Animaciones del Indicador */
 .router ul li:nth-child(1).active ~ .indicador { transform: translateX(calc(70px * 0)); }
 .router ul li:nth-child(2).active ~ .indicador { transform: translateX(calc(70px * 1)); }
 .router ul li:nth-child(3).active ~ .indicador { transform: translateX(calc(70px * 2)); }
 .router ul li:nth-child(4).active ~ .indicador { transform: translateX(calc(70px * 3)); }
 .router ul li:nth-child(5).active ~ .indicador { transform: translateX(calc(70px * 4)); }
 
-/* El círculo indicador (burbuja) */
 .indicador {
     position: absolute;
     top: -50%;
     width: 70px;
     height: 70px;
-    background: #7485e6; 
+    background: #7485e6;
     border-radius: 50%;
-    border: 4px solid #333333; 
+    border: 4px solid #333333;
     transition: 0.5s;
     box-sizing: border-box;
 }
 
-/* Recortes curvos para simular la fusión con la barra*/
 .indicador::before {
     content: "";
     position: absolute;
@@ -142,55 +141,64 @@ body {
     box-shadow: -1px -10px 0 0 #333333;
 }
 
-/* Estilos extra para carteles de alerta (Flash) */
-.flash-container { 
-    position: fixed; 
-    top: 20px; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    z-index: 10000; 
-    width: 90%; 
-    max-width: 350px; 
+/* ========================================== */
+/* --- ALERTAS GLOBALES (FLASH MESSAGES) ---- */
+/* ========================================== */
+
+.flash-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    width: 90%;
+    max-width: 350px;
 }
 
-.flash-message { 
-    background: #fff; 
-    border: 3px solid #333; 
-    padding: 12px; 
-    display: flex; 
-    justify-content: space-between; 
-    box-shadow: 4px 4px 0px #333; 
-    font-weight: bold; 
-    font-family: 'Poppins', sans-serif; 
+.flash-message {
+    background: #fff;
+    border: 3px solid #333;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 4px 4px 0px #333;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
 }
 
-.flash-message.error { 
-    background-color: #ffb7b2; 
+.flash-message.error {
+    background-color: #ffb7b2;
 }
 
-.flash-message.success { 
-    background-color: #a8ded9; 
+.flash-message.success {
+    background-color: #a8ded9;
 }
 
-/* Contenedor del desplegable (Posicionado justo arriba del ícono de usuario) */
+/* ========================================== */
+/* --- MENÚ DESPLEGABLE DE USUARIO ---------- */
+/* ========================================== */
+
 .user-dropdown {
     position: absolute;
-    bottom: 85px; /* Se eleva por encima de la barra router */
+    bottom: 85px;
     left: 50%;
     transform: translateX(-50%);
     background-color: #ffffff;
     min-width: 140px;
-    border: 3px solid #333333; /* Mismo borde grueso neubrutalista */
-    box-shadow: 4px 4px 0px #333333; /* Sombra sólida haciendo juego */
+    border: 3px solid #333333;
+    box-shadow: 4px 4px 0px #333333;
     border-radius: 8px;
     z-index: 99999;
     box-sizing: border-box;
-    display: none; /* Arranca oculto */
+    display: none;
 }
 
-/* El enlace de Cerrar Sesión interno */
+.user-dropdown.show {
+    display: block !important;
+}
+
 .user-dropdown .dropdown-item {
-    color: #ff6b6b !important; /* Rojo llamativo estilo wireframe */
+    color: #ff6b6b !important;
     padding: 10px 12px;
     text-decoration: none;
     display: flex;
@@ -204,13 +212,244 @@ body {
     transition: background 0.2s ease;
 }
 
-/* Hover del botón */
 .user-dropdown .dropdown-item:hover {
     background-color: #f7f7f7;
     border-radius: 4px;
 }
 
-/* Clase que inyecta JavaScript para mostrar el menú */
-.user-dropdown.show {
-    display: block !important;
+/* ========================================== */
+/* --- MODAL CREADOR DE VIAJES -------------- */
+/* ========================================== */
+
+.modal-creador-oculto {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-creador-oculto.activo {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-creador-contenido {
+    background-color: var(--color-fondo, #f4f6f9);
+    width: 95%;
+    max-width: 800px;
+    height: 60vh;
+    max-height: 90vh;
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.modal-creador-contenido::-webkit-scrollbar {
+    display: none;
+}
+
+.btn-cerrar-modal {
+    position: absolute;
+    top: 15px; right: 15px;
+    background: rgba(0,0,0,0.4);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.btn-cerrar-modal:hover {
+    background: rgba(0,0,0,0.7);
+}
+
+/* --- Header y Título del Creador --- */
+.header-creador {
+    position: relative;
+    width: 100%;
+    min-height: 100px;
+    background-color: #e1ece9;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.acciones-header-creador {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+}
+
+.header-creador .contenedor-titulo-editable {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-creador .input-titulo-viaje {
+    width: 80%;
+    max-width: 600px;
+    background: transparent;
+    border: none;
+    text-align: center;
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: #2c3e50;
+    font-family: inherit;
+    outline: none;
+    padding: 10px;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom 0.3s ease;
+    box-sizing: border-box;
+}
+
+.header-creador .input-titulo-viaje:focus {
+    border-bottom: 2px solid #3498db;
+}
+
+.header-creador .input-titulo-viaje::placeholder {
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+/* --- Línea de Tiempo y Tarjetas --- */
+.linea-tiempo-creador {
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.tarjeta-parada-creador {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #dcdde1;
+    overflow: hidden;
+}
+
+.tarjeta-parada-creador .tarjeta-header {
+    padding: 15px 20px;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.tarjeta-parada-creador .selector-ciudad {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.tarjeta-parada-creador .buscador-ciudad-wrapper {
+    width: 95%;
+    max-width: 500px;
+}
+
+.tarjeta-parada-creador .input-buscador-ciudad {
+    width: 100%;
+    text-align: center;
+    font-size: 1.1rem;
+    box-sizing: border-box;
+}
+
+.tarjeta-parada-creador .btn-eliminar-parada {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.linea-tiempo-creador .tarjeta-parada-creador:first-child .btn-eliminar-parada {
+    display: none;
+}
+
+/* --- Cuerpo e Imán de la Parada --- */
+.tarjeta-cuerpo-reducido {
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.seccion-iman-creador {
+    width: 180px;
+    height: 180px;
+}
+
+/* --- Botones Inferiores --- */
+.acciones-creador {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px 20px 30px 20px;
+    background-color: transparent;
+    border-top: none;
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+}
+
+.btn-primario-creador, .btn-secundario-creador {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-primario-creador {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primario-creador:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.btn-secundario-creador {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.btn-secundario-creador:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
 }

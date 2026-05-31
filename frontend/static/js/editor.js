@@ -237,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         contadorParadas++;
         lineaTiempo.appendChild(nuevaTarjeta);
+        nuevaTarjeta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
 
     // MODALES Y EVENTOS GLOBALES DE CIERRE
