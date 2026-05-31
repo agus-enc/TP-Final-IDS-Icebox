@@ -66,3 +66,6 @@ CREATE TABLE imagenes (
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     FOREIGN KEY (id_viaje) REFERENCES viajes(id_viaje) ON DELETE CASCADE
 );
+
+INSERT INTO usuarios (nombre_usuario, email, password, rol) 
+VALUES ('Admin Icebox', 'admin@icebox.com', 'admin123', 'admin');
