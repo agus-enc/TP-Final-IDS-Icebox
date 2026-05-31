@@ -1,0 +1,62 @@
+/* Estilos para el contenedor principal */
+.admin-container {
+    padding: 40px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    background-color: #F2E9E4;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding-bottom: 120px;
+}
+
+/* Título Principal */
+.admin-title {
+    border: 3px solid #333333;
+    display: inline-block;
+    padding: 12px 24px;
+    background: #ffffff;
+    box-shadow: 5px 5px 0px #333333;
+    margin-top: 20px;
+}
+
+/* Tarjeta contenedora del gráfico */
+.chart-card {
+    margin: 40px auto;
+    border: 3px solid #333333;
+    background: white;
+    max-width: 550px;
+    padding: 20px;
+    box-shadow: 6px 6px 0px #333333;
+    border-radius: 8px;
+}
+
+.chart-card h3 {
+    margin-top: 0;
+    color: #333333;
+}
+
+.chart-img {
+    width: 100%;
+    border: 2px solid #333333;
+    display: block;
+}
+
+/* Botón de descarga PDF */
+.btn-download-pdf {
+    text-decoration: none;
+    display: inline-block;
+    background: #a8ded9;
+    color: #333333;
+    font-weight: bold;
+    padding: 15px 30px;
+    border: 3px solid #333333;
+    box-shadow: 4px 4px 0px #333333;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: transform 0.1s ease;
+}
+
+.btn-download-pdf:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #333333;
+}
