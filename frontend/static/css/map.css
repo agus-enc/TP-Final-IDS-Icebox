@@ -137,7 +137,7 @@ button.iman-viaje .iman-pin { /* Pin del imán (dsp sacar) */
   width: 12px;
   height: 12px;
   background-color: #0074d9;
-  border: 2px solid #1a2332;
+  border: 2px solid #22223B;
   border-radius: 50%;
   position: absolute;
   top: 12px;
@@ -165,4 +165,54 @@ button.iman-viaje .iman-pin { /* Pin del imán (dsp sacar) */
   word-break: break-word;
   text-align: center;
   width: 100%;
+}
+
+.modal-oculto {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7); /* Oscurece fondo */
+  z-index: 100000; 
+  transform: none;
+  box-sizing: border-box;
+}
+
+#modal-resenia {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.7);
+  z-index: 999999;
+}
+
+#modal-resenia.activo {
+  display: flex;
+}
+
+#modal-resenia .modal-contenido {
+  position: relative;
+  background: #C9ADA7;
+  width: 90%;
+  max-width: 750px;
+  padding: 35px;
+  border-radius: 14px;
+  border: 2.5px solid #22223B;
+  box-shadow: 6px 6px 0px #22223B;
+}
+
+.btn-cerrar {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
 }
