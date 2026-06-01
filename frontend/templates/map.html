@@ -16,8 +16,26 @@
       <button onclick="document.getElementById('sidebar').classList.remove('active')">&times;</button>
     </div>
     <div class="sidebar-content">
-      <p> </p>
+      
+      <div class="iman-viaje">
+        <div class="iman-pin"></div>
+        <div class="iman-destino">Buenos Aires</div>
+        <div class="iman-fecha">Dic 2025</div> </div>
+
+      <div class="iman-viaje">
+        <div class="iman-pin"></div>
+        <div class="iman-destino">Córdoba</div>
+        <div class="iman-fecha">May 2024</div>
+      </div>
     </div>
+    
+  </div>
+
+  <div id="modal-resenia" class="modal-oculto">
+  <div class="modal-contenido">
+    <button class="btn-cerrar" onclick="cerrarModal()">&times;</button>
+    <div id="contenido-resenia">
+      </div>
   </div>
 
 {% endblock %}
@@ -25,8 +43,8 @@
 {% block extra_js %}
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // const PAISES_VISITADOS = {{ paises_visitados | tojson }};
-    const PAISES_VISITADOS = ["ARG", "BRA", "ESP", "USA", "FRA"];
+    const PAISES_VISITADOS = {{ paises_visitados | tojson }};
+    const DATOS_IMANES = {{ datos_imanes | tojson }};
   </script>
   <script src="{{ url_for('static', filename='js/map.js') }}"></script>
 {% endblock %}

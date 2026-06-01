@@ -51,3 +51,118 @@ body {
 .leaflet-popup-tip {
     background-color: #fbf8f6; 
 }
+
+.btn-iman {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 15px;
+  background-color: #ff9e00; /* Color naranja tipo imán */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+
+.btn-iman:hover {
+  transform: scale(1.05); /* Efecto de que sobresale */
+}
+
+.modal-oculto {
+  display: none; /* Invisible */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000; /* Por encima del panel */
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.modal-oculto.activo {
+  display: block;
+}
+
+body.modal-abierto {
+  overflow: hidden;
+}
+
+.sidebar-content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+  gap: 30px 15px; /* 30px de separación vertical, 15px horizontal */
+  justify-items: center;
+  padding-top: 25px;
+}
+
+.iman-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+button.iman-viaje {
+  width: 115px;   /* Tamaño */
+  height: 115px;
+  background: #ffffff;
+  background-image: none;
+  border: 2.5px solid #1a2332;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 4px 4px 0px #1a2332;
+  cursor: pointer;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: visible;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+button.iman-viaje:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #1a2332;
+}
+button.iman-viaje:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #1a2332;
+}
+
+button.iman-viaje .iman-pin { /* Pin del imán (dsp sacar) */
+  width: 12px;
+  height: 12px;
+  background-color: #0074d9;
+  border: 2px solid #1a2332;
+  border-radius: 50%;
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.iman-texto-abajo {
+  margin-top: 12px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(2px); 
+}
+
+.iman-texto-abajo .iman-destino {
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  color: #1a2332;
+  line-height: 1.3;
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
+  width: 100%;
+}

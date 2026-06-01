@@ -47,3 +47,28 @@ def eliminar_iman_por_id(id_iman: int) -> bool:
     filas_afectadas = ejecutar_mutacion(sql_borrar, {'id_iman': id_iman})
 
     return filas_afectadas > 0
+
+def obtener_imanes_por_pais(codigo_iso: str) -> list:
+    """
+    Obtiene todos los imanes de un país usando su código ISO (ej: 'ARG').
+    """
+    sql = '''
+        SELECT i.id_iman, i.imagen_url, c.nombre AS nombre_ciudad, p.nombre AS nombre_pais
+        FROM imanes i
+        JOIN ciudades c ON i.id_ciudad = c.id_ciudad
+        JOIN paises p ON c.id_pais = p.id_pais
+        WHERE p.codigo_iso = %(codigo_iso)s
+    '''
+    return ejecutar_consulta(sql, {"codigo_iso": codigo_iso})
+
+def obtener_relato_por_iman(id_iman: int) -> str | None:
+    """Busca el relato_texto de la parada asociada a un imán específico."""
+    sql = '''
+        SELECT p.relato_texto 
+        FROM paradas p
+        JOIN imanes i ON p.id_parada = i.id_parada
+        WHERE i.id_iman = %(id_iman)s
+    '''
+    resultado = ejecutar_consulta(sql, {"id_iman": id_iman})
+    
+    return resultado[0]['relato_texto'] if resultado else None

@@ -1,4 +1,3 @@
-alert("¡EL JAVASCRIPT ESTÁ CORRIENDO!");
 const map = L.map('map', { // Limites del mapa 
   minZoom: 2,
   maxBounds: [
@@ -32,6 +31,60 @@ function resetHighlight(e) {
     info.update();
 }
 
+function cargarImanesEnSidebar(codigoPais) {
+  const sidebarContent = document.querySelector('.sidebar-content');
+  sidebarContent.innerHTML = ''; 
+
+  const imanes = DATOS_IMANES[codigoPais] || [];
+
+  if (imanes.length === 0) {
+    sidebarContent.innerHTML = '<p>Aún no hay imanes aquí.</p>';
+    return;
+  }
+
+  // Creamos los botones (imanes)
+  imanes.forEach(iman => {
+    const contenedor = document.createElement('div');
+    contenedor.className = 'iman-contenedor';
+
+    const botonIman = document.createElement('button');
+    botonIman.className = 'iman-viaje';
+
+    const pinDiv = document.createElement('div'); // PIN (dsp sacar)
+    pinDiv.className = 'iman-pin';
+    botonIman.appendChild(pinDiv);
+    
+    botonIman.onclick = () => {
+        abrirResenia(iman.relato || "Sin relato disponible.");
+    };
+
+    const bloqueTexto = document.createElement('div');
+    bloqueTexto.className = 'iman-texto-abajo';
+
+    const destinoDiv = document.createElement('div');
+    destinoDiv.className = 'iman-destino';
+    destinoDiv.innerText = iman.nombre_ciudad;
+
+    bloqueTexto.appendChild(destinoDiv);
+
+    contenedor.appendChild(botonIman);  
+    contenedor.appendChild(bloqueTexto); 
+    
+    sidebarContent.appendChild(contenedor);
+  });
+}
+
+function abrirResenia(relato) {
+    const contenedorResenia = document.getElementById('contenedor-resenia'); 
+    
+    if (contenedorResenia) {
+        contenedorResenia.innerText = relato;
+        contenedorResenia.style.display = 'block'; 
+    } else {
+        alert("Reseña: " + relato); 
+    }
+}
+
 const urlPaises = 'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json';
 
 fetch(urlPaises)
@@ -61,7 +114,7 @@ fetch(urlPaises)
               const sidebar = document.getElementById('sidebar');
               if (sidebar) {
                 sidebar.classList.add('active');
-                console.log("Abriendo panel:", feature.properties.name);
+                cargarImanesEnSidebar(feature.id);
               }
             }
           },
@@ -88,3 +141,4 @@ info.update = function (props) {
         : 'Pasa el cursor sobre un país');
 };
 info.addTo(map);
+
