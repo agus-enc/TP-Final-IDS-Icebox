@@ -1,19 +1,30 @@
 /* =========================================================================
    1. CONTENEDOR GENERAL (Capa 0: Fondo Absoluto con UNA SEXTA IMAGEN)
    ========================================================================= */
+
+html, body {
+    background-image: none !important;
+    background-color: #b2a7b0 !important; /* El color liso que elegiste */
+    margin: 0;
+    padding: 0;
+}
+
 .vista-heladera-contexto {
     display: flex; 
-    height: 100vh;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
+    align-items: flex-start;
+    padding-top: 10px; 
+    padding-bottom: 40px;
     
     /* El fondo beige original */
-    background-color: #b2a7b0;
-    background-repeat: no-repeat;
+    background-color: #b2a7b0 !important;
     background-position: center center; 
     /* 'contain' hace que se adapte al alto de la pantalla sin cortarse */
-    background-size: contain; 
+    background-size: cover; 
 }
 
 .heladera-seccion-derecha {
@@ -31,7 +42,7 @@
     display: flex;
     align-items: center; 
     position: relative; 
-    height: 600px; 
+    height: 1400px; 
     width: 1050px; 
 }
 
@@ -42,18 +53,16 @@
     background-color: #4a4848; /* Gris oscuro base */
     background-image: url("../images/fondo_heladera.png");
     background-size: cover;
-    border-radius: 10px 10px 0px 0px;
+    border-radius: 10px 10px 10px 10px;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    border: 4px solid #22223B;
+    border: 3px solid #22223B;
     position: relative; 
     overflow: visible; 
     
     /* Sombras paralelas profundas para proyectar relieve sobre el fondo de viajes */
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35), 0 10px 20px rgba(0, 0, 0, 0.2);
-    
-    /* Reflejo metálico sutil sobre el chasis */
+    box-shadow: 5px 5px 8px 5px rgba(0, 0, 0, 0.35), 0 10px 20px rgba(0, 0, 0, 0.2);
    
 }
 
@@ -62,7 +71,7 @@
     background-color: #666769;
     background-image: url("../images/heladera.png");
     background-size: cover;
-    border: 3px solid #000000;
+    border: 3px solid #22223B;
     position: absolute; 
     left: 8px;
     right: 8px;
@@ -73,15 +82,15 @@
 .refrigerator-door.top {
     border-radius: 8px 8px 8px 8px;
     top: 8px;
-    height: 76%;
+    height: 35%;
     box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.15);
 }
 
 /* Puerta inferior (Heladera común) */
 .refrigerator-door.bottom {
     border-radius: 8px 8px;
-    bottom: -10px;
-    height: 18%;
+    bottom: 10px;
+    height: 62%;
     box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.08);
     pointer-events: none;
 }
@@ -90,7 +99,7 @@
 .refrigerator-handle {
     background-color: #cbd5e1;
     background-image: url("../images/manija.png");
-    border: 2px solid #000000;
+    border: 2px solid #22223B;
     border-radius: 2px;
     position: absolute;
     width: 12px;
@@ -104,7 +113,7 @@
 }
 
 .bottom .refrigerator-handle {
-    height: 60px;
+    height: 400px;
     top: 35px;
     left: 35px;
 }
@@ -114,9 +123,10 @@
    ========================================================================= */
 .gaveta-guardar {
     width: 100px;
-    height: 90%; 
+    height: 35%; 
     position: relative;
-    right: -30px; 
+    bottom: 420px;
+    right: -50px; 
     flex-shrink: 0;
     
     background-color: #746672;
@@ -128,14 +138,13 @@
     align-items: center;
     padding: 15px;
     text-align: center;
-    box-shadow: 5px 5px 0px #C9ADA7; 
+    box-shadow: 5px 5px 0px #9a8c98; 
     box-sizing: border-box;
     transition: all 0.25s ease;
 }
 
 .gaveta-guardar.active {
     background-color: #e95f5f; 
-    border-style: solid;
     border-color: #22223B;
     transform: scale(1.05) translateY(-5px);
 }
@@ -143,6 +152,11 @@
 .gaveta-guardar.active .gaveta-icono {
     transform: scale(1.3) translateY(-5px);
 }
+
+.gaveta-guardar.active .gaveta-texto {
+    color: #ffffff;
+}
+
 .gaveta-icono {
     font-size: 1.5rem;
     margin-bottom: 12px;

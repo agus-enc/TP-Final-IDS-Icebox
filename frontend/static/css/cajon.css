@@ -1,10 +1,18 @@
 /* =========================================================================
    1. CONTENEDOR GENERAL DEL CAJÓN DE RECUERDOS
    ========================================================================= */
+
+html, body {
+    background-image: none !important;
+    background-color: #b2a7b0 !important; /* El color liso que elegiste */
+    margin: 0;
+    padding: 0;
+}
+
+   
 .vista-cajon-contexto {
-    max-width: 1200px;
+    max-width: 1250px;
     margin: 40px auto 0 auto;
-    padding: 15px;
     font-family: 'Poppins', sans-serif;
     background-color: #b2a7b0;
     background-image: none !important;
@@ -16,13 +24,14 @@
     width: 100%;
     display: flex;
     flex-direction: row-reverse; /* Coloca la gaveta a la izquierda */
+    gap: 30px;
 }
 
 .cajon-marco {
-    background-color: #7f6756;
+    background-color: #b2a7b0;
     border: 3px solid #22223B;
     padding: 20px;
-    box-shadow: 5px 5px 0px #C9ADA7;
+    box-shadow: 5px 5px 0px #9a8c98;
     width: 100%;
     min-height: 100%;
     box-sizing: border-box;
@@ -121,7 +130,6 @@
     width: 100px;
     height: 100%; 
     position: relative;
-    right: 50px; 
     flex-shrink: 0;
     
     background-color: #746672;
@@ -133,7 +141,7 @@
     align-items: center;
     padding: 15px;
     text-align: center;
-    box-shadow: 5px 5px 0px #C9ADA7; 
+    box-shadow: 5px 5px 0px #9a8c98; 
     box-sizing: border-box;
     transition: all 0.25s ease;
 }
@@ -157,10 +165,9 @@
 
 /* Efecto Hover / Active Drag */
 .gaveta-devolucion.active {
-    width: 120px;
+    width: 115px;
     background: #4cd137; /* Verde de éxito al arrastrar */
     border-color: #22223B;
-    border-right: 3px solid #22223B; /* Recupera el borde al expandirse */
     transform: scale(1.001) translateY(-3px);
 }
 
