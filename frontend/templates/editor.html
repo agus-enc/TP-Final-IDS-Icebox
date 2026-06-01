@@ -88,8 +88,11 @@
                                 </svg>
                             </button>
 
-                            <label for="foto-parada-{{ loop.index }}" class="contenedor-foto-iman {% if tipo_actual != 'personalizado' %}vacio{% endif %}" {% if tipo_actual == 'personalizado' %}style="background-image: url('{{ parada.imagen_url }}');"{% endif %}>
-                                {% if tipo_actual != 'personalizado' %}
+                            <label for="foto-parada-{{ loop.index }}"
+                                   class="contenedor-foto-iman {% if tipo_actual == 'ninguno' %}vacio{% endif %}"
+                                   {% if tipo_actual != 'ninguno' %}style="background-image: url('{{ parada.imagen_url }}');"{% endif %}>
+
+                                {% if tipo_actual == 'ninguno' %}
                                     <span class="icono-mas">+</span>
                                     <p>Subir Imán</p>
                                 {% endif %}

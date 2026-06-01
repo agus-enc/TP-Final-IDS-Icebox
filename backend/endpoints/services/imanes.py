@@ -93,7 +93,7 @@ def procesar_lote_imanes(id_viaje: int, lista_datos: list, archivos_dict: dict) 
                 eliminar_iman_por_parada(id_parada)
 
             pais = item['pais']
-            url_estatica = f"/static/img/imanes/{pais.lower().replace(' ', '_')}.png"
+            url_estatica = f"/static/images/imanes/{pais.lower().replace(' ', '_')}.png"
             nuevo_id = crear_iman(id_parada, url_estatica, predeterminado=True)
             resultados.append({"id_iman": nuevo_id, "id_parada": id_parada, "url": url_estatica})
 

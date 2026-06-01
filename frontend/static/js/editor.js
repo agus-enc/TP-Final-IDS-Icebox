@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (e.target.checked) {
                     inputTipo.value = 'predeterminado';
 
-                    // Limpiar la foto si había una
+                    // Limpiar la foto si el usuario tenía una foto subida
                     seccion.querySelector('.input-archivo-iman').value = '';
                     label.style.backgroundImage = 'none';
                     label.classList.add('vacio');
@@ -180,6 +180,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     seccion.querySelector('.btn-eliminar-iman').style.display = 'none';
                 } else {
                     inputTipo.value = 'ninguno';
+
+                    // NUEVO: Si apagan el oficial, destruimos la bandera pre-cargada
+                    label.style.backgroundImage = 'none';
+                    label.classList.add('vacio');
+                    label.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
                 }
             }
         });
