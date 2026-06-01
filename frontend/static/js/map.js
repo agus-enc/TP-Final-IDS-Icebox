@@ -75,15 +75,38 @@ function cargarImanesEnSidebar(codigoPais) {
 }
 
 function abrirResenia(relato) {
-    const contenedorResenia = document.getElementById('contenedor-resenia'); 
+    const modal = document.getElementById('modal-resenia');
+    const contenido = document.getElementById('contenido-resenia'); 
     
-    if (contenedorResenia) {
-        contenedorResenia.innerText = relato;
-        contenedorResenia.style.display = 'block'; 
+    if (modal && contenido) {
+        contenido.innerText = relato; 
+        modal.classList.add('activo');
+        document.body.classList.add('modal-abierto'); 
     } else {
         alert("Reseña: " + relato); 
     }
 }
+
+// Función nueva para cerrar ÚNICAMENTE el contenedor de la reseña
+function cerrarModal() {
+    const modal = document.getElementById('modal-resenia');
+    if (modal) {
+        modal.classList.remove('activo'); // Oculta el contenedor quitando la clase
+        document.body.classList.remove('modal-abierto');
+    }
+}
+// Permite cerrar el contenedor haciendo clic en el fondo oscuro exterior
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('modal-resenia');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            // Si el clic fue directamente en el fondo negro y no dentro de la tarjeta blanca
+            if (e.target === modal) {
+                cerrarModal();
+            }
+        });
+    }
+});
 
 const urlPaises = 'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json';
 
