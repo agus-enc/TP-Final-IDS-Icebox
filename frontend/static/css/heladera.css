@@ -123,9 +123,9 @@ html, body {
    ========================================================================= */
 .gaveta-guardar {
     width: 100px;
-    height: 35%; 
+    height: 38%; 
     position: relative;
-    bottom: 420px;
+    bottom: 425px;
     right: -50px; 
     flex-shrink: 0;
     
@@ -144,9 +144,10 @@ html, body {
 }
 
 .gaveta-guardar.active {
+    width: 115px;
     background-color: #e95f5f; 
     border-color: #22223B;
-    transform: scale(1.05) translateY(-5px);
+    transform: scale(1.001) translateY(-3px);
 }
 
 .gaveta-guardar.active .gaveta-icono {
