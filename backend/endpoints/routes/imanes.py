@@ -1,8 +1,9 @@
 from flask import Blueprint, jsonify, request
 from ..utils import construir_error
-from ..services.imanes import modificar_posicion_iman, listar_imanes, eliminar_iman, obtener_imanes_por_pais, obtener_resena_iman
+from ..services.imanes import modificar_posicion_iman, listar_imanes, eliminar_iman, obtener_imanes_por_pais, obtener_resena_iman, procesar_lote_imanes
 from ..validators.imanes import validar_id_iman
 from ..validators.lugares import validar_codigo_pais
+import json
 
 imanes_bp = Blueprint("imanes", __name__)
 
@@ -91,7 +92,7 @@ def get_imanes_por_pais(codigo_pais):
         return jsonify({"error": str(e)}), 400
 
     imanes = obtener_imanes_por_pais(id_pais_validado)
-    
+
     return jsonify(imanes), 200
 
 @imanes_bp.route('/imanes/<id_iman>/resena', methods=['GET'])
@@ -107,3 +108,37 @@ def get_resena_iman(id_iman):
         return jsonify({"relato_texto": ""}), 200
 
     return jsonify({"relato_texto": relato}), 200
+
+@imanes_bp.route('/imanes/batch', methods=['POST'])
+def crear_imanes_batch():
+    try:
+        id_viaje = request.form.get('id_viaje')
+
+        # El frontend enviará TODA la estructura de datos empaquetada en este string JSON
+        imanes_data_str = request.form.get('imanes_data')
+
+        if not id_viaje or not imanes_data_str:
+            return jsonify({"errors": [{"message": "Faltan datos obligatorios (id_viaje, imanes_data)."}]}), 400
+
+        id_viaje = int(id_viaje)
+        lista_datos = json.loads(imanes_data_str)
+
+        # request.files es un diccionario nativo de Flask con todos los archivos subidos
+        archivos_dict = request.files
+
+        # Delegamos la responsabilidad de validación y ejecución
+        resultados = procesar_lote_imanes(id_viaje, lista_datos, archivos_dict)
+
+        return jsonify({
+            "message": "Lote de imanes procesado con éxito",
+            "data": resultados
+        }), 201
+
+    except ValueError as ve:
+        # Aquí capturamos nuestros errores personalizados de negocio (Dry-Run)
+        return jsonify(ve.args[0]), 400
+    except json.JSONDecodeError:
+        return jsonify({"errors": [{"message": "El formato de los datos de imanes (JSON) es inválido."}]}), 400
+    except Exception as e:
+        print(f"Error Crítico en POST /imanes/batch: {str(e)}")
+        return jsonify({"errors": [{"message": "Error interno del servidor al procesar el lote de imanes."}]}), 500

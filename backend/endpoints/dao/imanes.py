@@ -48,6 +48,71 @@ def eliminar_iman_por_id(id_iman: int) -> bool:
 
     return filas_afectadas > 0
 
+def existe_iman_predeterminado_en_pais(id_viaje: int, pais: str, excluir_id_parada: int = 0) -> bool:
+    """
+    Verifica si en el viaje actual ya existe un imán 'predeterminado'
+    asignado a este país (excluyendo la parada que estamos editando actualmente).
+    """
+    query = """
+            SELECT 1
+            FROM imanes i
+                     JOIN paradas p ON i.id_parada = p.id_parada
+                     JOIN ciudades c ON p.id_ciudad = c.id_ciudad
+                     JOIN paises pa ON c.id_pais = pa.id_pais
+            WHERE p.id_viaje = %(id_viaje)s
+              AND pa.nombre = %(pais)s
+              AND i.predeterminado = TRUE
+              AND p.id_parada != %(excluir_id_parada)s
+            LIMIT 1;
+            """
+    parametros = {
+        "id_viaje": id_viaje,
+        "pais": pais,
+        "excluir_id_parada": excluir_id_parada
+    }
+    return len(ejecutar_consulta(query, parametros)) > 0
+
+def crear_iman(id_parada: int, imagen_url: str, predeterminado: bool, posicion_x: int = 50, posicion_y: int = 50) -> int:
+    """
+    Inserta un nuevo imán deduciendo automáticamente el id_usuario e id_ciudad
+    desde las tablas padre (paradas y viajes).
+    """
+    query = """
+            INSERT INTO imanes (id_parada, id_usuario, id_ciudad, imagen_url, posicion_x, posicion_y, predeterminado)
+            SELECT 
+                %(id_parada)s, 
+                v.id_usuario, 
+                p.id_ciudad, 
+                %(imagen_url)s, 
+                %(posicion_x)s, 
+                %(posicion_y)s, 
+                %(predeterminado)s
+            FROM paradas p
+            INNER JOIN viajes v ON p.id_viaje = v.id_viaje
+            WHERE p.id_parada = %(id_parada)s;
+            """
+    parametros = {
+        "id_parada": id_parada,
+        "imagen_url": imagen_url,
+        "posicion_x": posicion_x,
+        "posicion_y": posicion_y,
+        "predeterminado": predeterminado
+    }
+
+    return ejecutar_mutacion(query, parametros)
+
+def obtener_iman_por_parada(id_parada: int) -> dict | None:
+    """Busca si la parada ya tiene un imán asignado para poder borrarlo."""
+    sql = "SELECT id_iman, imagen_url, predeterminado FROM imanes WHERE id_parada = %(id_parada)s"
+    resultados = ejecutar_consulta(sql, {'id_parada': id_parada})
+    return resultados[0] if resultados else None
+
+def eliminar_iman_por_parada(id_parada: int) -> bool:
+    """Borra el registro del imán asociado a una parada específica."""
+    sql = "DELETE FROM imanes WHERE id_parada = %(id_parada)s"
+    return ejecutar_mutacion(sql, {'id_parada': id_parada}) > 0
+
+
 def obtener_imanes_por_pais(codigo_iso: str) -> list:
     """
     Obtiene todos los imanes de un país usando su código ISO (ej: 'ARG').

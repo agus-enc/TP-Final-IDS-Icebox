@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from ..services.imagenes import agregar_imagen_viaje
 from ..validators.imagenes import validar_datos_imagen_viaje
-from ..services.imagenes import remover_fondo, eliminar_portada_viaje
+from ..services.imagenes import eliminar_portada_viaje
 from ..dao.imagenes import obtener_imagenes_viaje_db
 from ..utils import construir_error
 
@@ -44,28 +44,6 @@ def get_imagenes_viaje(id_viaje_str):
         return jsonify(imagenes), 200
     except ValueError:
         return jsonify({"errors": [{"code": "invalid", "message": "ID Invalido"}]}), 400
-
-@imagenes_bp.route("/imagenes/imanes", methods=["POST"])
-def post_imagenes_imanes():
-    try:
-        # Los archivos viajan en request.files
-        if 'imagen' not in request.files:
-            raise ValueError(construir_error(
-                code="missing.file",
-                message="No se encontró el campo 'imagen'.",
-                description="La petición debe enviar el archivo usando form-data."
-            ), 400)
-
-        imagen = request.files['imagen']
-
-        resultado_dto = remover_fondo(imagen)
-
-        return jsonify(resultado_dto), 201
-
-    except ValueError as e:
-        error_dict = e.args[0]
-        status = e.args[1] if len(e.args) > 1 else 400
-        return jsonify(error_dict), status
 
 @imagenes_bp.route("/viajes/<string:id_viaje_str>/imagenes/header", methods=["DELETE"])
 def delete_portada(id_viaje_str):

@@ -47,23 +47,16 @@ def crear_parada(id_viaje: int, body: dict) -> dict:
     }
 
 def obtener_paradas_de_viaje(id_viaje: int) -> list:
-    """Obtiene las paradas y mapea las llaves para compatibilidad con el frontend."""
+    """
+    Valida el id y obtiene las paradas enriquecidas directamente desde el DAO.
+    El formateo de llaves ahora se delega a la consulta SQL.
+    """
     validar_minimo(id_viaje, 1, 'id_viaje')
 
+    # El DAO ya trae texto_resena, pais_ciudad, imagen_url y predeterminado
     paradas_db = obtener_paradas_por_viaje(id_viaje)
 
-    resultados_formateados = []
-    for parada in paradas_db:
-        resultados_formateados.append({
-            "id_parada": parada["id_parada"],
-            "id_viaje": parada["id_viaje"],
-            "id_ciudad": parada["id_ciudad"],
-            "nombre_ciudad": parada["nombre_ciudad"],
-            "texto_resena": parada["relato_texto"],  # Renombra a lo que espera Jinja
-            "orden_en_ruta": parada["orden_en_ruta"]
-        })
-
-    return resultados_formateados
+    return paradas_db
 
 def eliminar_parada(id_parada: int) -> bool:
     """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""

@@ -1,7 +1,9 @@
 import requests
-from flask import Blueprint, render_template, request, redirect, url_for
+import json
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from ..utils import parsear_formulario_paradas, procesar_paquete_iman
+from ..constants import BACKEND_URL
 from auth import login_required
-BACKEND_URL = "http://localhost:5000/endpoints"
 
 viajes_bp = Blueprint('viajes', __name__)
 
@@ -10,28 +12,23 @@ viajes_bp = Blueprint('viajes', __name__)
 def biblioteca():
     return render_template('biblioteca.html')
 
+
 @viajes_bp.route('/viajes/<int:id_viaje>/editar', methods=['GET', 'POST'])
 def editor(id_viaje):
     if request.method == 'POST':
-        # 1. ACTUALIZAR TÍTULO
+        # 1. Actualizar Título y Portada
         titulo_nuevo = request.form.get('titulo_viaje')
         requests.put(f"{BACKEND_URL}/viajes/{id_viaje}", json={"titulo": titulo_nuevo})
 
         foto_portada = request.files.get('foto_portada')
         if foto_portada and foto_portada.filename != '':
             archivos = {'imagen': (foto_portada.filename, foto_portada.read(), foto_portada.content_type)}
-            datos = {'tipo': 'header'}
-            res_img = requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data=datos)
+            requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data={'tipo': 'header'})
 
-            if res_img.status_code not in [200, 201]:
-                print(f"ERROR AL SUBIR PORTADA: {res_img.status_code} - {res_img.text}")
-            else:
-                print("PORTADA SUBIDA CON ÉXITO")
-
-        # 2. PROCESAR BORRADO DE PORTADA Y PARADAS
         if request.form.get('borrar_portada') == 'true':
             requests.delete(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes/header")
 
+        # 2. Borrar paradas eliminadas en la UI
         str_borradas = request.form.get('paradas_borradas')
         if str_borradas:
             ids_a_borrar = str_borradas.split(',')
@@ -39,29 +36,53 @@ def editor(id_viaje):
                 if id_p.strip():
                     requests.delete(f"{BACKEND_URL}/paradas/{id_p.strip()}")
 
-        # 4. PROCESAR FORMULARIO
-        for key in request.form.keys():
-            if key.startswith('texto_parada_'):
-                indice = key.split('_')[-1]
-                id_parada = request.form.get(f'id_parada_{indice}')
-                id_ciudad = request.form.get(f'ciudad_parada_{indice}')
-                texto = request.form.get(f'texto_parada_{indice}')
+        # 3. Procesar Paradas e Imanes usando los Helpers
+        paradas_data = parsear_formulario_paradas(request.form, request.files)
+        lote_imanes = []
+        archivos_imanes = {}
 
-                payload_parada = {
-                    "id_viaje": id_viaje,
-                    "id_ciudad": int(id_ciudad) if id_ciudad else 0,
-                    "orden_en_ruta": int(indice),
-                    "texto_resena": texto
-                }
+        for p_data in paradas_data:
+            payload_parada = {
+                "id_viaje": id_viaje,
+                "id_ciudad": p_data['id_ciudad'],
+                "orden_en_ruta": p_data['indice'],
+                "texto_resena": p_data['texto_resena']
+            }
 
-                if id_parada:
-                    requests.put(f"{BACKEND_URL}/paradas/{id_parada}", json=payload_parada)
-                else:
-                    requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada)
+            id_parada = p_data['id_parada']
+
+            # A. Guardar o Actualizar Parada
+            if id_parada:
+                requests.put(f"{BACKEND_URL}/paradas/{id_parada}", json=payload_parada)
+            else:
+                resp_parada = requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada)
+                if resp_parada.status_code in [200, 201]:
+                    id_parada = resp_parada.json().get('id_parada')
+
+            # B. Empaquetar Imán
+            if id_parada:
+                procesar_paquete_iman(lote_imanes, archivos_imanes, id_parada, p_data)
+
+        # 4. Enviar Batch de Imanes
+        if lote_imanes:
+            payload_batch = {"id_viaje": id_viaje, "imanes_data": json.dumps(lote_imanes)}
+            res_batch = requests.post(f"{BACKEND_URL}/imanes/batch", data=payload_batch, files=archivos_imanes)
+
+            if res_batch.status_code != 201:
+                try:
+                    error_data = res_batch.json()
+                    mensaje = error_data['errors'][0].get('message', '') if 'errors' in error_data else ''
+                    flash(f"Cambios guardados, pero falló un imán: {mensaje}", "error")
+                except:
+                    flash("Cambios guardados, pero ocurrió un error con los imanes.", "error")
+            else:
+                flash("¡Viaje e imanes actualizados con éxito!", "success")
+        else:
+            flash("¡Viaje guardado con éxito!", "success")
 
         return redirect(url_for('viajes.editor', id_viaje=id_viaje))
 
-    # GET: CARGAR LA PÁGINA
+    # GET: CARGAR LA PÁGINA (Sin cambios estructurales)
     resp_viaje = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
     viaje_real = resp_viaje.json() if resp_viaje.status_code == 200 else {}
 
@@ -74,11 +95,77 @@ def editor(id_viaje):
     resp_imagenes = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes")
     imagenes_reales = resp_imagenes.json() if resp_imagenes.status_code == 200 else []
 
-    # Busca si existe alguna imagen de tipo "header" y extrae su URL
     viaje_real['url_portada'] = next((img['imagen_url'] for img in imagenes_reales if img['tipo'] == 'header'), None)
 
     return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales, lugares=lugares_reales)
 
+
 @viajes_bp.route('/mockup-diario')
 def mockup_diario():
     return render_template('diario.html')
+
+
+@viajes_bp.route('/crear_viaje', methods=['GET', 'POST'])
+@login_required
+def crear_viaje():
+    if request.method == 'POST':
+        # 1. CREAR EL VIAJE PADRE
+        titulo = request.form.get('titulo_viaje')
+        if not titulo:
+            flash("El título del viaje es obligatorio.", "error")
+            return redirect(url_for('viajes.crear_viaje'))
+
+        res_v = requests.post(f"{BACKEND_URL}/viajes", json={"titulo": titulo})
+        if res_v.status_code not in [200, 201]:
+            flash("Error crítico al crear el viaje en el servidor.", "error")
+            return redirect(url_for('viajes.biblioteca'))
+
+        id_viaje = res_v.json().get('id_viaje')
+
+        # 2. PROCESAR PORTADA (Opcional)
+        foto_portada = request.files.get('foto_portada')
+        if foto_portada and foto_portada.filename != '':
+            archivos = {'imagen': (foto_portada.filename, foto_portada.read(), foto_portada.content_type)}
+            requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data={'tipo': 'header'})
+
+        # 3. CREAR PARADAS Y EMPAQUETAR IMANES (Usando Helpers)
+        paradas_data = parsear_formulario_paradas(request.form, request.files)
+        lote_imanes = []
+        archivos_imanes = {}
+
+        for p_data in paradas_data:
+            payload_parada = {
+                "id_viaje": id_viaje,
+                "id_ciudad": p_data['id_ciudad'],
+                "orden_en_ruta": p_data['indice'],
+                "texto_resena": p_data['texto_resena']
+            }
+
+            # A. Guardamos la Parada
+            resp_parada = requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada)
+
+            if resp_parada.status_code in [200, 201]:
+                id_parada = resp_parada.json().get('id_parada')
+
+                # B. Empaquetar Imán
+                procesar_paquete_iman(lote_imanes, archivos_imanes, id_parada, p_data)
+
+        # 4. ENVIAR BATCH DE IMANES AL BACKEND
+        if lote_imanes:
+            payload_batch = {"id_viaje": id_viaje, "imanes_data": json.dumps(lote_imanes)}
+            res_batch = requests.post(f"{BACKEND_URL}/imanes/batch", data=payload_batch, files=archivos_imanes)
+
+            if res_batch.status_code != 201:
+                flash("Viaje creado, pero hubo un error de validación con los imanes elegidos.", "error")
+            else:
+                flash("¡Viaje y sus imanes creados con éxito!", "success")
+        else:
+            flash("¡Viaje creado con éxito!", "success")
+
+        # Redirigimos al editor del viaje recién creado
+        return redirect(url_for('viajes.editor', id_viaje=id_viaje))
+
+    # GET: Cargar la pantalla vacía
+    resp_lugares = requests.get(f"{BACKEND_URL}/ciudades")
+    lugares_reales = resp_lugares.json() if resp_lugares.status_code == 200 else []
+    return render_template('creador.html', lugares=lugares_reales)

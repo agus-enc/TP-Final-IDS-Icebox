@@ -16,10 +16,11 @@
         <header class="header-viaje" id="header-portada" {% if viaje.url_portada %} style="background-image: url('{{ viaje.url_portada }}');" {% endif %}>
             <div class="overlay-portada"></div>
             <input type="file" id="foto-portada" name="foto_portada" accept="image/png, image/jpeg" style="display: none;">
+
             <div class="acciones-header">
                 <a href="{{ url_for('viajes.biblioteca') }}" class="btn-volver">← Volver a Biblioteca</a>
-                <div class="acciones-portada">
 
+                <div class="acciones-portada">
                     <label for="foto-portada" class="btn-icono-portada" title="Cambiar Portada">
                         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
@@ -33,9 +34,9 @@
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                         </svg>
                     </button>
-
                 </div>
             </div>
+
             <div class="contenedor-titulo-editable">
                 <input type="text" id="titulo-viaje" name="titulo_viaje" class="input-titulo-viaje" placeholder="Dale un nombre a tu viaje" value="{{ viaje.titulo }}">
             </div>
@@ -46,7 +47,6 @@
         </div>
 
         <div class="linea-tiempo">
-
             {% for parada in paradas %}
             <div class="tarjeta-parada">
 
@@ -67,18 +67,53 @@
                         <textarea id="texto-parada-{{ loop.index }}" name="texto_parada_{{ loop.index }}" class="textarea-elegante" placeholder="¿Cómo la pasaste?">{{ parada.texto_resena }}</textarea>
                     </div>
 
-                    <div class="seccion-iman">
-                        <label for="foto-parada-{{ loop.index }}" class="contenedor-foto-iman vacio">
-                            <span class="icono-mas">+</span>
-                            <p>Subir Imán</p>
-                        </label>
-                        <input type="file" id="foto-parada-{{ loop.index }}" name="foto_parada_{{ loop.index }}" accept="image/png, image/jpeg" style="display: none;">
+                    <div class="seccion-iman" id="seccion-iman-{{ loop.index }}">
+
+                        {% set tipo_actual = 'ninguno' %}
+                        {% if parada.imagen_url %}
+                            {% if parada.predeterminado %}
+                                {% set tipo_actual = 'predeterminado' %}
+                            {% else %}
+                                {% set tipo_actual = 'personalizado' %}
+                            {% endif %}
+                        {% endif %}
+
+                        <input type="hidden" name="tipo_iman_{{ loop.index }}" class="input-tipo-iman" value="{{ tipo_actual }}">
+
+                        <div class="contenedor-visual-iman">
+                            <button type="button" class="btn-icono-portada btn-eliminar-iman" title="Eliminar Imán" style="display: {% if tipo_actual == 'personalizado' %}flex{% else %}none{% endif %};">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </button>
+
+                            <label for="foto-parada-{{ loop.index }}" class="contenedor-foto-iman {% if tipo_actual != 'personalizado' %}vacio{% endif %}" {% if tipo_actual == 'personalizado' %}style="background-image: url('{{ parada.imagen_url }}');"{% endif %}>
+                                {% if tipo_actual != 'personalizado' %}
+                                    <span class="icono-mas">+</span>
+                                    <p>Subir Imán</p>
+                                {% endif %}
+                            </label>
+                            <input type="file" id="foto-parada-{{ loop.index }}" class="input-archivo-iman" name="archivo_iman_{{ loop.index }}" accept="image/png, image/jpeg" style="display: none;">
+                        </div>
+
+                        <div class="toggle-iman-wrapper">
+                            <span class="etiqueta-toggle">Imán oficial</span>
+                            <label class="switch">
+                                <input type="checkbox" class="checkbox-iman-oficial" {% if tipo_actual == 'predeterminado' %}checked{% endif %}>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <input type="hidden" name="pais_iman_{{ loop.index }}" class="input-pais-iman" value="{{ parada.pais_ciudad }}">
                     </div>
                 </div>
 
-            </div> {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
 
-        </div><div class="espacio-final-tarjetas" style="padding-bottom: 160px;"></div>
+        <div class="espacio-final-tarjetas" style="padding-bottom: 160px;"></div>
 
         <button type="button" id="btn-agregar-parada" class="btn-flotante btn-flotante-agregar" title="Agregar Nueva Parada">
             <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">

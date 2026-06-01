@@ -70,6 +70,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         inputVisible.value = ciudad.nombre;
                         inputOculto.value = ciudad.id_ciudad;
                         listaResultados.classList.remove('activa');
+                        const tarjeta = wrapper.closest('.tarjeta-parada');
+                        const inputPais = tarjeta.querySelector('.input-pais-iman');
+                        if (inputPais && ciudad.pais) {
+                            inputPais.value = ciudad.pais;
+                        }
                     });
 
                     listaResultados.appendChild(li);
@@ -133,21 +138,66 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // LÍNEA DE TIEMPO (Clonación e Imanes)
 
-    // Delegación de Eventos para Imanes
+    // Interfaz dinámica para los tipos de imán
+    // LÍNEA DE TIEMPO: NUEVA LÓGICA DE IMANES
     if (lineaTiempo) {
-        lineaTiempo.addEventListener('change', function(e) {
-            if (e.target.matches('input[type="file"]')) {
-                const archivo = e.target.files[0];
-                if (archivo) {
-                    const urlImagenTemporal = URL.createObjectURL(archivo);
-                    const labelIman = e.target.previousElementSibling;
 
-                    if (labelIman && labelIman.classList.contains('contenedor-foto-iman')) {
-                        labelIman.style.backgroundImage = `url('${urlImagenTemporal}')`;
-                        labelIman.classList.remove('vacio');
-                        labelIman.innerHTML = '';
-                    }
+        // 1. Cuando suben una foto (Imán Personalizado)
+        lineaTiempo.addEventListener('change', function(e) {
+            if (e.target.matches('input[type="file"].input-archivo-iman')) {
+                const archivo = e.target.files[0];
+                const seccion = e.target.closest('.seccion-iman');
+
+                if (archivo) {
+                    const urlTemporal = URL.createObjectURL(archivo);
+                    const label = seccion.querySelector('.contenedor-foto-iman');
+
+                    label.style.backgroundImage = `url('${urlTemporal}')`;
+                    label.classList.remove('vacio');
+                    label.innerHTML = '';
+
+                    seccion.querySelector('.btn-eliminar-iman').style.display = 'flex';
+                    seccion.querySelector('.input-tipo-iman').value = 'personalizado';
+                    seccion.querySelector('.checkbox-iman-oficial').checked = false;
+                    seccion.querySelector('.contenedor-input-pais').style.display = 'none';
                 }
+            }
+
+            // 2. Cuando tocan el Toggle (Imán Oficial)
+            if (e.target.matches('.checkbox-iman-oficial')) {
+                const seccion = e.target.closest('.seccion-iman');
+                const inputTipo = seccion.querySelector('.input-tipo-iman');
+                const label = seccion.querySelector('.contenedor-foto-iman');
+
+                if (e.target.checked) {
+                    inputTipo.value = 'predeterminado';
+
+                    // Limpiar la foto si había una
+                    seccion.querySelector('.input-archivo-iman').value = '';
+                    label.style.backgroundImage = 'none';
+                    label.classList.add('vacio');
+                    label.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
+                    seccion.querySelector('.btn-eliminar-iman').style.display = 'none';
+                } else {
+                    inputTipo.value = 'ninguno';
+                }
+            }
+        });
+
+        // 3. Cuando tocan la X para borrar la foto
+        lineaTiempo.addEventListener('click', function(e) {
+            const btnEliminar = e.target.closest('.btn-eliminar-iman');
+            if (btnEliminar) {
+                const seccion = btnEliminar.closest('.seccion-iman');
+                const label = seccion.querySelector('.contenedor-foto-iman');
+
+                seccion.querySelector('.input-archivo-iman').value = '';
+                label.style.backgroundImage = 'none';
+                label.classList.add('vacio');
+                label.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
+
+                btnEliminar.style.display = 'none';
+                seccion.querySelector('.input-tipo-iman').value = 'ninguno';
             }
         });
     }
@@ -218,21 +268,47 @@ document.addEventListener('DOMContentLoaded', function() {
             protegerConAutoguardado(textareaClonado);
             habilitarModoZen(textareaClonado);
         }
+        
+        // 4. Clonar la Sección del Imán (NUEVA UI)
+        const seccionIman = nuevaTarjeta.querySelector('.seccion-iman');
+        if (seccionIman) {
+            seccionIman.id = "seccion-iman-" + contadorParadas;
 
-        // Clonar Imán
-        const contenedorIman = nuevaTarjeta.querySelector('.contenedor-foto-iman');
-        const inputIman = nuevaTarjeta.querySelector('input[type="file"]');
+            // Reset Input Oculto
+            const inputTipo = seccionIman.querySelector('.input-tipo-iman');
+            if(inputTipo) {
+                inputTipo.name = "tipo_iman_" + contadorParadas;
+                inputTipo.value = "ninguno";
+            }
 
-        if (contenedorIman && inputIman){
-            contenedorIman.className = "contenedor-foto-iman vacio";
-            contenedorIman.style.backgroundImage = 'none';
-            contenedorIman.innerHTML = `
-                <span class="icono-mas">+</span>
-                <p>Subir Imán</p>
-            `;
-            contenedorIman.setAttribute('for', "foto-parada-" + contadorParadas);
-            inputIman.id = "foto-parada-" + contadorParadas;
-            inputIman.name = "foto_parada_" + contadorParadas;
+            // Reset Archivo y Visuales
+            const inputArchivo = seccionIman.querySelector('.input-archivo-iman');
+            const contenedorFoto = seccionIman.querySelector('.contenedor-foto-iman');
+            const btnEliminar = seccionIman.querySelector('.btn-eliminar-iman');
+
+            if (inputArchivo && contenedorFoto) {
+                inputArchivo.id = "foto-parada-" + contadorParadas;
+                inputArchivo.name = "archivo_iman_" + contadorParadas;
+                inputArchivo.value = "";
+
+                contenedorFoto.setAttribute('for', "foto-parada-" + contadorParadas);
+                contenedorFoto.className = "contenedor-foto-iman vacio";
+                contenedorFoto.style.backgroundImage = 'none';
+                contenedorFoto.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
+            }
+            if (btnEliminar) btnEliminar.style.display = 'none';
+
+            // Reset Toggle y País
+            const toggleOficial = seccionIman.querySelector('.checkbox-iman-oficial');
+            if (toggleOficial) toggleOficial.checked = false;
+
+            const inputPais = seccionIman.querySelector('.input-pais-iman');
+            if (inputPais) {
+                inputPais.name = "pais_iman_" + contadorParadas;
+                inputPais.value = "";
+            }
+
+            seccionIman.querySelector('.contenedor-input-pais').style.display = 'none';
         }
 
         contadorParadas++;

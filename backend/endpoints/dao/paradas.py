@@ -27,13 +27,18 @@ def insertar_parada_con_iman(id_viaje: int, id_usuario: int, id_ciudad: int, ord
 
 def obtener_paradas_por_viaje(id_viaje: int) -> list:
     """
-    Obtiene todas las paradas de un viaje en orden.
+    Obtiene todas las paradas de un viaje en orden,
+    incluyendo su país y su imán (si es que tiene uno).
     """
     sql = '''
-        SELECT p.id_parada, p.id_viaje, p.id_ciudad, p.orden_en_ruta, p.relato_texto,
-               c.nombre AS nombre_ciudad
+        SELECT p.id_parada, p.id_viaje, p.id_ciudad, p.orden_en_ruta, p.relato_texto AS texto_resena,
+               c.nombre AS nombre_ciudad,
+               pais.nombre AS pais_ciudad,
+               i.id_iman, i.imagen_url, i.predeterminado
         FROM paradas p
         JOIN ciudades c ON p.id_ciudad = c.id_ciudad
+        JOIN paises pais ON c.id_pais = pais.id_pais
+        LEFT JOIN imanes i ON p.id_parada = i.id_parada
         WHERE p.id_viaje = %(id_viaje)s
         ORDER BY p.orden_en_ruta ASC
     '''

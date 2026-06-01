@@ -25,5 +25,9 @@ def obtener_todos_los_paises_db() -> list:
     return resultados
 
 def obtener_todas_las_ciudades_db() -> list:
-    sql = 'SELECT id_ciudad, nombre FROM ciudades'
+    sql = '''
+        SELECT c.id_ciudad, c.nombre, p.nombre as pais 
+        FROM ciudades c
+        JOIN paises p ON c.id_pais = p.id_pais
+    '''
     return ejecutar_consulta(sql, None)
