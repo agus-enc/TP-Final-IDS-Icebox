@@ -1,6 +1,6 @@
 import requests
 import json
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from utils import parsear_formulario_paradas, procesar_paquete_iman
 from constants import BACKEND_URL
 from auth import login_required
@@ -11,7 +11,6 @@ viajes_bp = Blueprint('viajes', __name__)
 @login_required
 def biblioteca():
     return render_template('biblioteca.html')
-
 
 @viajes_bp.route('/viajes/<int:id_viaje>/editar', methods=['GET', 'POST'])
 @login_required
@@ -100,11 +99,9 @@ def editor(id_viaje):
 
     return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales, lugares=lugares_reales)
 
-
 @viajes_bp.route('/mockup-diario')
 def mockup_diario():
     return render_template('diario.html')
-
 
 @viajes_bp.route('/crear_viaje', methods=['GET', 'POST'])
 @login_required
@@ -116,7 +113,12 @@ def crear_viaje():
             flash("El título del viaje es obligatorio.", "error")
             return redirect(url_for('viajes.crear_viaje'))
 
-        res_v = requests.post(f"{BACKEND_URL}/viajes", json={"titulo": titulo})
+        # EXTRAEMOS EL ID DEL USUARIO DESDE LA SESIÓN DE FLASK
+        usuario_id = session.get('usuario_id')
+
+        # AGREGAMOS EL ID A LA URL DEL BACKEND
+        res_v = requests.post(f"{BACKEND_URL}/{usuario_id}/viajes", json={"titulo": titulo})
+
         if res_v.status_code not in [200, 201]:
             flash("Error crítico al crear el viaje en el servidor.", "error")
             return redirect(url_for('viajes.biblioteca'))

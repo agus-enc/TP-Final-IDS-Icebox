@@ -58,7 +58,7 @@ def login():
 
         if nombre_usuario == 'fiuba' and password == 'ids':
             session.permanent = False
-            session['usuario_id'] = 100
+            session['usuario_id'] = 1
             session['es_admin'] = True
             flash('Sesión iniciada correctamente', 'success')
             return redirect(url_for('imanes.mostrar_heladera'))

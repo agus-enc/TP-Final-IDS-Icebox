@@ -95,11 +95,11 @@
 
             <button type="button" id="btn-cerrar-creador" class="btn-cerrar-modal" title="Cerrar">&times;</button>
 
-            <form id="form-creador-viaje">
+            <form id="form-creador-viaje" action="{{ url_for('viajes.crear_viaje') }}" method="POST" enctype="multipart/form-data">
 
                 <header class="header-creador" id="header-creador-portada">
                     <div class="contenedor-titulo-editable">
-                        <input type="text" id="titulo-viaje-creador" class="input-titulo-viaje" placeholder="Dale un nombre a tu viaje" required>
+                        <input type="text" id="titulo-viaje-creador" name="titulo_viaje" class="input-titulo-viaje" placeholder="Dale un nombre a tu viaje" required>
                     </div>
                 </header>
 
@@ -108,26 +108,48 @@
                     <div class="tarjeta-parada-creador">
                         <div class="tarjeta-header">
                             <div class="selector-ciudad">
-                                <div class="buscador-ciudad-wrapper">
-                                    <input type="text" class="input-buscador-ciudad" placeholder="¿Qué ciudad visitarás?" autocomplete="off" required>
+                                <div class="buscador-ciudad-wrapper" id="wrapper-ciudad-creador-1">
+                                    <input type="text" class="input-buscador-ciudad" id="input-ciudad-creador-1" placeholder="¿Qué ciudad visitarás?" autocomplete="off" required>
+                                    <input type="hidden" name="ciudad_parada_1" id="hidden-ciudad-creador-1" value="">
+                                    <ul class="lista-resultados-ciudad" id="resultados-ciudad-creador-1"></ul>
                                 </div>
                             </div>
                             <button type="button" class="btn-eliminar-parada" title="Eliminar Parada">&times;</button>
                         </div>
 
                         <div class="tarjeta-cuerpo-reducido">
-                            <div class="seccion-iman-creador">
-                                <label for="foto-parada-creador-1" class="contenedor-foto-iman vacio">
-                                    <span class="icono-mas">+</span>
-                                    <p>Subir Imán</p>
-                                </label>
-                                <input type="file" id="foto-parada-creador-1" accept="image/png, image/jpeg" style="display: none;">
+                            <input type="hidden" name="texto_parada_1" value="">
+
+                            <div class="seccion-iman" id="seccion-iman-1">
+                                <input type="hidden" name="tipo_iman_1" class="input-tipo-iman" value="ninguno">
+
+                                <div class="contenedor-visual-iman">
+                                    <button type="button" class="btn-icono-portada btn-eliminar-iman" title="Eliminar Imán" style="display: none;">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                    </button>
+                                    <label for="foto-parada-creador-1" class="contenedor-foto-iman vacio">
+                                        <span class="icono-mas">+</span>
+                                        <p>Subir Imán</p>
+                                    </label>
+                                    <input type="file" id="foto-parada-creador-1" class="input-archivo-iman" name="archivo_iman_1" accept="image/png, image/jpeg" style="display: none;">
+                                </div>
+
+                                <div class="toggle-iman-wrapper">
+                                    <span class="etiqueta-toggle">Imán oficial</span>
+                                    <label class="switch">
+                                        <input type="checkbox" class="checkbox-iman-oficial">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+
+                                <input type="hidden" name="pais_iman_1" class="input-pais-iman" value="">
                             </div>
                         </div>
                     </div>
-
                 </div>
-
                 <div class="acciones-creador">
                     <button type="button" id="btn-crear-parada-creador" class="btn-secundario-creador">
                         <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -146,10 +168,18 @@
                         Crear Viaje
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule="" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <script>
+        const CIUDADES_DB = {{ lugares | tojson | safe }};
+    </script>
+
+    <script src="{{ url_for('static', filename='js/main.js')}}"></script>
 
 </body>
 </html>
