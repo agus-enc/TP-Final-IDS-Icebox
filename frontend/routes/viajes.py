@@ -1,8 +1,8 @@
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from ..utils import parsear_formulario_paradas, procesar_paquete_iman
-from ..constants import BACKEND_URL
+from utils import parsear_formulario_paradas, procesar_paquete_iman
+from constants import BACKEND_URL
 from auth import login_required
 
 viajes_bp = Blueprint('viajes', __name__)
@@ -14,6 +14,7 @@ def biblioteca():
 
 
 @viajes_bp.route('/viajes/<int:id_viaje>/editar', methods=['GET', 'POST'])
+@login_required
 def editor(id_viaje):
     if request.method == 'POST':
         # 1. Actualizar Título y Portada
