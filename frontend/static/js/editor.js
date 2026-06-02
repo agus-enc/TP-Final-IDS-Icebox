@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const coincidencias = CIUDADES_DB.filter(ciudad =>
+            constGrid = coincidencia = CIUDADES_DB.filter(ciudad =>
                 ciudad.nombre.toLowerCase().includes(valorBuscado) ||
                 (ciudad.pais && ciudad.pais.toLowerCase().includes(valorBuscado))
             );
@@ -371,4 +371,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // DETECTOR AUTOMÁTICO DE ENFOQUE DESDE HELADERA O CAJÓN
+    const parametrosUrl = new URLSearchParams(window.location.search);
+    const idCiudadABuscar = parametrosUrl.get("buscar_id_ciudad");
+
+    if (idCiudadABuscar) {
+        // Un pequeño timeout garantiza que los textareas carguen sus valores desde el LocalStorage primero
+        setTimeout(() => {
+            // Buscamos el input oculto que guarda el id_ciudad en cada tarjeta
+            const inputsOcultosCiudades = document.querySelectorAll(".tarjeta-parada input[type='hidden'][id^='hidden-ciudad-']");
+            
+            inputsOcultosCiudades.forEach(inputOculto => {
+                // Comparamos si el ID de la ciudad coincide con el de la URL
+                if (inputOculto.value === idCiudadABuscar) {
+                    
+                    const tarjetaParada = inputOculto.closest(".tarjeta-parada") || inputOculto.closest("[class*='tarjeta']");
+                    
+                    if (tarjetaParada) {
+                        // Scroll fluido hacia el medio del contenedor
+                        tarjetaParada.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+                    }
+                }
+            });
+        }, 400);
+    }
 });

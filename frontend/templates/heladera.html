@@ -6,7 +6,7 @@
     <div class="heladera-seccion-derecha">
         <div class="heladera-wrapper">
 
-            <div class="refrigerator" id="puerta" data-backend="http://127.0.0.1:5000" data-usuario="{{ usuario_id }}">
+            <div class="refrigerator" id="puerta" data-backend="http://127.0.0.1:5000/endpoints" data-usuario="{{ usuario_id }}">
                 
                 <div class="refrigerator-door top">
                     <div class="refrigerator-handle"></div>
@@ -17,24 +17,18 @@
                 </div>
 
                 {% for iman in imanes %}
-                <div class="iman-viaje" id="iman-{{ iman.id }}" data-id="{{ iman.id }}" style="left: {{ iman.posicion_x }}px; top: {{ iman.posicion_y }}px;">
+                <div class="iman-viaje" 
+                    id="iman-{{ iman.id_iman }}" 
+                    data-id="{{ iman.id_iman }}" 
+                    data-parada="{{ iman.id_parada }}"
+                    data-viaje="{{ iman.id_viaje }}"
+                    data-id-ciudad="{{ iman.id_ciudad }}"
+                    style="left: {{ iman.posicion_x }}px; top: {{ iman.posicion_y }}px; background-image: url('{{ iman.imagen_url }}'); background-size: cover; background-position: center; cursor: pointer;">
                     <div class="iman-pin"></div>
                     <div class="iman-destino">{{ iman.destino }}</div>
                     <div class="iman-fecha">{{ iman.fecha if iman.fecha else '' }}</div>
                 </div>
                 {% endfor %}
-
-                <div class="iman-viaje" id="iman-prueba-1" data-id="999" style="left: 50px; top: 60px;">
-                    <div class="iman-pin"></div>
-                    <div class="iman-destino">Bariloche</div>
-                    <div class="iman-fecha">Ene 2024</div>
-                </div>
-
-                <div class="iman-viaje" id="iman-prueba-2" data-id="888" style="left: 120px; top: 250px;">
-                    <div class="iman-pin"></div>
-                    <div class="iman-destino">Río de Janeiro</div>
-                    <div class="iman-fecha">Mar 2025</div>
-                </div>
 
             </div> 
 

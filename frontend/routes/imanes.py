@@ -11,14 +11,35 @@ imanes_bp = Blueprint('imanes', __name__)
 @login_required
 def mostrar_heladera():
     usuario_id = session.get('usuario_id')
+    
     imanes_heladera = []
+    try:
+        #Implementacion del &id_usuario={{ usuario_id }} que el backend exige obligatoriamente
+        url_api = f"{BACKEND_URL}/imanes?ubicacion=heladera&id_usuario={usuario_id}"
+        respuesta = requests.get(url_api, cookies=request.cookies)
+        if respuesta.status_code == 200:
+            imanes_heladera = respuesta.json()
+    except Exception as e:
+        flash("No se pudieron cargar los imanes de la heladera.", "error")
+
     return render_template('heladera.html', imanes=imanes_heladera, usuario_id=usuario_id)
+
 
 @imanes_bp.route('/cajon')
 @login_required
 def cajon():
     usuario_id = session.get('usuario_id')
+    
     imanes_cajon = []
+    try:
+        # Le pasamos el id_usuario en los argumentos de la URL
+        url_api = f"{BACKEND_URL}/imanes?ubicacion=cajon&id_usuario={usuario_id}"
+        respuesta = requests.get(url_api, cookies=request.cookies)
+        if respuesta.status_code == 200:
+            imanes_cajon = respuesta.json()
+    except Exception as e:
+        flash("No se pudieron cargar los imanes del cajón.", "error")
+
     return render_template('cajon.html', imanes=imanes_cajon, usuario_id=usuario_id)
 
 @imanes_bp.route('/imanes', methods=['POST'])
