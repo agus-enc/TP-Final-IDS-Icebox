@@ -1,4 +1,4 @@
-from ..dao.imanes import actualizar_posicion_iman, obtener_imanes_usuario, eliminar_iman_por_id, existe_iman_predeterminado_en_pais, crear_iman, obtener_iman_por_parada, eliminar_iman_por_parada, obtener_imanes_por_pais, obtener_relato_por_iman
+from ..dao.imanes import actualizar_posicion_iman, obtener_imanes_usuario, eliminar_iman_por_id, existe_iman_predeterminado_en_pais, crear_iman, obtener_iman_por_parada, eliminar_iman_por_parada, obtener_imanes_por_usuario_y_pais, obtener_relato_por_iman
 from .procesador_ia import procesar_iman_ia
 from .storage import subir_archivo_supabase, borrar_imagen_supabase
 
@@ -22,9 +22,9 @@ def eliminar_iman(id_iman: int) -> bool:
     """Elimina un iman por id. Retorna True si existía y fue eliminado, False si no existía."""
     return eliminar_iman_por_id(id_iman)
 
-def listar_imanes_por_pais(codigo_iso: str) -> list:
+def listar_imanes_por_pais(id_usuario: int, codigo_iso: str) -> list:
     """Obtiene todos los imanes de un país usando su código ISO (ej: 'ARG')."""
-    return obtener_imanes_por_pais(codigo_iso)
+    return obtener_imanes_por_usuario_y_pais(id_usuario, codigo_iso)
 
 def obtener_resena_iman(id_iman: int) -> str | None:
     """Busca el relato_texto de la parada asociada a un imán específico."""

@@ -49,13 +49,17 @@ function cargarImanesEnSidebar(codigoPais) {
 
     const botonIman = document.createElement('button');
     botonIman.className = 'iman-viaje';
-
-    const pinDiv = document.createElement('div'); // PIN (dsp sacar)
-    pinDiv.className = 'iman-pin';
-    botonIman.appendChild(pinDiv);
+    
+    const imagenElemento = document.createElement('img');
+    imagenElemento.src = iman.imagen_url;
+    imagenElemento.alt = `${iman.nombre_ciudad}`;
+    imagenElemento.className = 'iman-imagen-real';
+    
+    botonIman.appendChild(imagenElemento);
     
     botonIman.onclick = () => {
-        abrirResenia(iman.relato || "Sin relato disponible.");
+        const textoParaMostrar = iman.relato_texto || iman.relato || "Sin relato disponible para esta parada.";
+        abrirResenia(textoParaMostrar);
     };
 
     const bloqueTexto = document.createElement('div');

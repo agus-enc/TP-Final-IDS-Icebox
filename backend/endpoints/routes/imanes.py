@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ..utils import construir_error
-from ..services.imanes import modificar_posicion_iman, listar_imanes, eliminar_iman, obtener_imanes_por_pais, obtener_resena_iman, procesar_lote_imanes
+from ..services.imanes import modificar_posicion_iman, listar_imanes, eliminar_iman, listar_imanes_por_pais, obtener_resena_iman, procesar_lote_imanes
 from ..validators.imanes import validar_id_iman
 from ..validators.lugares import validar_codigo_pais
 import json
@@ -84,15 +84,14 @@ def delete_iman(id_iman):
 
     return '', 204
 
-@imanes_bp.route('/paises/<codigo_pais>/imanes', methods=['GET'])
-def get_imanes_por_pais(codigo_pais):
+@imanes_bp.route('/usuarios/<int:id_usuario>/paises/<codigo_pais>/imanes', methods=['GET'])
+def get_imanes_por_usuario_pais(id_usuario, codigo_pais):
     try:
         id_pais_validado = validar_codigo_pais(codigo_pais)
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
-    imanes = obtener_imanes_por_pais(id_pais_validado)
-
+    imanes = listar_imanes_por_pais(id_usuario, id_pais_validado)
     return jsonify(imanes), 200
 
 @imanes_bp.route('/imanes/<id_iman>/resena', methods=['GET'])

@@ -112,19 +112,16 @@ def eliminar_iman_por_parada(id_parada: int) -> bool:
     sql = "DELETE FROM imanes WHERE id_parada = %(id_parada)s"
     return ejecutar_mutacion(sql, {'id_parada': id_parada}) > 0
 
-
-def obtener_imanes_por_pais(codigo_iso: str) -> list:
-    """
-    Obtiene todos los imanes de un país usando su código ISO (ej: 'ARG').
-    """
+def obtener_imanes_por_usuario_y_pais(id_usuario: int, codigo_pais: str) -> list:
+    """ Obtiene los imanes que un usuario específico tiene en un país. """   
     sql = '''
         SELECT i.id_iman, i.imagen_url, c.nombre AS nombre_ciudad, p.nombre AS nombre_pais
         FROM imanes i
         JOIN ciudades c ON i.id_ciudad = c.id_ciudad
         JOIN paises p ON c.id_pais = p.id_pais
-        WHERE p.codigo_iso = %(codigo_iso)s
+        WHERE i.id_usuario = %(id_usuario)s AND p.codigo = %(codigo_pais)s
     '''
-    return ejecutar_consulta(sql, {"codigo_iso": codigo_iso})
+    return ejecutar_consulta(sql, {"id_usuario": id_usuario, "codigo_pais": codigo_pais})
 
 def obtener_relato_por_iman(id_iman: int) -> str | None:
     """Busca el relato_texto de la parada asociada a un imán específico."""

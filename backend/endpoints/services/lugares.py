@@ -4,7 +4,7 @@ from ..validators.usuarios import validar_id_usuario
 from ..validators.lugares import validar_id_pais
 from ..utils import construir_error
 
-def obtener_paises_visitados(id_usuario: int) -> dict:
+def obtener_paises_visitados(id_usuario: int) -> list:
     id_usuario = validar_id_usuario(id_usuario)
 
     usuario = obtener_usuario(id_usuario)
@@ -17,7 +17,7 @@ def obtener_paises_visitados(id_usuario: int) -> dict:
 
     resultados_db = obtener_paises_por_usuario(id_usuario)
 
-    paises_list = [{"id_pais": f["id_pais"], "nombre": f["nombre"]} for f in resultados_db]
+    paises_list = [{"id_pais": f["id_pais"], "nombre": f["nombre"], "codigo": f["codigo"]} for f in resultados_db]
 
     return {
         "metadata": {

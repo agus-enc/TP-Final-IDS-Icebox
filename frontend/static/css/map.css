@@ -100,6 +100,7 @@ body.modal-abierto {
   padding-top: 25px;
 }
 
+/* IMANES */
 .iman-contenedor {
   display: flex;
   flex-direction: column;
@@ -111,38 +112,33 @@ body.modal-abierto {
 button.iman-viaje {
   width: 115px;   /* Tamaño */
   height: 115px;
-  background: #ffffff;
-  background-image: none;
-  border: 2.5px solid #1a2332;
-  border-radius: 50%;
+  background: transparent;
+  border: none;
+  border-radius: 0;
   position: relative;
-  box-shadow: 4px 4px 0px #1a2332;
+  box-shadow: none;
   cursor: pointer;
   padding: 0;
   box-sizing: border-box;
   overflow: visible;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease;
 }
 
 button.iman-viaje:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px #1a2332;
+  transform: scale(1.08) rotate(2deg);
 }
 button.iman-viaje:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #1a2332;
+  transform: scale(0.95);
 }
 
-button.iman-viaje .iman-pin { /* Pin del imán (dsp sacar) */
-  width: 12px;
-  height: 12px;
-  background-color: #0074d9;
-  border: 2px solid #22223B;
-  border-radius: 50%;
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
+.iman-imagen-real {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(4px 4px 3px rgba(26, 35, 50, 0.45)); 
 }
 
 .iman-texto-abajo {
@@ -205,6 +201,8 @@ button.iman-viaje .iman-pin { /* Pin del imán (dsp sacar) */
   border-radius: 14px;
   border: 2.5px solid #22223B;
   box-shadow: 6px 6px 0px #22223B;
+  max-height: 85vh; 
+  overflow-y: auto;
 }
 
 .btn-cerrar {
