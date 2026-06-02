@@ -3,7 +3,6 @@ from ..services.imagenes import agregar_imagen_viaje
 from ..validators.imagenes import validar_datos_imagen_viaje
 from ..services.imagenes import eliminar_portada_viaje
 from ..dao.imagenes import obtener_imagenes_viaje_db
-from ..utils import construir_error
 
 imagenes_bp = Blueprint("imagenes", __name__)
 

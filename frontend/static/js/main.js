@@ -65,14 +65,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    // MOCKUP: LÓGICA DEL CREADOR DE VIAJES
-
     const btnNavCrear = document.getElementById('btn-nav-crear'); // Botón '+' del nav
     const modalCreador = document.getElementById('modal-creador-viajes');
     const btnCerrarCreador = document.getElementById('btn-cerrar-creador');
     const btnCrearParada = document.getElementById('btn-crear-parada-creador');
     const lineaTiempoCreador = document.getElementById('linea-tiempo-creador');
-    const formCreador = document.getElementById('form-creador-viaje');
 
     let contadorParadasCreador = 1;
 
@@ -104,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!wrapper || typeof CIUDADES_DB === 'undefined') return;
 
             inputVisible.addEventListener('input', function() {
+                inputOculto.value = "";
                 const query = this.value.toLowerCase();
                 listaResultados.innerHTML = '';
                 if (!query) {
@@ -121,13 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             inputVisible.value = ciudad.nombre;
                             inputOculto.value = ciudad.id_ciudad;
                             listaResultados.classList.remove('activa');
-
-                            // Deducir país
-                            const tarjeta = wrapper.closest('.tarjeta-parada-creador');
-                            const inputPais = tarjeta.querySelector('.input-pais-iman');
-                            if (inputPais && ciudad.pais) {
-                                inputPais.value = ciudad.pais;
-                            }
                         });
                         listaResultados.appendChild(li);
                     });
@@ -213,12 +204,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Reset Toggle y País
                 const toggleOficial = seccionIman.querySelector('.checkbox-iman-oficial');
                 if (toggleOficial) toggleOficial.checked = false;
-
-                const inputPais = seccionIman.querySelector('.input-pais-iman');
-                if (inputPais) {
-                    inputPais.name = "pais_iman_" + contadorParadasCreador;
-                    inputPais.value = "";
-                }
             }
 
             // Inyectamos el clon al final y bajamos la pantalla
@@ -296,5 +281,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+        // --- NUEVA VALIDACIÓN: Antes de enviar el formulario al Backend ---
+        const formCreador = document.getElementById('form-creador-viaje');
+
+        if (formCreador) {
+            formCreador.addEventListener('submit', function(e) {
+                let formValido = true;
+
+                // Buscamos todos los inputs ocultos de las ciudades
+                const inputsOcultos = formCreador.querySelectorAll('input[type="hidden"][name^="ciudad_parada_"]');
+
+                inputsOcultos.forEach(input => {
+                    const inputVisible = input.previousElementSibling; // El input de texto que ve el usuario
+
+                    // Si el input oculto está vacío, significa que no eligió de la lista
+                    if (input.value.trim() === "") {
+                        formValido = false;
+                        if (inputVisible) {
+                            inputVisible.style.border = "2px solid #e74c3c"; // Borde rojo de error
+                        }
+                    } else {
+                        if (inputVisible) {
+                            inputVisible.style.border = ""; // Restaurar si está bien
+                        }
+                    }
+                });
+
+                if (!formValido) {
+                    e.preventDefault(); // Frenamos el envío al servidor
+                    alert("⚠️ Por favor, selecciona una ciudad válida de la lista desplegable en todas tus paradas.");
+                }
+            });
+        }
     }
 });

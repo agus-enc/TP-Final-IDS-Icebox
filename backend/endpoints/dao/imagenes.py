@@ -31,5 +31,6 @@ def actualizar_portada_viaje_db(id_viaje: int, nueva_url: str) -> bool:
     return ejecutar_mutacion(sql, {'id_viaje': id_viaje, 'nueva_url': nueva_url}) > 0
 
 def eliminar_portada_viaje_db(id_viaje: int) -> bool:
+    """Elimina la portada de un viaje en BD"""
     sql = "DELETE FROM imagenes WHERE id_viaje = %(id_viaje)s AND tipo = 'header'"
     return ejecutar_mutacion(sql, {'id_viaje': id_viaje}) > 0

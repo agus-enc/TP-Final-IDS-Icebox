@@ -53,7 +53,7 @@
                 <div class="tarjeta-header">
                     <div class="selector-ciudad">
                         <div class="buscador-ciudad-wrapper" id="wrapper-ciudad-{{ loop.index }}">
-                            <input type="text" class="input-buscador-ciudad" id="input-ciudad-{{ loop.index }}" placeholder="¿Qué ciudad visitaste?" autocomplete="off" value="{{ parada.nombre_ciudad }}">
+                            <input type="text" class="input-buscador-ciudad" id="input-ciudad-{{ loop.index }}" placeholder="¿Qué ciudad visitaste?" autocomplete="off" value="{{ parada.nombre_ciudad }}, {{ parada.pais_ciudad }}">
                             <input type="hidden" name="ciudad_parada_{{ loop.index }}" id="hidden-ciudad-{{ loop.index }}" value="{{ parada.id_ciudad }}">
                             <input type="hidden" class="hidden-id-parada" name="id_parada_{{ loop.index }}" value="{{ parada.id_parada }}">
                             <ul class="lista-resultados-ciudad" id="resultados-ciudad-{{ loop.index }}"></ul>

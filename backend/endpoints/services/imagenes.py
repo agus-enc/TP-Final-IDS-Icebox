@@ -7,17 +7,17 @@ from .storage import borrar_imagen_supabase
 def agregar_imagen_viaje(id_viaje: int, tipo: str, archivo_imagen) -> dict:
     """Orquesta las reglas de negocio (límites), la subida a Supabase y el guardado en BD."""
 
-    # 1. Regla de Negocio: Existencia
+    # Regla de Negocio: Existencia
     if not obtener_viaje(id_viaje):
         raise ValueError({"errors": [{"code": "not_found", "message": "El viaje no existe."}]}, 404)
 
     id_usuario = obtener_usuario_por_viaje(id_viaje)
 
-    # 2. Regla de Negocio: Límites Máximos
+    # Regla de Negocio: Límites Máximos
     cantidad_actual = contar_imagenes_viaje_por_tipo_db(id_viaje, tipo)
 
     if tipo == 'header' and cantidad_actual >= 1:
-        # Buscar la URL de la portada vieja ANTES de sobrescribirla
+        # Busca la URL de la portada vieja ANTES de sobrescribirla
         imagenes_existentes = obtener_imagenes_viaje_db(id_viaje)
         url_portada_vieja = next((img['imagen_url'] for img in imagenes_existentes if img['tipo'] == 'header'), None)
 
@@ -38,13 +38,14 @@ def agregar_imagen_viaje(id_viaje: int, tipo: str, archivo_imagen) -> dict:
     return {"mensaje": "Imagen subida", "url": url_publica, "tipo": tipo}
 
 def eliminar_portada_viaje(id_viaje: int) -> bool:
-    # 1. Buscar la URL de la portada ANTES de borrarla
+    """Borra la portada de un viaje de la BD y de Supabase"""
+    # Busca la URL de la portada ANTES de borrarla
     imagenes = obtener_imagenes_viaje_db(id_viaje)
     url_portada = next((img['imagen_url'] for img in imagenes if img['tipo'] == 'header'), None)
 
     eliminado_db = eliminar_portada_viaje_db(id_viaje)
 
-    # 2. Si se borró de MySQL y existía una URL, borrarla de Supabase
+    # Si se borró de MySQL y existía una URL, borrarla de Supabase
     if eliminado_db and url_portada:
         borrar_imagen_supabase(url_portada)
 

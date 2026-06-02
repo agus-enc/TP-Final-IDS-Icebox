@@ -1,6 +1,7 @@
 from ..dao.imanes import actualizar_posicion_iman, obtener_imanes_usuario, eliminar_iman_por_id, existe_iman_predeterminado_en_pais, crear_iman, obtener_iman_por_parada, eliminar_iman_por_parada, obtener_imanes_por_usuario_y_pais, obtener_relato_por_iman
 from .procesador_ia import procesar_iman_ia
 from .storage import subir_archivo_supabase, borrar_imagen_supabase
+from ..dao.paradas import obtener_paradas_por_viaje
 
 def modificar_posicion_iman(id_iman: int, ubicacion_heladera: bool, posicion_x: float, posicion_y: float) -> bool:
     return actualizar_posicion_iman(id_iman, ubicacion_heladera, posicion_x, posicion_y)
@@ -31,6 +32,11 @@ def obtener_resena_iman(id_iman: int) -> str | None:
     return obtener_relato_por_iman(id_iman)
 
 def procesar_lote_imanes(id_viaje: int, lista_datos: list, archivos_dict: dict) -> list:
+    # --- 0. OBTENER VERDAD ABSOLUTA DE LA BD ---
+    # Traemos las paradas de este viaje para deducir los países sin confiar en el Frontend
+    paradas_db = obtener_paradas_por_viaje(id_viaje)
+    mapa_paises = {p['id_parada']: p['pais_ciudad'] for p in paradas_db}
+
     # --- 1. FASE DE VALIDACIÓN ESTRICTA (Dry-Run) ---
     paises_usados_en_lote = set()
     imanes_a_procesar = []
@@ -44,10 +50,12 @@ def procesar_lote_imanes(id_viaje: int, lista_datos: list, archivos_dict: dict) 
             continue
 
         if tipo == 'predeterminado':
-            pais = item.get('pais')
+            # Deducimos el país usando el diccionario que armamos en el paso 0
+            pais = mapa_paises.get(id_parada)
+
             if not pais:
-                raise ValueError(
-                    {"errors": [{"message": f"Falta el país para el imán oficial de la parada {id_parada}."}]})
+                raise ValueError({"errors": [
+                    {"message": f"Error de sincronización: No se encontró el país de la parada {id_parada}."}]})
 
             if pais in paises_usados_en_lote:
                 raise ValueError(
@@ -58,6 +66,9 @@ def procesar_lote_imanes(id_viaje: int, lista_datos: list, archivos_dict: dict) 
                     {"errors": [{"message": f"Ya has usado el imán oficial de {pais} anteriormente en este viaje."}]})
 
             paises_usados_en_lote.add(pais)
+
+            # Sobrescribimos el país en el diccionario para que la Fase 2 use el correcto
+            item['pais'] = pais
             imanes_a_procesar.append(item)
 
         elif tipo == 'personalizado':

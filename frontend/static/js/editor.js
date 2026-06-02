@@ -58,16 +58,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const coincidencias = CIUDADES_DB.filter(ciudad =>
-                ciudad.nombre.toLowerCase().includes(valorBuscado)
+                ciudad.nombre.toLowerCase().includes(valorBuscado) ||
+                (ciudad.pais && ciudad.pais.toLowerCase().includes(valorBuscado))
             );
 
             if (coincidencias.length > 0) {
                 coincidencias.forEach(ciudad => {
                     const li = document.createElement('li');
-                    li.textContent = ciudad.nombre;
+
+                    // AHORA EL EDITOR TAMBIÉN MUESTRA "CIUDAD, PAÍS"
+                    li.textContent = `${ciudad.nombre}, ${ciudad.pais}`;
 
                     li.addEventListener('click', function() {
-                        inputVisible.value = ciudad.nombre;
+                        inputVisible.value = `${ciudad.nombre}, ${ciudad.pais}`;
                         inputOculto.value = ciudad.id_ciudad;
                         listaResultados.classList.remove('activa');
                         const tarjeta = wrapper.closest('.tarjeta-parada');
@@ -94,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // INICIALIZACIÓN DE LA BASE (On Load)
 
     // Iniciar Buscadores Base
-    const wrappersBuscador = document.querySelectorAll('.buscador-ciudad-wrapper');
+    const wrappersBuscador = document.querySelectorAll('.tarjeta-parada .buscador-ciudad-wrapper');
     for (const wrapper of wrappersBuscador) {
         inicializarBuscadorCiudad(wrapper);
     }
@@ -159,7 +162,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     seccion.querySelector('.btn-eliminar-iman').style.display = 'flex';
                     seccion.querySelector('.input-tipo-iman').value = 'personalizado';
                     seccion.querySelector('.checkbox-iman-oficial').checked = false;
-                    seccion.querySelector('.contenedor-input-pais').style.display = 'none';
                 }
             }
 
@@ -242,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clonar Buscador
         const wrapperBuscadorClonado = nuevaTarjeta.querySelector('.buscador-ciudad-wrapper');
         const inputVisibleClonado = nuevaTarjeta.querySelector('.input-buscador-ciudad');
-        const inputOcultoClonado = nuevaTarjeta.querySelector('input[type="hidden"]');
+        const inputOcultoClonado = wrapperBuscadorClonado.querySelector('input[type="hidden"]');
         const listaResultadosClonado = nuevaTarjeta.querySelector('.lista-resultados-ciudad');
         const inputIdParada = nuevaTarjeta.querySelector('.hidden-id-parada');
 
@@ -312,8 +314,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 inputPais.name = "pais_iman_" + contadorParadas;
                 inputPais.value = "";
             }
-
-            seccionIman.querySelector('.contenedor-input-pais').style.display = 'none';
         }
 
         contadorParadas++;
