@@ -198,11 +198,6 @@ body {
     box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 
-.input-buscador-ciudad:focus {
-    border-color: var(--color-texto);
-}
-
-
 .linea-tiempo .tarjeta-parada:first-child .btn-eliminar-parada {
     visibility: hidden;
 }

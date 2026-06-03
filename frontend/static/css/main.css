@@ -688,14 +688,32 @@ input:checked + .slider:before {
 .input-buscador-ciudad {
     background-color: #e3cec2;
     width: 100%;
+    min-width: 200px; /* Evita que el input desaparezca o se vea minúsculo si está vacío */
+    max-width: 100%;
     padding: 8px 12px;
     border: transparent;
     border-radius: 6px;
     font-size: 20px;
     box-sizing: border-box;
+    field-sizing: content;
     outline: none;
     transition: border-color 0.2s;
     font-family: inherit;
     text-align: center;
     color: #252436;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.input-buscador-ciudad:focus {
+    border-color: var(--color-texto);
+}
+
+.buscador-ciudad-wrapper {
+    width: 95%;
+    max-width: 500px; /* FIX: Restauramos el límite original para la caja desplegable */
+    margin: 0 auto; /* Antes quizás estaba muy limitado. Ahora le damos libertad */
+    display: flex;
+    justify-content: center;
 }

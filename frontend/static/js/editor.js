@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            constGrid = coincidencia = CIUDADES_DB.filter(ciudad =>
+            constGrid = coincidencias = CIUDADES_DB.filter(ciudad =>
                 ciudad.nombre.toLowerCase().includes(valorBuscado) ||
                 (ciudad.pais && ciudad.pais.toLowerCase().includes(valorBuscado))
             );

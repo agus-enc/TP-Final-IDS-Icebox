@@ -1,6 +1,3 @@
-// URL base para conectar con el servidor del backend (Puerto 5000)
-const BACKEND_URL = "http://127.0.0.1:5000";
-
 document.addEventListener('DOMContentLoaded', () => {
    
     // 1. Hacer desaparecer los carteles de alerta de Flask a los 3 segundos
@@ -116,9 +113,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         const li = document.createElement('li');
                         li.textContent = `${ciudad.nombre}, ${ciudad.pais}`;
                         li.addEventListener('click', function() {
-                            inputVisible.value = ciudad.nombre;
+                            inputVisible.value = `${ciudad.nombre}, ${ciudad.pais}`;
                             inputOculto.value = ciudad.id_ciudad;
                             listaResultados.classList.remove('activa');
+                            const tarjetaPadre = wrapper.closest('.tarjeta-parada-creador');
+                            if (tarjetaPadre) {
+                                const inputPais = tarjetaPadre.querySelector('.input-pais-iman');
+                                if (inputPais) inputPais.value = ciudad.pais;
+                            }
                         });
                         listaResultados.appendChild(li);
                     });
@@ -204,6 +206,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Reset Toggle y País
                 const toggleOficial = seccionIman.querySelector('.checkbox-iman-oficial');
                 if (toggleOficial) toggleOficial.checked = false;
+                const inputPais = seccionIman.querySelector('.input-pais-iman');
+                if (inputPais) {
+                    inputPais.name = "pais_iman_" + contadorParadasCreador;
+                    inputPais.value = "";
+                }
             }
 
             // Inyectamos el clon al final y bajamos la pantalla
