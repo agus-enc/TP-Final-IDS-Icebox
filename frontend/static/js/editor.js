@@ -11,11 +11,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // FUNCIONES "FÁBRICA" (Definiciones)
 
     // Autoguardado
+    const formEditor = document.getElementById('formulario-viaje-maestro');
+    if (!formEditor) return;
+    const idViajeActual = formEditor.dataset.idViaje;
     function protegerConAutoguardado(elementoTextarea) {
         elementoTextarea.addEventListener('input', function() {
             const texto = elementoTextarea.value;
-            const llaveUnica = elementoTextarea.id;
+            // Creamos una llave inconfundible ligada al viaje
+            const llaveUnica = `draft_viaje_${idViajeActual}_${elementoTextarea.id}`;
             localStorage.setItem(llaveUnica, texto);
+        });
+    }
+
+    if (formEditor) {
+        // DOM SCOPING: Buscamos textareas SOLO dentro del Editor, protegiendo al Creador
+        const textareasEditor = formEditor.querySelectorAll('textarea');
+
+        textareasEditor.forEach(textarea => {
+            const llaveUnica = `draft_viaje_${idViajeActual}_${textarea.id}`;
+            const textoGuardado = localStorage.getItem(llaveUnica);
+
+            // Si hay un borrador fantasma de este viaje específico, lo inyectamos
+            if (textoGuardado) {
+                textarea.value = textoGuardado;
+            }
+
+            // Activamos la protección para futuros cambios
+            protegerConAutoguardado(textarea);
         });
     }
 
@@ -66,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 coincidencias.forEach(ciudad => {
                     const li = document.createElement('li');
 
-                    // AHORA EL EDITOR TAMBIÉN MUESTRA "CIUDAD, PAÍS"
                     li.textContent = `${ciudad.nombre}, ${ciudad.pais}`;
 
                     li.addEventListener('click', function() {
@@ -102,19 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
         inicializarBuscadorCiudad(wrapper);
     }
 
-    // Iniciar Textareas Base (Recuperar memoria, autoguardar y Zen)
-    const textosParadas = document.querySelectorAll('.textarea-elegante');
-    for (const texto of textosParadas){
-        const borradorGuardado = localStorage.getItem(texto.id);
-        if (borradorGuardado) {
-            texto.value = borradorGuardado;
-        }
-        if (texto.id) {
-            protegerConAutoguardado(texto);
-            habilitarModoZen(texto);
-        }
-    }
-
     // HEADER / PORTADA
 
     const inputPortada = document.getElementById('foto-portada');
@@ -140,9 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // LÍNEA DE TIEMPO (Clonación e Imanes)
-
-    // Interfaz dinámica para los tipos de imán
-    // LÍNEA DE TIEMPO: NUEVA LÓGICA DE IMANES
     if (lineaTiempo) {
 
         // 1. Cuando suben una foto (Imán Personalizado)
@@ -182,8 +187,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     seccion.querySelector('.btn-eliminar-iman').style.display = 'none';
                 } else {
                     inputTipo.value = 'ninguno';
-
-                    // NUEVO: Si apagan el oficial, destruimos la bandera pre-cargada
                     label.style.backgroundImage = 'none';
                     label.classList.add('vacio');
                     label.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
@@ -228,7 +231,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Limpiar localStorage para que no reviva el texto fantasma
                 const textarea = tarjeta.querySelector('.textarea-elegante');
-                if (textarea && textarea.id) localStorage.removeItem(textarea.id);
+                if (textarea && textarea.id) {
+                    localStorage.removeItem(`draft_viaje_${idViajeActual}_${textarea.id}`);
+                }
 
                 // Eliminar visualmente y quitar del formulario
                 tarjeta.remove();
@@ -397,5 +402,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }, 400);
+    }
+    // GARBAGE COLLECTION: Limpiar el disco al enviar el formulario
+    if (formEditor) {
+        formEditor.addEventListener('submit', function() {
+            const prefijo = `draft_viaje_${idViajeActual}_`;
+            for (let i = localStorage.length - 1; i >= 0; i--) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith(prefijo)) {
+                    localStorage.removeItem(key);
+                }
+            }
+        });
     }
 });

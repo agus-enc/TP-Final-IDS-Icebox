@@ -8,8 +8,7 @@
 
 {% block content %}
 
-    <form class="contenedor-viaje" id="formulario-viaje-maestro" method="POST" action="/viajes/{{ viaje.id_viaje }}/editar" enctype="multipart/form-data">
-
+    <form class="contenedor-viaje" id="formulario-viaje-maestro" data-id-viaje="{{ viaje.id_viaje }}" method="POST" action="/viajes/{{ viaje.id_viaje }}/editar" enctype="multipart/form-data">
         <input type="hidden" id="flag-borrar-portada" name="borrar_portada" value="false">
         <input type="hidden" id="input-paradas-borradas" name="paradas_borradas" value="">
 
