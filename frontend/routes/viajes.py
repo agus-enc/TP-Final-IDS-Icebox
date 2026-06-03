@@ -10,7 +10,16 @@ viajes_bp = Blueprint('viajes', __name__)
 @viajes_bp.route('/biblioteca')
 @login_required
 def biblioteca():
-    return render_template('biblioteca.html')
+    usuario_id = session.get('usuario_id')
+    url_pedir_viajes = f"{BACKEND_URL}/{usuario_id}/viajes"
+    resp = requests.get(url_pedir_viajes)
+    
+    if resp.status_code == 200:
+        viajes = resp.json()
+    else:
+        viajes = []
+        
+    return render_template('biblioteca.html', viajes=viajes)
 
 @viajes_bp.route('/viajes/<int:id_viaje>/editar', methods=['GET', 'POST'])
 @login_required
@@ -172,3 +181,14 @@ def crear_viaje():
     resp_lugares = requests.get(f"{BACKEND_URL}/ciudades")
     lugares_reales = resp_lugares.json() if resp_lugares.status_code == 200 else []
     return render_template('creador.html', lugares=lugares_reales)
+
+@viajes_bp.route('/viajes/<int:id_viaje>/borrar', methods=['POST'])
+@login_required
+def borrar_viaje(id_viaje):
+    resp = requests.delete(f"{BACKEND_URL}/viajes/{id_viaje}")
+    if resp.status_code in [200, 204]:
+         flash("Viaje eliminado con éxito", "success")
+    else:
+         flash("Error al eliminar el viaje", "error")
+        
+    return redirect(url_for('viajes.biblioteca'))
