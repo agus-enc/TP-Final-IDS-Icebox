@@ -203,15 +203,6 @@ html, body {
     z-index: 1000; /* JavaScript lo sube dinámicamente al frente de todo */
 }
 
-.iman-pin {
-    width: 12px;
-    height: 12px;
-    background-color: #ef4444; 
-    border: 1.5px solid #22223B;
-    border-radius: 50%;
-    margin-bottom: 18px;
-}
-
 .iman-destino { 
     font-weight: 700; 
     font-size: 0.85rem; 
@@ -232,4 +223,35 @@ html, body {
 
 #puerta .iman-viaje * {
     pointer-events: none;
+}
+
+/* =========================================================================
+   5. SECCIÓN IZQUIERDA: TÍTULO DEL PANEL
+   ========================================================================= */
+.heladera-seccion-izquierda {
+    width: 200px; 
+    padding: 20px 20px 20px 20px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-shrink: 0; /* Evita que la heladera gigante lo aplaste */
+    box-sizing: border-box;
+}
+
+.heladera-titulo {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #22223B; 
+    line-height: 1.2;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.heladera-subtitulo {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #4A4E69;
+    margin: 0;
 }
