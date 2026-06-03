@@ -1,8 +1,7 @@
 from flask import Blueprint, render_template, session, request, redirect, url_for, flash
 from auth import login_required
+from constants import BACKEND_URL
 import requests
-
-BACKEND_URL = "http://localhost:5000/endpoints"
 
 imanes_bp = Blueprint('imanes', __name__)
 
@@ -43,7 +42,7 @@ def cajon():
     return render_template('cajon.html', imanes=imanes_cajon, usuario_id=usuario_id)
 
 @imanes_bp.route('/imanes', methods=['POST'])
-# @login_required
+@login_required
 def guardar_iman():
     id_viaje = request.form.get('id_viaje')
 

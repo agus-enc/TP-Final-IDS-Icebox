@@ -1,13 +1,12 @@
 import requests
 from flask import Blueprint, render_template, session, redirect, url_for
 from auth import login_required
-
-BACKEND_URL = "http://localhost:5000/endpoints"
+from constants import BACKEND_URL
 
 mapa_bp = Blueprint('mapa', __name__)
 
 @mapa_bp.route('/mapa')
-@login_required  
+@login_required
 def mostrar_mapa():
     # id_usuario = session.get('usuario_id')
     id_usuario = 1
