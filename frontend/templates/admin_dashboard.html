@@ -15,10 +15,10 @@
     <div class="chart-card">
         <h3>Estadísticas de Viajes Globales</h3>
 
-        <img src="http://127.0.0.1:5000/static/images/grafico_admin.png" alt="Gráfico de estadísticas" class="chart-img">
+        <img src= "{{ url_for('static', filename='images/grafico_admin.png') }}" alt="Gráfico de estadísticas" class="chart-img">
     </div>
 
-    <a href="/endpoints/admin/descargar-reporte" class="btn-download-pdf">
+    <a href= "http://127.0.0.1:5000/api/admin/descargar-reporte" class="btn-download-pdf">
         Descargar Reporte en PDF
     </a>
 </div>

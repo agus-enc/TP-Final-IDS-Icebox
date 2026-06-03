@@ -3,7 +3,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from reportlab.pdfgen import canvas
-from db import ejecutar_consulta
+from endpoints.db import ejecutar_consulta
 
 def obtener_estadisticas_viajes():
     """ Hace la consulta a la base de datos usando db.py para traer los destinos y cuantos viajes tiene cada uno """

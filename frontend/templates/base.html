@@ -40,8 +40,20 @@
                 </a>
                 
                 <div class="user-dropdown" id="user-dropdown">
+                    {% if session.nombre_usuario %}
+                        <div class="dropdown-item" style="font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.2); padding-bottom: 5px; margin-bottom: 5px; pointer-events: none;">
+                            👤 {{ session.nombre_usuario }}
+                        </div>
+                    {% endif %}
+                    
+                    {% if session.es_admin %}
+                        <a href="{{ url_for('admin.vista_admin_dashboard') }}" class="dropdown-item" style="color: #ff4757; font-weight: bold;">
+                            <ion-icon name="settings-outline"></ion-icon> Panel Admin
+                        </a>
+                    {% endif %}
+                    
                     <a href="{{ url_for('login.logout') }}" class="dropdown-item">
-                        <ion-icon name="log-out-outline"></ion-icon> Cerrar Sesión
+                            <ion-icon name="log-out-outline"></ion-icon> Cerrar Sesión
                     </a>
                 </div>
                 
@@ -87,9 +99,14 @@
     </div>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule="" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<<<<<<< Updated upstream
 
      <script src="{{ url_for('static', filename='js/main.js')}}"></script>
     {% block extra_js %}{% endblock %}
+=======
+    
+    
+>>>>>>> Stashed changes
 
     <div id="modal-creador-viajes" class="modal-creador-oculto">
         <div class="modal-creador-contenido">
