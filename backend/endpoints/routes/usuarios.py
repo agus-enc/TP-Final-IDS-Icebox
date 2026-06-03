@@ -7,7 +7,7 @@ usuarios_bp = Blueprint("usuarios", __name__)
 
 @usuarios_bp.route("/usuarios", methods=['POST'])
 def registrar_usuario():
-    data = request.get_json() or {}
+    data = request.get_json() or request.form.to_dict() or {}
 
     try:
         validar_registro_usuario(data)
@@ -23,6 +23,7 @@ def registrar_usuario():
         return jsonify({"message": "Usuario registrado con exito", "id_usuario": nuevo_id}), 201
     
     except Exception as e:
+        print("❌ ERROR REAL DEL BACKEND:", str(e))
         error_body = construir_error('database.error', 'Error al registrar', str(e))
         return jsonify(error_body), 400
 
@@ -35,10 +36,10 @@ def login():
     except ValueError as e:
         return jsonify(e.args[0]), 400
     
-    email = data.get('email')
+    nombre_usuario = data.get('nombre_usuario')
     password = data.get('password')
     
-    usuario = autenticar_usuario(email, password)
+    usuario = autenticar_usuario(nombre_usuario, password)
 
     if not usuario:
         error_body = construir_error('invalid.credentials', 'Credenciales incorrectas', 'El email o la contraseña no coinciden')

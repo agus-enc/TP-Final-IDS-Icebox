@@ -25,12 +25,12 @@ def validar_registro_usuario(data: dict):
 
 def validar_login_usuario(data: dict):
     """Valida que se ingresen las credenciales para el login"""
-    email = data.get('email')
+    nombre_usuario = data.get('nombre_usuario')
     password = data.get('password')
 
-    if not email or not password:
+    if not nombre_usuario or not password:
         raise ValueError(construir_error(
             code='missing.credentials',
             message='Credenciales incompletas',
-            description='Se requiere tanto el email como la contraseña para iniciar sesion'
+            description='Se requiere tanto el usuario como la contraseña para iniciar sesion'
         ))
