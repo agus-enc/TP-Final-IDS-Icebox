@@ -1,51 +1,68 @@
 document.addEventListener("DOMContentLoaded", () => {
     const mueble = document.getElementById("mueble-libros");
     const modalEliminar = document.getElementById('modal-eliminar');
-    const listaEliminar = document.getElementById('lista-viajes-eliminar');
-    
-    if (!mueble || !modalEliminar || !listaEliminar) return;
+    const btnAbrirEliminar = document.getElementById('btn-abrir-eliminar');
+    const btnCerrarEliminar = document.getElementById('btn-cerrar-eliminar');
 
-    function organizarEstantes() {
+    if (mueble) {
         const todosLosLibros = Array.from(mueble.querySelectorAll('.book'));
         const estantes = mueble.querySelectorAll('.subshelf');
         todosLosLibros.forEach((libro, index) => {
             const indiceEstante = Math.floor(index / 10);
-            if (estantes[indiceEstante]) estantes[indiceEstante].appendChild(libro);
+            if (estantes[indiceEstante]) {
+                estantes[indiceEstante].appendChild(libro);
+            }
         });
     }
 
-    organizarEstantes();
-
-    document.getElementById('btn-abrir-eliminar')?.addEventListener('click', () => {
-        armarListaModal();
-        modalEliminar.classList.remove('oculto');
-    });
-
-    document.getElementById('btn-cerrar-eliminar')?.addEventListener('click', () => {
-        modalEliminar.classList.add('oculto');
-    });
-
-    function armarListaModal() {
-        listaEliminar.innerHTML = "";
-        const librosDisponibles = document.querySelectorAll('.book');
-        librosDisponibles.forEach(libro => {
-            const id = libro.getAttribute('data-id');
-            const destino = libro.getAttribute('data-destino');
-            const fila = document.createElement('div'); fila.className = "fila-eliminar";
-            fila.innerHTML = `<span>${destino}</span><button class="btn-biblioteca-accion" style="padding: 4px 10px; font-size: 0.75rem;">Eliminar</button>`;
-            fila.querySelector('button').addEventListener('click', () => confirmarEliminacionLibro(id, destino, libro));
-            listaEliminar.appendChild(fila);
+    if (btnAbrirEliminar) {
+        btnAbrirEliminar.addEventListener('click', () => {
+            const libros = document.querySelectorAll('.book');
+            
+            if (libros.length === 0) {
+                Swal.fire({
+                    title: '¡Atención!',
+                    text: 'No hay ningún viaje para eliminar todavía.',
+                    icon: 'warning',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#3085d6',
+                    background: '#ffffff'
+                });
+            } else if (modalEliminar) {
+                modalEliminar.classList.remove('oculto');
+            }
         });
     }
 
-    async function confirmarEliminacionLibro(id, destino, elementoLibro) {
-        const resultado = await Swal.fire({ title: '¿Eliminar viaje?', text: `Borrar ${destino}`, icon: 'warning', 
-            showCancelButton: true, confirmButtonColor: '#22223B', cancelButtonColor: '#a4a9ae' });
-        if (resultado.isConfirmed) {
+    if (btnCerrarEliminar && modalEliminar) {
+        btnCerrarEliminar.addEventListener('click', () => {
             modalEliminar.classList.add('oculto');
-            elementoLibro.remove(); 
-            organizarEstantes();
-            Swal.fire({ title: '¡Removido!', icon: 'success', timer: 1500, showConfirmButton: false });
-        }
+        });
     }
+
+    const formulariosEliminar = document.querySelectorAll('.fila-eliminar form');
+    
+    formulariosEliminar.forEach(form => {
+        form.addEventListener('submit', (e) => {
+            //  frena el envío inmediato del formulario a Flask
+            e.preventDefault(); 
+
+            const nombreViaje = form.closest('.fila-eliminar').querySelector('span').innerText;
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: `Vas a eliminar el viaje a "${nombreViaje}". Esta acción no se puede deshacer.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Volver',
+                background: '#ffffff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); 
+                }
+            });
+        });
+    });
 });
