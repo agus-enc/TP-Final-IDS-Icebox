@@ -44,7 +44,7 @@ def mostrar_mapa():
                         else:
                             iman['relato'] = "Sin relato disponible."
                     except Exception as e:
-                        print(f"⚠️ Error al traer reseña para imán {id_iman}: {e}")
+                        print(f" Error al traer reseña para imán {id_iman}: {e}")
                         iman['relato'] = "Sin relato disponible."
                 
                 datos_imanes[codigo] = lista_imanes_pais
