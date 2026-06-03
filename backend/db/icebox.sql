@@ -61,6 +61,8 @@ CREATE TABLE imagenes (
     id_imagen INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
     id_viaje INT NOT NULL,
+    orden INT DEFAULT 0,
+    epigrafe TEXT DEFAULT NULL,
     imagen_url VARCHAR(255) NOT NULL,
     tipo ENUM('header', 'diario') DEFAULT 'diario',
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,

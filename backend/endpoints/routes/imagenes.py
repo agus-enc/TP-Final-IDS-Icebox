@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
-from ..services.imagenes import agregar_imagen_viaje, eliminar_imagen_diario, eliminar_portada_viaje
+from ..services.imagenes import agregar_imagen_viaje, eliminar_imagen_diario, eliminar_portada_viaje, actualizar_datos_imagen, obtener_imagenes_viaje
 from ..validators.imagenes import validar_datos_imagen_viaje
-from ..dao.imagenes import obtener_imagenes_viaje_db
 
 imagenes_bp = Blueprint("imagenes", __name__)
 
@@ -10,6 +9,8 @@ def post_imagen_viaje(id_viaje_str):
     try:
         tipo_raw = request.form.get('tipo', 'diario')
         archivo_imagen = request.files.get('imagen')
+        orden = int(request.form.get('orden', 0))
+        epigrafe = request.form.get('epigrafe', '')
 
         datos_limpios = validar_datos_imagen_viaje(id_viaje_str, tipo_raw)
 
@@ -24,7 +25,9 @@ def post_imagen_viaje(id_viaje_str):
         resultado = agregar_imagen_viaje(
             datos_limpios['id_viaje'],
             datos_limpios['tipo'],
-            archivo_imagen
+            archivo_imagen,
+            orden,
+            epigrafe,
         )
 
         return jsonify(resultado), 201
@@ -38,7 +41,7 @@ def post_imagen_viaje(id_viaje_str):
 def get_imagenes_viaje(id_viaje_str):
     try:
         id_viaje = int(id_viaje_str)
-        imagenes = obtener_imagenes_viaje_db(id_viaje)
+        imagenes = obtener_imagenes_viaje(id_viaje)
         return jsonify(imagenes), 200
     except ValueError:
         return jsonify({"errors": [{"code": "invalid", "message": "ID Invalido"}]}), 400
@@ -60,3 +63,13 @@ def delete_imagen_diario(id_imagen):
         return jsonify({"errors": [{"message": "No se pudo eliminar la imagen."}]}), 400
     except Exception as e:
         return jsonify({"errors": [{"message": "Error interno al eliminar imagen."}]}), 500
+
+@imagenes_bp.route("/imagenes/<int:id_imagen>", methods=["PUT"])
+def update_imagen(id_imagen):
+    data = request.json or {}
+    orden = int(data.get('orden', 0))
+    epigrafe = data.get('epigrafe', '')
+
+    if actualizar_datos_imagen(id_imagen, orden, epigrafe):
+        return jsonify({"message": "Actualizado correctamente"}), 200
+    return jsonify({"errors": [{"message": "No se pudo actualizar."}]}), 400

@@ -20,36 +20,7 @@
     <div class="libro-abierto">
         <div class="pagina pagina-izquierda">
             {% for i in range(0, 5) %}
-            {% set img = imagenes[i] if i < imagenes|length else None %}
-            <div class="slot-foto-wrapper slot-{{ i+1 }} {% if img %}con-foto{% endif %}">
-                <label for="foto-{{ i+1 }}" class="slot-foto {% if img %}oculto{% else %}vacio{% endif %}" {% if img %}style="display: none;"{% endif %}>
-                    <span class="icono-mas">+</span>
-                </label>
-                <input type="file" id="foto-{{ i+1 }}" name="nueva_foto_{{ i+1 }}" class="input-foto-diario" accept="image/png, image/jpeg" style="display: none;">
-
-                {% if img %}
-                    <input type="hidden" class="input-img-actual" value="{{ img.id_imagen }}">
-                {% endif %}
-                <input type="hidden" name="borrar_foto[]" class="input-borrar-img" value="">
-
-                <img src="{{ img.imagen_url if img else '' }}" class="img-preview" {% if not img %}style="display: none;"{% endif %}>
-
-                <div class="controles-foto" {% if not img %}style="display: none;"{% endif %}>
-                    <button type="button" class="btn-control-foto btn-reemplazar" title="Cambiar Foto">
-                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-                    </button>
-                    <button type="button" class="btn-control-foto btn-borrar" title="Eliminar Foto">
-                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                </div>
-                <input type="hidden" class="epigrafe-data" value="">
-            </div>
-            {% endfor %}
-        </div>
-
-        <div class="pagina pagina-derecha">
-            {% for i in range(5, 10) %}
-            {% set img = imagenes[i] if i < imagenes|length else None %}
+            {% set img = slots[i] %}
             <div class="slot-foto-wrapper slot-{{ loop.index }} {% if img %}con-foto{% endif %}">
                 <label for="foto-{{ i+1 }}" class="slot-foto {% if img %}oculto{% else %}vacio{% endif %}" {% if img %}style="display: none;"{% endif %}>
                     <span class="icono-mas">+</span>
@@ -57,7 +28,7 @@
                 <input type="file" id="foto-{{ i+1 }}" name="nueva_foto_{{ i+1 }}" class="input-foto-diario" accept="image/png, image/jpeg" style="display: none;">
 
                 {% if img %}
-                    <input type="hidden" class="input-img-actual" value="{{ img.id_imagen }}">
+                    <input type="hidden" class="input-img-actual" name="id_foto_existente_{{ i+1 }}" value="{{ img.id_imagen }}">
                 {% endif %}
                 <input type="hidden" name="borrar_foto[]" class="input-borrar-img" value="">
 
@@ -71,7 +42,38 @@
                         <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 </div>
-                <input type="hidden" class="epigrafe-data" value="">
+
+                <input type="hidden" class="epigrafe-data" name="epigrafe_{{ i+1 }}" value="{{ img.epigrafe if img else '' }}">
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="pagina pagina-derecha">
+            {% for i in range(5, 10) %}
+            {% set img = slots[i] %}
+            <div class="slot-foto-wrapper slot-{{ loop.index }} {% if img %}con-foto{% endif %}">
+                <label for="foto-{{ i+1 }}" class="slot-foto {% if img %}oculto{% else %}vacio{% endif %}" {% if img %}style="display: none;"{% endif %}>
+                    <span class="icono-mas">+</span>
+                </label>
+                <input type="file" id="foto-{{ i+1 }}" name="nueva_foto_{{ i+1 }}" class="input-foto-diario" accept="image/png, image/jpeg" style="display: none;">
+
+                {% if img %}
+                    <input type="hidden" class="input-img-actual" name="id_foto_existente_{{ i+1 }}" value="{{ img.id_imagen }}">
+                {% endif %}
+                <input type="hidden" name="borrar_foto[]" class="input-borrar-img" value="">
+
+                <img src="{{ img.imagen_url if img else '' }}" class="img-preview" {% if not img %}style="display: none;"{% endif %}>
+
+                <div class="controles-foto" {% if not img %}style="display: none;"{% endif %}>
+                    <button type="button" class="btn-control-foto btn-reemplazar" title="Cambiar Foto">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                    </button>
+                    <button type="button" class="btn-control-foto btn-borrar" title="Eliminar Foto">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+
+                <input type="hidden" class="epigrafe-data" name="epigrafe_{{ i+1 }}" value="{{ img.epigrafe if img else '' }}">
             </div>
             {% endfor %}
         </div>

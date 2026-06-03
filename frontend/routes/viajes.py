@@ -108,37 +108,54 @@ def editor(id_viaje):
 
     return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales, lugares=lugares_reales)
 
+
 @viajes_bp.route('/viajes/<int:id_viaje>/diario', methods=['GET', 'POST'])
 @login_required
 def diario(id_viaje):
     if request.method == 'POST':
-        # 1. Ejecutar las eliminaciones (Fotos que el usuario borró o reemplazó)
+        # 1. Ejecutar las eliminaciones primero
         fotos_a_borrar = request.form.getlist('borrar_foto[]')
         for id_img in fotos_a_borrar:
             if id_img.strip():
                 requests.delete(f"{BACKEND_URL}/imagenes/{id_img.strip()}")
 
-        # 2. Subir las fotos nuevas (El diario tiene máximo 10 slots)
+        # 2. Analizar y procesar los 10 Slots de forma independiente
         for i in range(1, 11):
             archivo = request.files.get(f'nueva_foto_{i}')
+            epigrafe = request.form.get(f'epigrafe_{i}', '')
+            id_existente = request.form.get(f'id_foto_existente_{i}')
+
+            # A. Hay archivo nuevo (Slot virgen o se reemplazó foto)
             if archivo and archivo.filename != '':
                 archivos = {'imagen': (archivo.filename, archivo.read(), archivo.content_type)}
-                requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data={'tipo': 'diario'})
+                payload = {'tipo': 'diario', 'orden': i, 'epigrafe': epigrafe}
+                requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data=payload)
+
+            # B. No hay archivo nuevo, pero la foto ya existía y NO fue borrada
+            elif id_existente and id_existente not in fotos_a_borrar:
+                # Actualizamos su epígrafe por si el usuario lo modificó
+                payload_update = {'orden': i, 'epigrafe': epigrafe}
+                requests.put(f"{BACKEND_URL}/imagenes/{id_existente}", json=payload_update)
 
         flash("¡Diario de fotos actualizado con éxito!", "success")
         return redirect(url_for('viajes.diario', id_viaje=id_viaje))
 
     # --- GET: RENDERIZAR LA PÁGINA ---
-    # Pedir datos del viaje (Para el título)
     resp_viaje = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
     viaje_real = resp_viaje.json() if resp_viaje.status_code == 200 else {}
 
-    # Pedir las fotos y filtrar solo las del diario
     resp_img = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes")
     imagenes_todas = resp_img.json() if resp_img.status_code == 200 else []
     imagenes_diario = [img for img in imagenes_todas if img.get('tipo') == 'diario']
 
-    return render_template('diario.html', viaje=viaje_real, imagenes=imagenes_diario)
+    # --- Mapear fotos a sus 10 slots exactos ---
+    slots = [None] * 10
+    for img in imagenes_diario:
+        orden = img.get('orden', 0)
+        if 1 <= orden <= 10:
+            slots[orden - 1] = img
+
+    return render_template('diario.html', viaje=viaje_real, slots=slots)
 
 @viajes_bp.route('/crear_viaje', methods=['GET', 'POST'])
 @login_required
