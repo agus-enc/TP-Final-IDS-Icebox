@@ -91,20 +91,18 @@ function abrirResenia(relato) {
     }
 }
 
-// Función nueva para cerrar ÚNICAMENTE el contenedor de la reseña
 function cerrarModal() {
     const modal = document.getElementById('modal-resenia');
     if (modal) {
-        modal.classList.remove('activo'); // Oculta el contenedor quitando la clase
+        modal.classList.remove('activo');
         document.body.classList.remove('modal-abierto');
     }
 }
-// Permite cerrar el contenedor haciendo clic en el fondo oscuro exterior
+
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal-resenia');
     if (modal) {
         modal.addEventListener('click', function(e) {
-            // Si el clic fue directamente en el fondo negro y no dentro de la tarjeta blanca
             if (e.target === modal) {
                 cerrarModal();
             }
