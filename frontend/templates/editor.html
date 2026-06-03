@@ -43,7 +43,9 @@
         </header>
 
         <div class="galeria">
-            <button type="button" class="btn-diario-fotos"> Diario de Fotos</button>
+            <a href="{{ url_for('viajes.diario', id_viaje=viaje.id_viaje) }}" class="btn-diario-fotos" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; width: auto; box-sizing: border-box;">
+                Diario de Fotos
+            </a>
         </div>
 
         <div class="linea-tiempo">

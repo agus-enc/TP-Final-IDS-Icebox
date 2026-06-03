@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
-from ..services.imagenes import agregar_imagen_viaje
+from ..services.imagenes import agregar_imagen_viaje, eliminar_imagen_diario, eliminar_portada_viaje
 from ..validators.imagenes import validar_datos_imagen_viaje
-from ..services.imagenes import eliminar_portada_viaje
 from ..dao.imagenes import obtener_imagenes_viaje_db
 
 imagenes_bp = Blueprint("imagenes", __name__)
@@ -52,3 +51,12 @@ def delete_portada(id_viaje_str):
         return '', 204
     except ValueError:
         return jsonify({"errors": [{"message": "ID Inválido"}]}), 400
+
+@imagenes_bp.route("/imagenes/<int:id_imagen>", methods=["DELETE"])
+def delete_imagen_diario(id_imagen):
+    try:
+        if eliminar_imagen_diario(id_imagen):
+            return '', 204
+        return jsonify({"errors": [{"message": "No se pudo eliminar la imagen."}]}), 400
+    except Exception as e:
+        return jsonify({"errors": [{"message": "Error interno al eliminar imagen."}]}), 500

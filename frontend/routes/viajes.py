@@ -108,9 +108,37 @@ def editor(id_viaje):
 
     return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales, lugares=lugares_reales)
 
-@viajes_bp.route('/mockup-diario')
-def mockup_diario():
-    return render_template('diario.html')
+@viajes_bp.route('/viajes/<int:id_viaje>/diario', methods=['GET', 'POST'])
+@login_required
+def diario(id_viaje):
+    if request.method == 'POST':
+        # 1. Ejecutar las eliminaciones (Fotos que el usuario borró o reemplazó)
+        fotos_a_borrar = request.form.getlist('borrar_foto[]')
+        for id_img in fotos_a_borrar:
+            if id_img.strip():
+                requests.delete(f"{BACKEND_URL}/imagenes/{id_img.strip()}")
+
+        # 2. Subir las fotos nuevas (El diario tiene máximo 10 slots)
+        for i in range(1, 11):
+            archivo = request.files.get(f'nueva_foto_{i}')
+            if archivo and archivo.filename != '':
+                archivos = {'imagen': (archivo.filename, archivo.read(), archivo.content_type)}
+                requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data={'tipo': 'diario'})
+
+        flash("¡Diario de fotos actualizado con éxito!", "success")
+        return redirect(url_for('viajes.diario', id_viaje=id_viaje))
+
+    # --- GET: RENDERIZAR LA PÁGINA ---
+    # Pedir datos del viaje (Para el título)
+    resp_viaje = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
+    viaje_real = resp_viaje.json() if resp_viaje.status_code == 200 else {}
+
+    # Pedir las fotos y filtrar solo las del diario
+    resp_img = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes")
+    imagenes_todas = resp_img.json() if resp_img.status_code == 200 else []
+    imagenes_diario = [img for img in imagenes_todas if img.get('tipo') == 'diario']
+
+    return render_template('diario.html', viaje=viaje_real, imagenes=imagenes_diario)
 
 @viajes_bp.route('/crear_viaje', methods=['GET', 'POST'])
 @login_required

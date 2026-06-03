@@ -1,4 +1,4 @@
-from ..dao.imagenes import contar_imagenes_viaje_por_tipo_db, insertar_imagen_viaje_db, actualizar_portada_viaje_db, obtener_imagenes_viaje_db, eliminar_portada_viaje_db
+from ..dao.imagenes import contar_imagenes_viaje_por_tipo_db, insertar_imagen_viaje_db, actualizar_portada_viaje_db, obtener_imagenes_viaje_db, eliminar_portada_viaje_db, obtener_imagen_por_id_db, eliminar_imagen_por_id_db
 from ..dao.viajes import obtener_viaje
 from ..dao.usuarios import obtener_usuario_por_viaje
 from ..services.storage import subir_imagen_parada
@@ -50,3 +50,15 @@ def eliminar_portada_viaje(id_viaje: int) -> bool:
         borrar_imagen_supabase(url_portada)
 
     return eliminado_db
+
+def eliminar_imagen_diario(id_imagen: int) -> bool:
+    """Borra la foto de la BD y, si existe, limpia Supabase"""
+    imagen = obtener_imagen_por_id_db(id_imagen)
+    if not imagen:
+        return False
+
+    eliminado = eliminar_imagen_por_id_db(id_imagen)
+    if eliminado and imagen['imagen_url']:
+        borrar_imagen_supabase(imagen['imagen_url'])
+
+    return eliminado

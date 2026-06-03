@@ -34,3 +34,14 @@ def eliminar_portada_viaje_db(id_viaje: int) -> bool:
     """Elimina la portada de un viaje en BD"""
     sql = "DELETE FROM imagenes WHERE id_viaje = %(id_viaje)s AND tipo = 'header'"
     return ejecutar_mutacion(sql, {'id_viaje': id_viaje}) > 0
+
+def obtener_imagen_por_id_db(id_imagen: int) -> dict:
+    """Trae la información de una imagen específica"""
+    sql = "SELECT id_imagen, imagen_url FROM imagenes WHERE id_imagen = %(id_imagen)s"
+    res = ejecutar_consulta(sql, {'id_imagen': id_imagen})
+    return res[0] if res else None
+
+def eliminar_imagen_por_id_db(id_imagen: int) -> bool:
+    """Elimina una foto del diario por su ID"""
+    sql = "DELETE FROM imagenes WHERE id_imagen = %(id_imagen)s AND tipo = 'diario'"
+    return ejecutar_mutacion(sql, {'id_imagen': id_imagen}) > 0
