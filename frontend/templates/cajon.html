@@ -23,11 +23,10 @@
                     data-id="{{ iman.id_iman }}"
                     data-parada="{{ iman.id_parada }}"
                     data-viaje="{{ iman.id_viaje }}"
-                    data-id-ciudad="{{ iman.id_ciudad }}"
-                    style="background-image: url('{{ iman.imagen_url }}'); background-size: cover; background-position: center; cursor: pointer;">
-                    <div class="iman-pin"></div>
-                    <div class="iman-destino">{{ iman.destino }}</div>
-                    <div class="iman-fecha">{{ iman.fecha if iman.fecha else '' }}</div>
+                    data-id-ciudad="{{ iman.id_ciudad }}">
+                    
+                    <img src="{{ iman.imagen_url }}" class="iman-imagen-real" alt="Imán">
+                    
                 </div>
                 {% else %}
                 <div class="cajon-vacio-texto" style="grid-column: 1/-1; color: #4A4E69; font-style: italic; padding-top: 20px;">

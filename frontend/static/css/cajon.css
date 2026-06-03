@@ -58,34 +58,39 @@ html, body {
 }
 
 /* =========================================================================
-   2. ESTILO GENERAL DEL IMÁN (MANTIENE EL CÍRCULO INCLUSO FLOTANDO)
+   2. ESTILO GENERAL DEL IMÁN 
    ========================================================================= */
 .iman-viaje {
-    /* Forzamos dimensiones rígidas para evitar el efecto elipse al arrastrar */
-    width: 100px !important;   
-    height: 100px !important;  
-    border-radius: 50% !important;
+    width: 130px;   
+    height: 130px;  
     
-    background: #ffffff;
-    border: 2.5px solid #333333;
-    box-shadow: 4px 4px 0px #333333;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    
     cursor: grab;
-    
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4px;
+    padding: 0px;
     box-sizing: border-box;
     user-select: none;
-    overflow: hidden;
-    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    transition: transform 0.2s ease-out;
 }
 
-/* Estado inicial cuando descansa dentro de la grilla */
 .grilla-cajon .iman-viaje {
     position: relative;
     z-index: 10;
+}
+
+.iman-viaje .iman-imagen-real {
+    width: 100%;
+    height: 100%;
+    
+    object-fit: contain; 
+    
+    filter: drop-shadow(4px 4px 3px rgba(26, 35, 50, 0.45));
 }
 
 /* Efecto cuando el usuario levanta el imán */
@@ -96,22 +101,8 @@ html, body {
     z-index: 9999 !important;
 }
 
-.iman-destino { 
-    font-weight: 600; 
-    font-size: 0.85rem; 
-    color: #22223B; 
-    text-align: center; 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 90%;
-}
-
-.iman-fecha { 
-    font-size: 0.65rem; 
-    color: #4A4E69; 
-    text-align: center; 
-    margin-top: 1px;
+.iman-viaje:active .iman-imagen-real {
+    filter: drop-shadow(8px 12px 6px rgba(0, 0, 0, 0.5));
 }
 
 /* =========================================================================
@@ -157,7 +148,7 @@ html, body {
 /* Efecto Hover / Active Drag */
 .gaveta-devolucion.active {
     width: 115px;
-    background: #4cd137; /* Verde de éxito al arrastrar */
+    background: #4cd137; 
     border-color: #22223B;
     transform: scale(1.001) translateY(-3px);
 }

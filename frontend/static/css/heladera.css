@@ -173,52 +173,43 @@ html, body {
 }
 
 /* =========================================================================
-   4. ESTILO DE LOS IMANES (Capa 2: Frente Absoluto con relieve)
+   4. ESTILO DE LOS IMANES 
    ========================================================================= */
 .iman-viaje {
     position: absolute; 
-    background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 75%, #e2e8f0 100%);
-    border: 2.5px solid #333333;
-    box-shadow: 4px 4px 0px #333333;
     cursor: grab;
-    
-    width: 110px; 
-    height: 110px; 
-    border-radius: 50%;
+    user-select: none;
+    z-index: 10; 
+
+    background: transparent; 
+    border: none;
+    box-shadow: none;
+
+    width: 120px;
+    height: 120px;            
     
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4px;
+    padding: 0px;
     box-sizing: border-box;
-    user-select: none;
-    z-index: 10; /* Z-Index base en reposo */
+}
+
+.iman-viaje img, .iman-viaje .iman-imagen-real {
+    width: 100%;
+    height: 100%;
+    
+    object-fit: contain;     /* Renderiza el imán entero sin importar su forma */
+    
+    filter: drop-shadow(4px 4px 3px rgba(26, 35, 50, 0.45));
 }
 
 .iman-viaje:active {
     cursor: grabbing;
-    transform: scale(1.1); 
-    box-shadow: 8px 8px 0px #333333;
-    z-index: 1000; /* JavaScript lo sube dinámicamente al frente de todo */
-}
-
-.iman-destino { 
-    font-weight: 700; 
-    font-size: 0.85rem; 
-    color: #22223B; 
-    text-align: center; 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 90%;
-}
-
-.iman-fecha { 
-    font-size: 0.65rem; 
-    color: #4A4E69; 
-    text-align: center; 
-    font-weight: 500;
+    transform: scale(1.1);
+    
+    filter: drop-shadow(8px 12px 6px rgba(0, 0, 0, 0.5)); 
+    z-index: 1000;           /* JS lo sube dinámicamente al frente de todo */
 }
 
 #puerta .iman-viaje * {

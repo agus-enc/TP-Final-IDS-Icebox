@@ -60,8 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
         let y = ev.clientY - offsetY;
 
         imanSeleccionado.style.position = "fixed";
-        imanSeleccionado.style.width = "85px";
-        imanSeleccionado.style.height = "85px";
+        imanSeleccionado.style.width = "130px";
+        imanSeleccionado.style.height = "130px";
         imanSeleccionado.style.left = `${x}px`;
         imanSeleccionado.style.top = `${y}px`;
         imanSeleccionado.style.zIndex = "1000";
