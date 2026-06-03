@@ -5,7 +5,7 @@ from endpoints.db import ejecutar_consulta
 admin_bp = Blueprint('admin', __name__)
 
 @admin_bp.route('/admin/dashboard', methods=['GET'])
-def dashboard():
+def vista_admin_dashboard():
     
     id_usuario = request.headers.get('X-User-Id')
 
@@ -13,7 +13,7 @@ def dashboard():
         return jsonify({"status":"error","message":"Falta identificacion de usuario."}), 401
     
     sql = "SELECT rol FROM usuarios WHERE id_usuario = %s"
-    response = ejecutar_consulta(sql, (id_usuario))
+    response = ejecutar_consulta(sql, (id_usuario,))
 
     if not response or response[0]['rol'] != 'admin':
         return jsonify({"status":"error","message":"Acceso denegado, no eres administrador."}), 403
@@ -31,7 +31,7 @@ def descargar_reporte():
         return jsonify({"status":"error","message":"Falta identificacion de usuario."}), 401
     
     sql = "SELECT rol FROM usuarios WHERE id_usuario = %s"
-    response = ejecutar_consulta(sql, (id_usuario))
+    response = ejecutar_consulta(sql, (id_usuario,))
 
     if not response or response[0]['rol'] != 'admin':
         return jsonify({"status":"error","message":"Acceso denegado, no eres administrador."}), 403
