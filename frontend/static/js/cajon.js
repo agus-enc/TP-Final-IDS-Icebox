@@ -9,9 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     let usuarioId = cajon.getAttribute("data-usuario");
-    if (!usuarioId || usuarioId === "" || usuarioId === "None") {
-        usuarioId = "1"; 
-    }
 
     let imanSeleccionado = null;
     let offsetX = 0;
@@ -34,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener("mouseup", soltar);
     });
 
-    // REDIRECCIÓN REPARADA EN EL CAJÓN: Busca por ID numérico de ciudad
     cajon.addEventListener("click", (e) => {
         const tarjeta = e.target.closest(".iman-viaje");
         if (!tarjeta) return;
@@ -113,12 +109,14 @@ document.addEventListener("DOMContentLoaded", () => {
     function enviarCambioPosicion(id, enHeladera, x, y) {
         fetch(`${urlDeMiCajon}/imanes/${id}/posicion`, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "X-User-Id": String(usuarioId)
+            },
             body: JSON.stringify({
                 ubicacion_heladera: enHeladera ? 1 : 0,
                 posicion_x: parseInt(x),
-                posicion_y: parseInt(y),
-                id_usuario: parseInt(usuarioId)
+                posicion_y: parseInt(y)
             })
         })
         .then(res => console.log("Guardado en Back base:", res.status))

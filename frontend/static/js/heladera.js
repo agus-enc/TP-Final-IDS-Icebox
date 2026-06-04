@@ -3,15 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const zonaGuardar = document.getElementById("zona-guardar");
     if (!puerta || !zonaGuardar) return;
 
+    // URL de la API
     let urlDeMiHeladera = puerta.getAttribute("data-backend") || "http://127.0.0.1:5000/endpoints";
     if (urlDeMiHeladera === "http://127.0.0.1:5000") {
         urlDeMiHeladera = "http://127.0.0.1:5000/endpoints";
     }
     
     let usuarioId = puerta.getAttribute("data-usuario");
-    if (!usuarioId || usuarioId === "" || usuarioId === "None") {
-        usuarioId = "1"; 
-    }
 
     let imanSeleccionado = null;
     let offsetX = 0;
@@ -136,12 +134,14 @@ document.addEventListener("DOMContentLoaded", () => {
     function actualizarEstadoUbicacionBackend(idIman, enHeladera, posX, posY) {
         fetch(`${urlDeMiHeladera}/imanes/${idIman}/posicion`, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "X-User-Id": String(usuarioId)
+            },
             body: JSON.stringify({
-                ubicacion_heladera: enHeladera ? 1 : 0, // Como entero para mitigar errores de parseo en Python
+                ubicacion_heladera: enHeladera ? 1 : 0, 
                 posicion_x: parseInt(posX),
-                posicion_y: parseInt(posY),
-                id_usuario: parseInt(usuarioId)
+                posicion_y: parseInt(posY)
             })
         })
         .then(res => console.log("Cambio impactado en Back:", res.status))

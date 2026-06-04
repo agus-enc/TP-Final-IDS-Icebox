@@ -13,9 +13,10 @@ def mostrar_heladera():
     
     imanes_heladera = []
     try:
-        #Implementacion del &id_usuario={{ usuario_id }} que el backend exige obligatoriamente
-        url_api = f"{BACKEND_URL}/imanes?ubicacion=heladera&id_usuario={usuario_id}"
-        respuesta = requests.get(url_api, cookies=request.cookies)
+        url_api = f"{BACKEND_URL}/imanes?ubicacion=heladera"
+        #El id_usuario se pasa en el header
+        headers = {'X-User-Id': str(usuario_id)}
+        respuesta = requests.get(url_api, headers=headers)
         if respuesta.status_code == 200:
             imanes_heladera = respuesta.json()
     except Exception as e:
@@ -31,9 +32,10 @@ def cajon():
     
     imanes_cajon = []
     try:
-        # Le pasamos el id_usuario en los argumentos de la URL
-        url_api = f"{BACKEND_URL}/imanes?ubicacion=cajon&id_usuario={usuario_id}"
-        respuesta = requests.get(url_api, cookies=request.cookies)
+        url_api = f"{BACKEND_URL}/imanes?ubicacion=cajon"
+        #El id_usuario se pasa en el header
+        headers = {'X-User-Id': str(usuario_id)}
+        respuesta = requests.get(url_api, headers=headers)
         if respuesta.status_code == 200:
             imanes_cajon = respuesta.json()
     except Exception as e:

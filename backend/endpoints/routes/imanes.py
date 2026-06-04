@@ -14,13 +14,22 @@ def cambiar_posicion_iman(id_iman):
     if request.method == "OPTIONS":
         response = make_response()
         response.headers.add("Access-Control-Allow-Origin", "http://127.0.0.1:8000")
-        response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-User-Id")
         response.headers.add("Access-Control-Allow-Methods", "PATCH, OPTIONS")
         return response
 
-    # 2. PROCESAMOS EL PATCH REAL
+    #Validacion por header
+    id_usuario = request.headers.get('X-User-Id')
+    if not id_usuario:
+        response = make_response(jsonify(construir_error(
+            code="UNAUTHORIZED",
+            message="Falta identificacion de usuario.",
+            description="La cabecera X-User-Id es obligatoria para realizar esta acción."
+        )), 401)
+        response.headers.add("Access-Control-Allow-Origin", "http://127.0.0.1:8000")
+        return response
+
     datos = request.get_json()
-    
     ubicacion_heladera = datos.get("ubicacion_heladera")
     posicion_x = datos.get("posicion_x")
     posicion_y = datos.get("posicion_y")
@@ -46,14 +55,11 @@ def cambiar_posicion_iman(id_iman):
             response.headers.add("Access-Control-Allow-Origin", "http://127.0.0.1:8000")
             return response
             
-        # 3. RESPUESTA EXITOSA
         response = make_response("", 204)
         response.headers.add("Access-Control-Allow-Origin", "http://127.0.0.1:8000")
         return response
 
     except Exception as e:
-        # Si algo falla en la Query SQL, respondemos el 500 pero CON cabecera de CORS 
-        # para que el navegador no lo tape con el cartel rojo genérico
         response = make_response(jsonify(construir_error(
             code="INTERNAL_ERROR",
             message="Error interno del servidor",
@@ -65,15 +71,14 @@ def cambiar_posicion_iman(id_iman):
 @imanes_bp.route("/imanes", methods=["GET"])
 def obtener_imanes():
 
-    id_usuario = request.args.get("id_usuario", type=int)
+    id_usuario = request.headers.get("X-User-Id", type=int)
     ubicacion_param = request.args.get("ubicacion", type=str)
 
     if not id_usuario:
-        return jsonify (construir_error(
-            code="BAD_REQUEST",
-            message="Falta el id del usuario",
-            description="El parámetro id_usuario es obligatorio en los argumentos de la URL"
-        )), 400
+        return jsonify({
+            "status": "error",
+            "message": "Falta identificacion de usuario."
+        }), 401
     
     try:
         imanes = listar_imanes(id_usuario, ubicacion_param)
