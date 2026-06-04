@@ -8,8 +8,7 @@ mapa_bp = Blueprint('mapa', __name__)
 @mapa_bp.route('/mapa')
 @login_required
 def mostrar_mapa():
-    # id_usuario = session.get('usuario_id')
-    id_usuario = 1
+    id_usuario = session.get('usuario_id')
 
     url_backend = f"{BACKEND_URL}/usuarios/{id_usuario}/paises/visitados"
 
