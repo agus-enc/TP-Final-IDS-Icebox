@@ -108,7 +108,6 @@ def editor(id_viaje):
 
     return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales, lugares=lugares_reales)
 
-
 @viajes_bp.route('/viajes/<int:id_viaje>/diario', methods=['GET', 'POST'])
 @login_required
 def diario(id_viaje):
@@ -161,16 +160,12 @@ def diario(id_viaje):
 @login_required
 def crear_viaje():
     if request.method == 'POST':
-        # 1. CREAR EL VIAJE PADRE
         titulo = request.form.get('titulo_viaje')
         if not titulo:
             flash("El título del viaje es obligatorio.", "error")
             return redirect(url_for('viajes.crear_viaje'))
 
-        # EXTRAEMOS EL ID DEL USUARIO DESDE LA SESIÓN DE FLASK
         usuario_id = session.get('usuario_id')
-
-        # AGREGAMOS EL ID A LA URL DEL BACKEND
         res_v = requests.post(f"{BACKEND_URL}/{usuario_id}/viajes", json={"titulo": titulo})
 
         if res_v.status_code not in [200, 201]:
@@ -179,13 +174,11 @@ def crear_viaje():
 
         id_viaje = res_v.json().get('id_viaje')
 
-        # 2. PROCESAR PORTADA (Opcional)
         foto_portada = request.files.get('foto_portada')
         if foto_portada and foto_portada.filename != '':
             archivos = {'imagen': (foto_portada.filename, foto_portada.read(), foto_portada.content_type)}
             requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data={'tipo': 'header'})
 
-        # 3. CREAR PARADAS Y EMPAQUETAR IMANES (Usando Helpers)
         paradas_data = parsear_formulario_paradas(request.form, request.files)
         lote_imanes = []
         archivos_imanes = {}
@@ -198,16 +191,13 @@ def crear_viaje():
                 "texto_resena": p_data['texto_resena']
             }
 
-            # A. Guardamos la Parada
             resp_parada = requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada)
 
             if resp_parada.status_code in [200, 201]:
                 id_parada = resp_parada.json().get('id_parada')
-
-                # B. Empaquetar Imán
                 procesar_paquete_iman(lote_imanes, archivos_imanes, id_parada, p_data)
 
-        # 4. ENVIAR BATCH DE IMANES AL BACKEND
+        # Envia batch de imanes al backendd
         if lote_imanes:
             payload_batch = {"id_viaje": id_viaje, "imanes_data": json.dumps(lote_imanes)}
             res_batch = requests.post(f"{BACKEND_URL}/imanes/batch", data=payload_batch, files=archivos_imanes)
