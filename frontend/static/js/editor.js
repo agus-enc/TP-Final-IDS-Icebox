@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Activamos la protección para futuros cambios
             protegerConAutoguardado(textarea);
+            habilitarModoZen(textarea);
         });
     }
 
