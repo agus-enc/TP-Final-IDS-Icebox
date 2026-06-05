@@ -1,4 +1,5 @@
 from ..utils import construir_error, validar_entero, validar_minimo
+from email_validator import validate_email, EmailNotValidError
 
 def validar_id_usuario(id_usuario: int) -> int:
     return validar_minimo(id_usuario, 1, 'id')
@@ -15,7 +16,17 @@ def validar_registro_usuario(data: dict):
             message='Campos obligatorios vacios',
             description='El nombre de usuario, email y contraseña no pueden estar vacios',
         ))
-    
+
+    try:
+        validate_email(email)
+    except EmailNotValidError as e:
+            raise ValueError(construir_error(
+                code='invalid.email',
+                message='Formatos de email inválidos',
+                description='El correo electrónico ingresado no tiene un formáto valido (ejemplo@dominio.com)'
+            ))
+            
+
     if len(password) < 4:
         raise ValueError(construir_error(
             code='invalid.password.length',
