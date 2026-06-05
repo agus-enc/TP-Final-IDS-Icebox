@@ -11,7 +11,7 @@ viajes_bp = Blueprint('viajes', __name__)
 @login_required
 def biblioteca():
     usuario_id = session.get('usuario_id')
-    url_pedir_viajes = f"{BACKEND_URL}/{usuario_id}/viajes"
+    url_pedir_viajes = f"{BACKEND_URL}/{usuario_id}/viajes/lista"
     resp = requests.get(url_pedir_viajes)
     
     if resp.status_code == 200:

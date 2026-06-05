@@ -12,7 +12,7 @@
                 <div class="shelf">
                     <div id="estanteria-dinamica-1" class="subshelf">
                         {% for viaje in viajes %}
-                            <div class="book color{{ (loop.index % 3) + 1 }}" data-id="{{ viaje.id }}" data-destino="{{ viaje.titulo }}">
+                            <div class="book color{{ (loop.index % 3) + 1 }}" data-id="{{ viaje.id_viaje }}" data-destino="{{ viaje.titulo }}">
                                 <div class="texto-lomo">{{ viaje.titulo }}</div>
                             </div>
                         {% endfor %}
@@ -35,7 +35,7 @@
                 {% for viaje in viajes %}
                 <div class="fila-eliminar">
                     <span>{{ viaje.titulo }}</span>
-                    <form action="{{ url_for('viajes.borrar_viaje', id_viaje=viaje.id) }}" method="POST">
+                    <form action="{{ url_for('viajes.borrar_viaje', id_viaje=viaje.id_viaje) }}" method="POST">
                         <button type="submit" class="btn-biblioteca-accion" style="padding: 4px 10px; font-size: 0.75rem;">Eliminar</button>
                     </form>
                 </div>
