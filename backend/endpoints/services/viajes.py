@@ -1,4 +1,4 @@
-from ..dao.viajes import insertar_viaje, eliminar_viaje_por_id, actualizar_titulo_viaje, obtener_viaje
+from ..dao.viajes import insertar_viaje, eliminar_viaje_por_id, actualizar_titulo_viaje, obtener_viaje, obtener_viajes_por_usuario_db
 from ..validators.viajes import validar_body_viaje, validar_minimo
 
 def construir_viaje_dto(viaje: dict) -> dict:
@@ -46,3 +46,8 @@ def editar_titulo_viaje(id_viaje: int, body: dict) -> bool:
     datos_viaje = validar_body_viaje(body)
     titulo_limpio = datos_viaje.get("titulo")
     return actualizar_titulo_viaje(id_viaje, titulo_limpio)
+
+def obtener_viajes_por_usuario(id_usuario: int) -> list:
+    """Obtiene y formatea la lista de viajes de un usuario a formato dto"""
+    lista = obtener_viajes_por_usuario_db(id_usuario)
+    return [construir_viaje_dto(v) for v in lista]

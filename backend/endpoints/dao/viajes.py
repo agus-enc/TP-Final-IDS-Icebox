@@ -1,4 +1,4 @@
-from ..db import ejecutar_consulta, ejecutar_mutacion
+from ..db import ejecutar_consulta, ejecutar_mutacion, get_connection
 
 def insertar_viaje(id_usuario: int, titulo: str, fecha_viaje: str) -> int:
     """Inserta un nuevo viaje y retorna el id generado."""
@@ -26,3 +26,8 @@ def eliminar_viaje_por_id(id_viaje: int) -> bool:
     sql = 'DELETE FROM viajes WHERE id_viaje = %(id_viaje)s'
     filas_afectadas = ejecutar_mutacion(sql, {'id_viaje': id_viaje})
     return filas_afectadas > 0
+
+def obtener_viajes_por_usuario_db(id_usuario: int) -> list:
+    """Obtiene todos los viajes de un usuario específico."""
+    sql = 'SELECT id_viaje, id_usuario, titulo, fecha_viaje FROM viajes WHERE id_usuario = %(id_usuario)s'
+    return ejecutar_consulta(sql, {"id_usuario": id_usuario})
