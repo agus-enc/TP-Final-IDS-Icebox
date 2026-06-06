@@ -167,3 +167,25 @@ info.update = function (props) {
 };
 info.addTo(map);
 
+//boton de compartir
+const shareControl = L.control({ position: 'topright' });
+
+shareControl.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+
+    div.innerHTML = `
+        <button id="btn-compartir" class="btn-compartir-mapa">
+            🔗 Compartir Mapa
+        </button>
+    `;
+    
+    div.onclick = function() {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert("¡Link copiado al portapapeles!");
+        });
+    };
+    
+    return div;
+};
+
+shareControl.addTo(map);

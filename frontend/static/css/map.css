@@ -214,3 +214,16 @@ button.iman-viaje:active {
   font-size: 22px;
   cursor: pointer;
 }
+
+.btn-compartir-mapa {
+    background: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    font-weight: bold;
+}
+
+.btn-compartir-mapa:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+}

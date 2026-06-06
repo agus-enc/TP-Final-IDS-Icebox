@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/heladera.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login-style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/biblioteca.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/map.css') }}">
     {% block extra_css%}{% endblock %}
 </head>
 <body>
@@ -60,7 +61,9 @@
             </li>
 
             <li class="list">
-                <a href="{{ url_for('mapa.mostrar_mapa')}}">
+                {% if session.get('usuario_id') %}
+                    <a href="{{ url_for('mapa.mostrar_mapa', id_usuario=session.get('usuario_id'))}}">
+                {% endif %}
                     <span class="icon"><ion-icon name="earth-outline"></ion-icon></span>
                     <span class="route">Mapa</span>
                 </a>
