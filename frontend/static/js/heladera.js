@@ -32,21 +32,18 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener("mouseup", soltar);
     });
 
-    // REDIRECCIÓN REPARADA: Usa el Identificador único numérico (id_ciudad)
+    // REDIRECCIÓN: Usa id_parada
     puerta.addEventListener("click", (e) => {
         const iman = e.target.closest(".iman-viaje");
         if (!iman) return;
 
-        if (arrastrando) {
-            e.preventDefault();
-            return; 
-        }
+        if (!arrastrando) {
+            const idViaje = iman.getAttribute("data-viaje");
+            const idParada = iman.getAttribute("data-parada");
 
-        const idViaje = iman.getAttribute("data-viaje");
-        const idCiudad = iman.getAttribute("data-id-ciudad");
-        
-        if (idViaje && idCiudad) {
-            window.location.href = `/viajes/${idViaje}/editar?buscar_id_ciudad=${idCiudad}`;
+            if (idViaje && idParada) {
+                window.location.href = `/viajes/${idViaje}/editar?buscar_id_parada=${idParada}`;
+            }
         }
     });
 

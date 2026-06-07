@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Inyecta borradores del local storage si los hay y vuelve a guardar
+    // Inyecta borradores del local storage si los hay y vuelve a guardar el texto
     if (formEditor) {
         const textareasEditor = formEditor.querySelectorAll('textarea');
         idViajeActual = formEditor.dataset.idViaje;
@@ -84,14 +84,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Delegación de eventos para Eliminar Parada (Sirve para viejas y nuevas)
+    // Delegación de eventos para Eliminar Parada
     if (lineaTiempo) {
-        lineaTiempo.addEventListener('click', function(e) {
-            if (e.target.classList.contains('btn-eliminar-parada')) {
-                const tarjeta = e.target.closest('.tarjeta-parada');
+        lineaTiempo.addEventListener('click', function(event) {
+            if (event.target.classList.contains('btn-eliminar-parada')) {
+                const tarjeta = event.target.closest('.tarjeta-parada');
                 const inputId = tarjeta.querySelector('.hidden-id-parada');
 
-                // Si la tarjeta ya existía en la BD (tiene ID), anotamos su ID para borrarlo
+                // Si la tarjeta ya existía en la BD, anotamos su ID para borrarlo
                 if (inputId && inputId.value) {
                     const inputBorradas = document.getElementById('input-paradas-borradas');
                     if (inputBorradas.value) {
@@ -107,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     localStorage.removeItem(`draft_viaje_${idViajeActual}_${textarea.id}`);
                 }
 
-                // Eliminar visualmente y quitar del formulario
                 tarjeta.remove();
             }
         });
@@ -140,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (inputIdParada) {
             inputIdParada.name = "id_parada_" + contadorParadas;
-            inputIdParada.value = ""; // VITAL: Le borramos el ID porque es una parada NUEVA
+            inputIdParada.value = "";
         }
 
         // Clonar Textarea
@@ -153,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
             habilitarModoZen(textareaClonado);
         }
         
-        // 4. Clonar la Sección del Imán (NUEVA UI)
+        // 4. Clonar la Sección del Imán
         const seccionIman = nuevaTarjeta.querySelector('.seccion-iman');
         if (seccionIman) {
             seccionIman.id = "seccion-iman-" + contadorParadas;
@@ -169,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const inputArchivo = seccionIman.querySelector('.input-archivo-iman');
             const contenedorFoto = seccionIman.querySelector('.contenedor-foto-iman');
 
-            // Solo reasignamos los ID y for dinámicos
+            // Reasignamos los ID y for dinámicos
             if (inputArchivo && contenedorFoto) {
                 inputArchivo.id = "foto-parada-" + contadorParadas;
                 inputArchivo.name = "archivo_iman_" + contadorParadas;
@@ -216,14 +215,14 @@ document.addEventListener('DOMContentLoaded', function() {
             visorModal.classList.remove('activo');
         });
 
-        visorModal.addEventListener('click', function(e) {
-            if (e.target === visorModal) visorModal.classList.remove('activo');
+        visorModal.addEventListener('click', function(event) {
+            if (event.target === visorModal) visorModal.classList.remove('activo');
         });
     }
 
     // Cierres con tecla ESCAPE (Modo Zen y Visor)
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
             salirModoZen();
             if (visorModal && visorModal.classList.contains('activo')) {
                 visorModal.classList.remove('activo');
@@ -237,8 +236,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Cierre con clic fuera del Buscador
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.buscador-ciudad-wrapper')) {
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.buscador-ciudad-wrapper')) {
             const listasAbiertas = document.querySelectorAll('.lista-resultados-ciudad.activa');
             listasAbiertas.forEach(lista => lista.classList.remove('activa'));
         }
@@ -246,44 +245,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // DETECTOR AUTOMÁTICO DE ENFOQUE DESDE HELADERA O CAJÓN
     const parametrosUrl = new URLSearchParams(window.location.search);
-    const idCiudadABuscar = parametrosUrl.get("buscar_id_ciudad");
+    const idParadaABuscar = parametrosUrl.get("buscar_id_parada");
 
-    if (idCiudadABuscar) {
-        // Esperamos 400 ms para asegurar que Jinja2 y el CSS hayan renderizado
-        // completamente las dimensiones de las tarjetas antes de calcular el scroll.
+    if (idParadaABuscar) {
         setTimeout(() => {
-            // Buscamos el input oculto que guarda el id_ciudad en cada tarjeta
-            const inputsOcultosCiudades = document.querySelectorAll(".tarjeta-parada input[type='hidden'][id^='hidden-ciudad-']");
-            
-            inputsOcultosCiudades.forEach(inputOculto => {
-                // Comparamos si el ID de la ciudad coincide con el de la URL
-                if (inputOculto.value === idCiudadABuscar) {
-                    
-                    const tarjetaParada = inputOculto.closest(".tarjeta-parada") || inputOculto.closest("[class*='tarjeta']");
-                    
+            const inputsIdParada = document.querySelectorAll(".tarjeta-parada .hidden-id-parada");
+
+            for (const inputOculto of inputsIdParada) {
+
+                if (inputOculto.value === idParadaABuscar) {
+                    const tarjetaParada = inputOculto.closest(".tarjeta-parada");
+
                     if (tarjetaParada) {
-                        // Scroll fluido hacia el medio del contenedor
-                        tarjetaParada.scrollIntoView({
-                            behavior: "smooth",
-                            block: "center"
-                        });
+                        tarjetaParada.scrollIntoView({behavior: "smooth", block: "center"});
                     }
+
+                    break;
                 }
-            });
-        }, 400);
+            }
+        }, 300);
     }
     // VALIDACIÓN Y GARBAGE COLLECTION AL GUARDAR
     if (formEditor) {
-        formEditor.addEventListener('submit', function(e) {
+        formEditor.addEventListener('submit', function(event) {
+            const esValido = window.validarCiudadesViaje(formEditor, event);
 
-            // 1. Llamamos al Guardia de Seguridad Global
-            const esValido = window.validarCiudadesViaje(formEditor, e);
-
-            // 2. Garbage Collection: Limpiar el disco SOLO si el formulario pasó la prueba
+            // Limpiar el disco si el formulario pasó la prueba
             if (esValido) {
                 const prefijo = `draft_viaje_${idViajeActual}_`;
+
                 for (let i = localStorage.length - 1; i >= 0; i--) {
                     const key = localStorage.key(i);
+
                     if (key && key.startsWith(prefijo)) {
                         localStorage.removeItem(key);
                     }

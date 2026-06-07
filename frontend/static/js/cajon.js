@@ -35,16 +35,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const tarjeta = e.target.closest(".iman-viaje");
         if (!tarjeta) return;
 
-        if (arrastrando) {
-            e.preventDefault();
-            return; 
-        }
+        if (!arrastrando) {
+            const idViaje = tarjeta.getAttribute("data-viaje");
+            const idParada = tarjeta.getAttribute("data-parada");
 
-        const idViaje = tarjeta.getAttribute("data-viaje");
-        const idCiudad = tarjeta.getAttribute("data-id-ciudad");
-
-        if (idViaje && idCiudad) {
-            window.location.href = `/viajes/${idViaje}/editar?buscar_id_ciudad=${idCiudad}`;
+            if (idViaje && idParada) {
+                window.location.href = `/viajes/${idViaje}/editar?buscar_id_parada=${idParada}`;
+            }
         }
     });
 
