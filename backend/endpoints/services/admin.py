@@ -9,10 +9,11 @@ def obtener_estadisticas_viajes():
     """ Hace la consulta a la base de datos usando db.py para traer los destinos y cuantos viajes tiene cada uno """
 
     sql = """
-        SELECT ciudades.nombre, COUNT(paradas.id_parada) AS cantidad
+        SELECT paises.nombre, COUNT(paradas.id_parada) AS cantidad
         FROM paradas
-        INNER JOIN ciudades ON paradas.id_parada = ciudades.id_ciudad
-        GROUP BY ciudades.id_ciudad, ciudades.nombre
+        INNER JOIN ciudades ON paradas.id_ciudad = ciudades.id_ciudad
+        INNER JOIN paises ON ciudades.id_pais = paises.id_pais
+        GROUP BY paises.id_pais, paises.nombre
         ORDER BY cantidad DESC
         LIMIT 5
     """
@@ -23,22 +24,22 @@ def obtener_estadisticas_viajes():
 def generar_grafico_viajes():
 
     datos_db = obtener_estadisticas_viajes()
-    ciudades = []
+    paises = []
     cantidades = []
 
     if not datos_db:
-        ciudades = ['Sin viajes cargados']
+        paises = ['Sin viajes cargados']
         cantidades = [0]
     else:
         for fila in datos_db:
-            ciudades.append(fila['nombre'])
+            paises.append(fila['nombre'])
             cantidades.append(fila['cantidad'])
     
     plt.figure(figsize=(6,4))
-    plt.bar(ciudades, cantidades, color='#7485e6', edgecolor='#333333', linewidth=2)
+    plt.bar(paises, cantidades, color='#7485e6', edgecolor='#333333', linewidth=2)
 
-    plt.title('Ciudades Mas visitadas (Top 5)', fontsize=12, fontweight='bold', pad=15)
-    plt.xlabel('Ciudades', fontweight='bold')
+    plt.title('Países mas visitados (Top 5)', fontsize=12, fontweight='bold', pad=15)
+    plt.xlabel('Países', fontweight='bold')
     plt.ylabel('Cantidad de Visitas', fontweight='bold')
 
     ruta_grafico = os.path.join('frontend', 'static', 'images', 'grafico_admin.png')
@@ -59,7 +60,7 @@ def generar_pdf_reporte(ruta_grafico):
     c.drawString(100, 750, "Informe Estadístico - Icebox Trips")
 
     c.setFont("Helvetica", 11)
-    c.drawString(100, 725, "Análisis de metricas de usuario globales (Paradas por Ciudad).")
+    c.drawString(100, 725, "Análisis de metricas de usuario globales (Paradas por País).")
     c.drawString(100, 710, "Acceso reestringido - Solo administradores.")
 
     c.setLineWidth(1)

@@ -32,6 +32,8 @@
         {% endblock %}
     </main>
 
+    {% if not session.es_admin %}
+    
     <div class="router">
         <ul>
             <li class="list" id="user-menu-trigger">
@@ -46,6 +48,10 @@
                             👤 {{ session.nombre_usuario }}
                         </div>
                     {% endif %}
+
+                    <a href="#" class="dropdown-item" id="btn-abrir-ajustes">
+                        <ion-icon name="settings-outline"></ion-icon> Ajustes de Usuario
+                    </a>
                     
                     {% if session.es_admin %}
                         <a href="{{ url_for('admin.vista_admin_dashboard') }}" class="dropdown-item" style="color: #ff4757; font-weight: bold;">
@@ -57,7 +63,6 @@
                             <ion-icon name="log-out-outline"></ion-icon> Cerrar Sesión
                     </a>
                 </div>
-                
             </li>
 
             <li class="list">
@@ -100,6 +105,7 @@
             <div class="indicador"></div>
         </ul>
     </div>
+    {% endif %}
 
     <div id="modal-creador-viajes" class="modal-creador-oculto">
         <div class="modal-creador-contenido">
@@ -176,13 +182,52 @@
         </div>
     </div>
 
+    <div class="modal-creador-oculto" id="modal-ajustes-usuario" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center;">
+        <div class="modal-creador-contenido modal-ajustes-dimensiones">
+            <button class="btn-cerrar-modal" id="btn-cerrar-ajustes">&times;</button>
+            
+            <div class="header-creador header-ajustes">
+                <h2>🛠️ Ajustes de Cuenta</h2>
+            </div>
+            
+            <form id="form-ajustes-usuario" action="{{ url_for('login.actualizar_perfil') }}" method="POST" class="form-ajustes-cuerpo">
+                
+                <div class="ajustes-grupo-input">
+                    <label>Nuevo Nombre de Usuario</label>
+                    <input type="text" name="nuevo_nombre" class="input-buscador-ciudad input-ajustes-estilo" placeholder="Tu nuevo nombre">
+                </div>
+                
+                <div class="ajustes-grupo-input">
+                    <label>Nuevo Correo Electrónico</label>
+                    <input type="email" name="nuevo_email" class="input-buscador-ciudad input-ajustes-estilo" placeholder="ejemplo@correo.com">
+                </div>
+                
+                <hr class="ajustes-separador">
+                
+                <div class="ajustes-grupo-input">
+                    <label>Nueva Contraseña</label>
+                    <input type="password" name="nueva_password" class="input-buscador-ciudad input-ajustes-estilo" placeholder="Mínimo 4 caracteres">
+                </div>
+                
+                <div class="ajustes-grupo-input">
+                    <label>Confirmar Nueva Contraseña</label>
+                    <input type="password" name="confirmar_password" class="input-buscador-ciudad input-ajustes-estilo" placeholder="Repetir contraseña">
+                </div>
+                
+                <div class="acciones-creador acciones-ajustes">
+                    <button type="button" class="btn-secundario-creador btn-cancelar-gris" id="btn-cancelar-ajustes">Cancelar</button>
+                    <button type="submit" class="btn-primario-creador">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <script src="http://localhost:5000/endpoints/ciudades/js"></script>
-
+    
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule="" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
     <script src="{{ url_for('static', filename='js/main.js')}}"></script>
-
+    
     {% block extra_js %}{% endblock %}
 
 </body>

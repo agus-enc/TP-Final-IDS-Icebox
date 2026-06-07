@@ -1,5 +1,5 @@
 from flask import Blueprint, session, jsonify, send_file, request
-from endpoints.services.admin import generar_grafico_viajes, generar_pdf_reporte
+from endpoints.services.admin import generar_grafico_viajes, generar_pdf_reporte, obtener_estadisticas_viajes
 from endpoints.db import ejecutar_consulta
 
 admin_bp = Blueprint('admin', __name__)
@@ -19,7 +19,26 @@ def vista_admin_dashboard():
         return jsonify({"status":"error","message":"Acceso denegado, no eres administrador."}), 403
     
     generar_grafico_viajes()
-    return jsonify({"status": "success", "message": " Gráfico generado con éxito."}), 200
+    
+    datos_db = obtener_estadisticas_viajes()
+    ciudades = []
+    cantidades = []
+
+    if not datos_db:
+        ciudades = ['Sin viajes cargados']
+        cantidades = [0]
+    else:
+        for fila in datos_db:
+            ciudades.append(fila['nombre'])
+            cantidades.append(fila['cantidad'])
+
+    # 3. Mandamos el JSON con los datos incluidos
+    return jsonify({
+        "status": "success", 
+        "message": "Gráfico generado con éxito.",
+        "ciudades": ciudades,
+        "visitas": cantidades
+    }), 200
 
 
 @admin_bp.route('/admin/descargar-reporte', methods=['GET'])

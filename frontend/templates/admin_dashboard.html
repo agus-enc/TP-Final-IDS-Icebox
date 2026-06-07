@@ -8,6 +8,13 @@
 
 {% block content%}
 <div class="admin-container">
+    
+    <div class="admin-logout-wrapper">
+        <a href="{{ url_for('login.logout') }}" class="btn-admin-logout">
+            Cerrar Sesión
+        </a>
+    </div>
+    
     <h1 class="admin-title">
         Panel de Control: Administrador        
     </h1>
@@ -15,11 +22,24 @@
     <div class="chart-card">
         <h3>Estadísticas de Viajes Globales</h3>
 
-        <img src= "{{ url_for('static', filename='images/grafico_admin.png') }}" alt="Gráfico de estadísticas" class="chart-img">
+        <div style="position: relative; height: 300px; width: 100%;">
+            <canvas id="miGrafico"></canvas>
+        </div>
     </div>
 
     <a href= "{{ url_for('admin.descargar_reporte') }}" class="btn-download-pdf">
         Descargar Reporte en PDF
     </a>
+
+    
 </div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labelsCiudades = {{ ciudades | tojson | safe }};
+    const dataVisitas = {{ visitas | tojson | safe }};
+</script>
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}

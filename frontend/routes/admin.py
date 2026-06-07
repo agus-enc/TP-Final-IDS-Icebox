@@ -10,24 +10,31 @@ def vista_admin_dashboard():
     if not session.get('es_admin'):
         flash("No tenes acceso a esta vista. Solo administradores.", "error")
         
-        return redirect(url_for('imanes.mostrar_heladera'))
+        return redirect(url_for('login.login'))
     
     #CONEXION CON EL BACK
     url = f"{BACKEND_URL}/admin/dashboard"
     headers = {'X-User-Id': str(session.get('usuario_id'))}
 
     try:
+        
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
-            return render_template('admin_dashboard.html')
+            # Extraemos los datos del JSON
+            datos = response.json()
+            ciudades_top = datos.get('ciudades', [])
+            visitas_top = datos.get('visitas', [])
+            
+            # Renderizamos inyectando los datos al HTML
+            return render_template('admin_dashboard.html', ciudades=ciudades_top, visitas=visitas_top)
         else:
             flash("Error de autorizacion en el servidor.", "error")
-            return redirect(url_for('imanes.mostrar_heladera'))
+            return redirect(url_for('login.login'))
         
     except requests.exceptions.RequestException:
         flash("No se pudo conectar con el servidor de estadísticas.", "error")
-        return redirect(url_for('imanes.mostrar_heladera'))
+        return redirect(url_for('login.login'))
 
 
 @admin_bp.route('/admin/descargar-reporte', methods=['GET'])
