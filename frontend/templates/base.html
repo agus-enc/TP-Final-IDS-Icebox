@@ -66,9 +66,9 @@
             </li>
 
             <li class="list">
-                {% if session.get('usuario_id') %}
-                    <a href="{{ url_for('mapa.mostrar_mapa', id_usuario=session.get('usuario_id'))}}">
-                {% endif %}
+                
+                    <a href="{{ url_for('mapa.mostrar_mapa', id_usuario=session.get('usuario_id')) if session.get('usuario_id') else '#'}}">
+                
                     <span class="icon"><ion-icon name="earth-outline"></ion-icon></span>
                     <span class="route">Mapa</span>
                 </a>
