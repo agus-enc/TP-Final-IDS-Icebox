@@ -13,6 +13,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 estantes[indiceEstante].appendChild(libro);
             }
         });
+
+        mueble.addEventListener('click', (e) => {
+            const libro = e.target.closest('.book');
+            
+            if (libro) {
+                const idViaje = libro.getAttribute('data-id');
+                
+                if (idViaje) {
+                    window.location.href = `/viajes/${idViaje}/editar`;
+                }
+            }
+        });
     }
 
     if (btnAbrirEliminar) {
