@@ -75,3 +75,144 @@
     color: #7f8c8d;
     margin-bottom: 25px;
 }
+
+/* =========================================================
+   🛠️ ESTILOS PARA EL MODAL DE AJUSTES DE USUARIO
+   ========================================================= */
+
+/* Dropdown correcciones de color y bordes */
+.user-dropdown .usuario-logueado {
+    font-weight: bold; 
+    border-bottom: 1px solid #dfd0cb;
+}
+
+.user-dropdown #btn-abrir-ajustes {
+    color: var(--color-texto) !important;
+}
+
+.user-dropdown .btn-admin-dashboard {
+    color: #2980b9 !important;
+}
+
+/* Contenedor del Modal Ajustes */
+/* =========================================================
+   🛠️ CORRECCIÓN: POSICIONAMIENTO Y FONDO OSCURO DEL MODAL
+   ========================================================= */
+
+/* Este es el contenedor que cubre TODA la pantalla */
+#modal-ajustes-usuario.modal-creador-oculto {
+    display: none;             /* Oculto por defecto */
+    position: fixed;           /* Se queda quieto aunque hagas scroll */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo negro con 60% de opacidad (oscurece la página) */
+    backdrop-filter: blur(3px); /* Opcional: un leve desenfoque al fondo para que resalte más */
+    z-index: 99999;            /* Un número altísimo para asegurarse de que pase al frente de la heladera e imanes */
+    
+    /* Truco definitivo para centrar el cuadro perfectamente en el medio */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Cuando JS le agrega la clase 'activo', pasa de 'none' a 'flex' para mostrarse */
+#modal-ajustes-usuario.modal-creador-oculto.activo {
+    display: flex;
+}
+
+/* Este es el cuadro blanco/crema de los ajustes en sí */
+.modal-ajustes-dimensiones {
+    position: relative;        /* Para que la 'X' se acomode bien arriba a la derecha */
+    width: 90%;                /* Se adapta a pantallas chicas */
+    max-width: 480px;          /* Ancho máximo en monitores */
+    background-color: #f7ebe1; /* Podés cambiarlo por tu color exacto de fondo */
+    border: 3px solid #333;    /* Estilo neubrutalista a juego */
+    border-radius: 16px;
+    box-shadow: 6px 6px 0px #333; /* Sombra sólida neubrutalista */
+    overflow: hidden;          /* Evita que el header tape las esquinas redondeadas */
+    animation: aparecerModal 0.25s ease-out; /* Animación sutil de entrada */
+}
+
+/* Animación para que aparezca desde el centro con un efecto suave */
+@keyframes aparecerModal {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.btn-cerrar-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #e74c3c;
+    color: white;
+    border: 2px solid #333;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 2px 0px #333;
+    z-index: 10;
+}
+
+.btn-cerrar-modal:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px #333;
+}
+
+/* Cuerpo del Formulario */
+.form-ajustes-cuerpo {
+    padding: 25px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+    font-family: 'Poppins', sans-serif;
+}
+
+.ajustes-grupo-input {
+    display: flex; 
+    flex-direction: column; 
+    gap: 5px;
+}
+
+.ajustes-grupo-input label {
+    font-weight: 600; 
+    color: var(--color-texto);
+}
+
+.input-ajustes-estilo {
+    background-color: #f1f2f6; 
+    text-align: left !important; 
+    padding: 10px; 
+    border: 2px solid #333; 
+    border-radius: 8px; 
+    font-size: 16px;
+}
+
+/* Separadores y Botones */
+.ajustes-separador {
+    border: none; 
+    border-top: 2px dashed #333; 
+    margin: 10px 0;
+}
+
+.acciones-ajustes {
+    position: relative; 
+    padding: 10px 0 0 0; 
+    justify-content: flex-end;
+}
+
+.btn-cancelar-gris {
+    background-color: #747d8c !important;
+}
