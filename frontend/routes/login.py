@@ -92,3 +92,49 @@ def logout():
     session.clear()
     flash('Sesión cerrada.', 'success')
     return redirect(url_for('login.login'))
+
+
+@login_bp.route("/actualizar-perfil", methods=['POST'])
+def actualizar_perfil():
+
+    id_usuario = session.get('id_usuario')
+    if not id_usuario:
+        return redirect(url_for('login.login')) # Ajustar al nombre de tu vista
+
+    nuevo_nombre = request.form.get('nuevo_nombre')
+    nuevo_email = request.form.get('nuevo_email')
+    nueva_password = request.form.get('nueva_password')
+
+    # IMPORTANTE: Poner el puerto donde corre el Backend (ej: 5000 o 8080)
+    url_backend = f"{BACKEND_URL}/usuarios/{id_usuario}"
+
+    cambios = False
+
+    # 1. USAMOS TU RUTA DE ACTUALIZAR NOMBRE
+    if nuevo_nombre:
+        respuesta = requests.patch(f"{url_backend}/nombre", json={"nombre_usuario": nuevo_nombre})
+        if respuesta.status_code == 200:
+            session['nombre_usuario'] = nuevo_nombre
+            cambios = True
+
+    # 2. USAMOS TU RUTA DE ACTUALIZAR EMAIL
+    if nuevo_email:
+        respuesta = requests.patch(f"{url_backend}/email", json={"email": nuevo_email})
+        if respuesta.status_code == 200:
+            cambios = True
+        else:
+            flash('Error: El email ya está en uso', 'error')
+
+    # 3. USAMOS TU RUTA DE ACTUALIZAR PASSWORD
+    if nueva_password:
+        respuesta = requests.patch(f"{url_backend}/password", json={"password": nueva_password})
+        
+        if respuesta.status_code == 200:
+            cambios = True
+
+    if cambios:
+        flash('¡Perfil actualizado con éxito!', 'success')
+    else:
+        flash('No se ingresaron cambios.', 'info')
+
+    return redirect(request.referrer or url_for('login.login'))
