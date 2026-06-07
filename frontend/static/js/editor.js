@@ -4,39 +4,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const botonAgregar = document.getElementById('btn-agregar-parada');
     const lineaTiempo = document.querySelector('.linea-tiempo');
     let contadorParadas = document.querySelectorAll('.tarjeta-parada').length + 1;
-
     let textareaActivo = null;
     const overlayTexto = document.getElementById('overlay-enfoque-texto');
 
-    // FUNCIONES "FÁBRICA" (Definiciones)
-
+    // FUNCIONES GENERALES
     // Autoguardado
     const formEditor = document.getElementById('formulario-viaje-maestro');
-    if (!formEditor) return;
-    const idViajeActual = formEditor.dataset.idViaje;
+    let idViajeActual = null;
     function protegerConAutoguardado(elementoTextarea) {
         elementoTextarea.addEventListener('input', function() {
             const texto = elementoTextarea.value;
-            // Creamos una llave inconfundible ligada al viaje
             const llaveUnica = `draft_viaje_${idViajeActual}_${elementoTextarea.id}`;
             localStorage.setItem(llaveUnica, texto);
         });
     }
 
+    // Inyecta borradores del local storage si los hay y vuelve a guardar
     if (formEditor) {
-        // DOM SCOPING: Buscamos textareas SOLO dentro del Editor, protegiendo al Creador
         const textareasEditor = formEditor.querySelectorAll('textarea');
-
+        idViajeActual = formEditor.dataset.idViaje;
         textareasEditor.forEach(textarea => {
             const llaveUnica = `draft_viaje_${idViajeActual}_${textarea.id}`;
             const textoGuardado = localStorage.getItem(llaveUnica);
 
-            // Si hay un borrador fantasma de este viaje específico, lo inyectamos
-            if (textoGuardado) {
-                textarea.value = textoGuardado;
-            }
+            if (textoGuardado) textarea.value = textoGuardado;
 
-            // Activamos la protección para futuros cambios
             protegerConAutoguardado(textarea);
             habilitarModoZen(textarea);
         });
@@ -45,8 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Modo Zen para Textareas
     function habilitarModoZen(elementoTextarea) {
         elementoTextarea.addEventListener('focus', function() {
-            textareaActivo = this;
-            this.classList.add('modo-zen');
+            textareaActivo = elementoTextarea;
+            elementoTextarea.classList.add('modo-zen');
             if (overlayTexto) overlayTexto.classList.add('activo');
             document.body.style.overflow = 'hidden';
         });
@@ -62,70 +54,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = '';
     }
 
-    // Buscador Autocompletable
-    function inicializarBuscadorCiudad(wrapper) {
-        const inputVisible = wrapper.querySelector('.input-buscador-ciudad');
-        const inputOculto = wrapper.querySelector('input[type="hidden"]');
-        const listaResultados = wrapper.querySelector('.lista-resultados-ciudad');
-
-        if (!inputVisible || !inputOculto || !listaResultados) return;
-
-        inputVisible.addEventListener('input', function() {
-            const valorBuscado = this.value.toLowerCase().trim();
-            listaResultados.innerHTML = '';
-
-            if (valorBuscado.length === 0) {
-                listaResultados.classList.remove('activa');
-                inputOculto.value = '';
-                return;
-            }
-
-            constGrid = coincidencias = CIUDADES_DB.filter(ciudad =>
-                ciudad.nombre.toLowerCase().includes(valorBuscado) ||
-                (ciudad.pais && ciudad.pais.toLowerCase().includes(valorBuscado))
-            );
-
-            if (coincidencias.length > 0) {
-                coincidencias.forEach(ciudad => {
-                    const li = document.createElement('li');
-
-                    li.textContent = `${ciudad.nombre}, ${ciudad.pais}`;
-
-                    li.addEventListener('click', function() {
-                        inputVisible.value = `${ciudad.nombre}, ${ciudad.pais}`;
-                        inputOculto.value = ciudad.id_ciudad;
-                        listaResultados.classList.remove('activa');
-                        const tarjeta = wrapper.closest('.tarjeta-parada');
-                        const inputPais = tarjeta.querySelector('.input-pais-iman');
-                        if (inputPais && ciudad.pais) {
-                            inputPais.value = ciudad.pais;
-                        }
-                    });
-
-                    listaResultados.appendChild(li);
-                });
-                listaResultados.classList.add('activa');
-            } else {
-                const li = document.createElement('li');
-                li.textContent = "No se encontraron ciudades...";
-                li.style.color = "#999";
-                li.style.cursor = "default";
-                listaResultados.appendChild(li);
-                listaResultados.classList.add('activa');
-            }
-        });
-    }
-
     // INICIALIZACIÓN DE LA BASE (On Load)
-
     // Iniciar Buscadores Base
     const wrappersBuscador = document.querySelectorAll('.tarjeta-parada .buscador-ciudad-wrapper');
     for (const wrapper of wrappersBuscador) {
-        inicializarBuscadorCiudad(wrapper);
+        window.inicializarBuscadorCiudades(wrapper);
     }
 
     // HEADER / PORTADA
-
     const inputPortada = document.getElementById('foto-portada');
     const headerPortada = document.getElementById('header-portada');
     const btnBorrarPortada = document.getElementById('btn-borrar-portada');
@@ -146,71 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('flag-borrar-portada').value = 'true';
             });
         }
-    }
-
-    // LÍNEA DE TIEMPO (Clonación e Imanes)
-    if (lineaTiempo) {
-
-        // 1. Cuando suben una foto (Imán Personalizado)
-        lineaTiempo.addEventListener('change', function(e) {
-            if (e.target.matches('input[type="file"].input-archivo-iman')) {
-                const archivo = e.target.files[0];
-                const seccion = e.target.closest('.seccion-iman');
-
-                if (archivo) {
-                    const urlTemporal = URL.createObjectURL(archivo);
-                    const label = seccion.querySelector('.contenedor-foto-iman');
-
-                    label.style.backgroundImage = `url('${urlTemporal}')`;
-                    label.classList.remove('vacio');
-                    label.innerHTML = '';
-
-                    seccion.querySelector('.btn-eliminar-iman').style.display = 'flex';
-                    seccion.querySelector('.input-tipo-iman').value = 'personalizado';
-                    seccion.querySelector('.checkbox-iman-oficial').checked = false;
-                }
-            }
-
-            // 2. Cuando tocan el Toggle (Imán Oficial)
-            if (e.target.matches('.checkbox-iman-oficial')) {
-                const seccion = e.target.closest('.seccion-iman');
-                const inputTipo = seccion.querySelector('.input-tipo-iman');
-                const label = seccion.querySelector('.contenedor-foto-iman');
-
-                if (e.target.checked) {
-                    inputTipo.value = 'predeterminado';
-
-                    // Limpiar la foto si el usuario tenía una foto subida
-                    seccion.querySelector('.input-archivo-iman').value = '';
-                    label.style.backgroundImage = 'none';
-                    label.classList.add('vacio');
-                    label.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
-                    seccion.querySelector('.btn-eliminar-iman').style.display = 'none';
-                } else {
-                    inputTipo.value = 'ninguno';
-                    label.style.backgroundImage = 'none';
-                    label.classList.add('vacio');
-                    label.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
-                }
-            }
-        });
-
-        // 3. Cuando tocan la X para borrar la foto
-        lineaTiempo.addEventListener('click', function(e) {
-            const btnEliminar = e.target.closest('.btn-eliminar-iman');
-            if (btnEliminar) {
-                const seccion = btnEliminar.closest('.seccion-iman');
-                const label = seccion.querySelector('.contenedor-foto-iman');
-
-                seccion.querySelector('.input-archivo-iman').value = '';
-                label.style.backgroundImage = 'none';
-                label.classList.add('vacio');
-                label.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
-
-                btnEliminar.style.display = 'none';
-                seccion.querySelector('.input-tipo-iman').value = 'ninguno';
-            }
-        });
     }
 
     // Delegación de eventos para Eliminar Parada (Sirve para viejas y nuevas)
@@ -264,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
             listaResultadosClonado.id = "resultados-ciudad-" + contadorParadas;
             listaResultadosClonado.innerHTML = '';
             listaResultadosClonado.classList.remove('activa');
-            inicializarBuscadorCiudad(wrapperBuscadorClonado);
+            window.inicializarBuscadorCiudades(wrapperBuscadorClonado);
         }
 
         if (inputIdParada) {
@@ -297,19 +168,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // Reset Archivo y Visuales
             const inputArchivo = seccionIman.querySelector('.input-archivo-iman');
             const contenedorFoto = seccionIman.querySelector('.contenedor-foto-iman');
-            const btnEliminar = seccionIman.querySelector('.btn-eliminar-iman');
 
+            // Solo reasignamos los ID y for dinámicos
             if (inputArchivo && contenedorFoto) {
                 inputArchivo.id = "foto-parada-" + contadorParadas;
                 inputArchivo.name = "archivo_iman_" + contadorParadas;
-                inputArchivo.value = "";
-
                 contenedorFoto.setAttribute('for', "foto-parada-" + contadorParadas);
-                contenedorFoto.className = "contenedor-foto-iman vacio";
-                contenedorFoto.style.backgroundImage = 'none';
-                contenedorFoto.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
             }
-            if (btnEliminar) btnEliminar.style.display = 'none';
+
+            window.limpiarContenedorVisualIman(seccionIman);
 
             // Reset Toggle y País
             const toggleOficial = seccionIman.querySelector('.checkbox-iman-oficial');
@@ -382,7 +249,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const idCiudadABuscar = parametrosUrl.get("buscar_id_ciudad");
 
     if (idCiudadABuscar) {
-        // Un pequeño timeout garantiza que los textareas carguen sus valores desde el LocalStorage primero
+        // Esperamos 400 ms para asegurar que Jinja2 y el CSS hayan renderizado
+        // completamente las dimensiones de las tarjetas antes de calcular el scroll.
         setTimeout(() => {
             // Buscamos el input oculto que guarda el id_ciudad en cada tarjeta
             const inputsOcultosCiudades = document.querySelectorAll(".tarjeta-parada input[type='hidden'][id^='hidden-ciudad-']");
@@ -404,14 +272,21 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }, 400);
     }
-    // GARBAGE COLLECTION: Limpiar el disco al enviar el formulario
+    // VALIDACIÓN Y GARBAGE COLLECTION AL GUARDAR
     if (formEditor) {
-        formEditor.addEventListener('submit', function() {
-            const prefijo = `draft_viaje_${idViajeActual}_`;
-            for (let i = localStorage.length - 1; i >= 0; i--) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith(prefijo)) {
-                    localStorage.removeItem(key);
+        formEditor.addEventListener('submit', function(e) {
+
+            // 1. Llamamos al Guardia de Seguridad Global
+            const esValido = window.validarCiudadesViaje(formEditor, e);
+
+            // 2. Garbage Collection: Limpiar el disco SOLO si el formulario pasó la prueba
+            if (esValido) {
+                const prefijo = `draft_viaje_${idViajeActual}_`;
+                for (let i = localStorage.length - 1; i >= 0; i--) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith(prefijo)) {
+                        localStorage.removeItem(key);
+                    }
                 }
             }
         });
