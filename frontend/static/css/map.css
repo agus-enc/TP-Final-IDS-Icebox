@@ -12,7 +12,6 @@ body {
   background-color: #aad3df
 }
 
-
 .info {
   padding: 6px 8px;
   font: 14px/16px Arial, Helvetica, sans-serif;
@@ -52,50 +51,10 @@ body {
     background-color: #fbf8f6; 
 }
 
-.btn-iman {
-  display: block;
-  width: 100%;
-  margin: 10px 0;
-  padding: 15px;
-  background-color: #ff9e00; /* Color naranja tipo imán */
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-  transition: transform 0.2s;
-}
-
-.btn-iman:hover {
-  transform: scale(1.05); /* Efecto de que sobresale */
-}
-
-.modal-oculto {
-  display: none; /* Invisible */
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10000; /* Por encima del panel */
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 80%;
-  max-width: 500px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
-}
-
-.modal-oculto.activo {
-  display: block;
-}
-
-body.modal-abierto {
-  overflow: hidden;
-}
-
 .sidebar-content {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 2 columnas */
-  gap: 30px 15px; /* 30px de separación vertical, 15px horizontal */
+  gap: 30px 15px; 
   justify-items: center;
   padding-top: 25px;
 }
@@ -174,6 +133,10 @@ button.iman-viaje:active {
   z-index: 100000; 
   transform: none;
   box-sizing: border-box;
+}
+
+body.modal-abierto {
+  overflow: hidden;
 }
 
 #modal-resenia {

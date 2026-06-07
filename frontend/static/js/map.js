@@ -14,8 +14,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
-var geojson;
-
 function highlightFeature(e) { // Resaltar el país al pasar el mouse
     var layer = e.target;
     layer.setStyle({
@@ -58,7 +56,7 @@ function cargarImanesEnSidebar(codigoPais) {
     botonIman.appendChild(imagenElemento);
     
     botonIman.onclick = () => {
-        const textoParaMostrar = iman.relato_texto || iman.relato || "Sin relato disponible para esta parada.";
+        const textoParaMostrar = iman.relato || "Sin relato disponible para esta parada.";
         abrirResenia(textoParaMostrar);
     };
 
@@ -87,7 +85,7 @@ function abrirResenia(relato) {
         modal.classList.add('activo');
         document.body.classList.add('modal-abierto'); 
     } else {
-        alert("Reseña: " + relato); 
+        alert("Error. La reseña no se ha podido cargar."); 
     }
 }
 
@@ -109,6 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+var geojson;
 
 const urlPaises = 'https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json';
 
