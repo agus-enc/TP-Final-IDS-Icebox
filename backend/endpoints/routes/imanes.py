@@ -3,6 +3,7 @@ from ..utils import construir_error
 from ..services.imanes import modificar_posicion_iman, listar_imanes, eliminar_iman, listar_imanes_por_pais, obtener_resena_iman, procesar_lote_imanes
 from ..validators.imanes import validar_id_iman
 from ..validators.lugares import validar_codigo_pais
+from ..validators.viajes import validar_id_viaje
 import json
 
 imanes_bp = Blueprint("imanes", __name__)
@@ -96,7 +97,9 @@ def delete_iman(id_iman):
     try:
         id_iman_validado = validar_id_iman(id_iman)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
 
     eliminado = eliminar_iman(id_iman_validado)
 
@@ -124,7 +127,9 @@ def get_resena_iman(id_iman):
     try:
         id_iman_validado = validar_id_iman(id_iman)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
 
     relato = obtener_resena_iman(id_iman_validado)
 
@@ -136,15 +141,15 @@ def get_resena_iman(id_iman):
 @imanes_bp.route('/imanes/batch', methods=['POST'])
 def crear_imanes_batch():
     try:
-        id_viaje = request.form.get('id_viaje')
-
+        id_viaje_str = request.form.get('id_viaje')
         # El frontend enviará TODA la estructura de datos empaquetada en este string JSON
         imanes_data_str = request.form.get('imanes_data')
 
-        if not id_viaje or not imanes_data_str:
+        if not id_viaje_str or not imanes_data_str:
             return jsonify({"errors": [{"message": "Faltan datos obligatorios (id_viaje, imanes_data)."}]}), 400
 
-        id_viaje = int(id_viaje)
+        viaje_validado = validar_id_viaje(id_viaje_str)
+        id_viaje = viaje_validado["id_viaje"]
         lista_datos = json.loads(imanes_data_str)
 
         # request.files es un diccionario nativo de Flask con todos los archivos subidos
@@ -158,9 +163,11 @@ def crear_imanes_batch():
             "data": resultados
         }), 201
 
-    except ValueError as ve:
-        # Aquí capturamos nuestros errores personalizados de negocio (Dry-Run)
-        return jsonify(ve.args[0]), 400
+
+    except ValueError as e:
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
     except json.JSONDecodeError:
         return jsonify({"errors": [{"message": "El formato de los datos de imanes (JSON) es inválido."}]}), 400
     except Exception as e:

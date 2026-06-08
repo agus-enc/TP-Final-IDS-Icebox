@@ -1,5 +1,6 @@
 from ..constants import (MIN_ID)
 from ..utils import validar_formato_fecha, construir_error, validar_entero, validar_minimo
+from dao.viajes import obtener_viaje
 
 def validar_body_viaje(body: dict) -> dict:
     """
@@ -45,7 +46,23 @@ def validar_body_viaje(body: dict) -> dict:
         "fecha_viaje": fecha_viaje
     }
 
-def validar_id_viaje(id_str: str) -> int:
-    """Valida que el id del viaje recibido en la URL sea un entero válido y mayor a cero."""
-    id_viaje = validar_entero(id_str)
-    return validar_minimo(id_viaje, MIN_ID, 'id_viaje')
+def validar_id_viaje(id_str: str) -> dict:
+    """Valida formato del ID y verifica que el viaje exista en la BD."""
+
+    try:
+        id_viaje = validar_entero(id_str)
+        id_viaje = validar_minimo(id_viaje, MIN_ID, 'id_viaje')
+    except ValueError as e:
+        raise e
+
+    viaje = obtener_viaje(id_viaje)
+    if not viaje:
+        error = construir_error(
+            code="not_found",
+            message="El viaje especificado no existe.",
+            description="No se encontró un viaje con ese ID en la base de datos."
+        )
+
+        raise ValueError({"errors": [error]}, 404)
+
+    return viaje

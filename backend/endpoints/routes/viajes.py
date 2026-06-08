@@ -29,17 +29,19 @@ def post_viaje(id_usuario):
 @viajes_bp.route('/viajes/<int:id_viaje>', methods=['DELETE'])
 def delete_viaje(id_viaje):
     try:
-        id_viaje_validado = validar_id_viaje(id_viaje)
+        viaje_existente = validar_id_viaje(id_viaje)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
 
-    eliminado = eliminar_viaje(id_viaje_validado)
+    eliminado = eliminar_viaje(viaje_existente["id_viaje"])
 
     if not eliminado:
         return jsonify(construir_error(
             code="VIAJE_NOT_FOUND",
             message='Viaje no encontrado',
-            description=f"No existe un viaje con id '{id_viaje_validado}'"
+            description=f"No existe un viaje con id '{id_viaje}'"
         )), 404
 
     return '', 204
@@ -63,24 +65,29 @@ def get_viaje(id_viaje):
         viaje_dto = obtener_viaje_por_id(id_viaje)
         return jsonify(viaje_dto), 200
     except ValueError as e:
-        return jsonify(e.args[0]), e.args[1]
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
 
 @viajes_bp.route('/viajes/<int:id_viaje>', methods=['PUT'])
 def put_viaje(id_viaje):
     try:
-        id_viaje_validado = validar_id_viaje(id_viaje)
+        viaje_existente = validar_id_viaje(id_viaje)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
 
     body = request.get_json(silent=True)
 
     try:
-        editar_titulo_viaje(id_viaje_validado, body)
+        editar_titulo_viaje(viaje_existente["id_viaje"], body)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
 
-    return '', 204 # 204 No Content es el estándar para un PUT exitoso sin devolver datos
-
+    return '', 204
 
 @viajes_bp.route("/<int:id_usuario>/viajes/lista", methods=["GET"])
 def get_viajes_usuario(id_usuario):

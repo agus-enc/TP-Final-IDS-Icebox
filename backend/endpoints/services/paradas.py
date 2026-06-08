@@ -3,17 +3,19 @@ from ..dao.usuarios import obtener_usuario_por_viaje
 from ..dao.lugares import obtener_ciudad_por_id
 from ..dao.paradas import insertar_parada_con_iman, eliminar_parada_por_id, eliminar_relato_parada_db, actualizar_relato_parada_db, actualizar_ciudad_parada_db, actualizar_parada_completa, obtener_paradas_por_viaje
 from ..validators.paradas import validar_body_parada, validar_relato, validar_ciudad, validar_edicion_parada
+from ..validators.viajes import validar_id_viaje
 from ..utils import validar_minimo
 
 def crear_parada(id_viaje: int, body: dict) -> dict:
     """ Verifica que el viaje de la parada exista, la crea y devuelve su DTO aplicando la logica de negocio. """
-    validar_minimo(id_viaje, 1, 'id_viaje')
+    viaje = validar_id_viaje(id_viaje)
+    id_viaje = viaje["id_viaje"]
 
     datos_limpios = validar_body_parada(body)
 
     id_usuario = obtener_usuario_por_viaje(id_viaje)
     if not id_usuario:
-        raise ValueError({"errors": [{"code": "not_found", "message": "El viaje no existe."}]}, 404)
+        raise ValueError({"errors": [{"code": "not_found", "message": "El usuario no existe."}]}, 404)
 
     if not obtener_ciudad_por_id(datos_limpios['id_ciudad']):
         raise ValueError({"errors": [{"code": "not_found", "message": "La ciudad no existe."}]}, 404)
@@ -49,11 +51,10 @@ def crear_parada(id_viaje: int, body: dict) -> dict:
 def obtener_paradas_de_viaje(id_viaje: int) -> list:
     """
     Valida el id y obtiene las paradas enriquecidas directamente desde el DAO.
-    El formateo de llaves ahora se delega a la consulta SQL.
     """
-    validar_minimo(id_viaje, 1, 'id_viaje')
+    viaje = validar_id_viaje(id_viaje)
+    id_viaje = viaje["id_viaje"]
 
-    # El DAO ya trae texto_resena, pais_ciudad, imagen_url y predeterminado
     paradas_db = obtener_paradas_por_viaje(id_viaje)
 
     return paradas_db

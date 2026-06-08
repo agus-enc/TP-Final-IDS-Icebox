@@ -35,7 +35,8 @@ def get_ciudades(id_pais):
         return jsonify(ciudades_list), 200
     except ValueError as e:
         error_dict = e.args[0]
-        return jsonify(error_dict), 400
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
     except Exception:
         return jsonify(construir_error(
             code="SERVER_ERROR",

@@ -1,5 +1,5 @@
 from ..dao.viajes import insertar_viaje, eliminar_viaje_por_id, actualizar_titulo_viaje, obtener_viaje, obtener_viajes_por_usuario_db
-from ..validators.viajes import validar_body_viaje, validar_minimo
+from ..validators.viajes import validar_body_viaje, validar_id_viaje
 
 def construir_viaje_dto(viaje: dict) -> dict:
     """ Construye el dict de respuesta básico de un viaje. """
@@ -11,9 +11,7 @@ def construir_viaje_dto(viaje: dict) -> dict:
     }
 
 def obtener_viaje_por_id(id_viaje: int) -> dict:
-    viaje = obtener_viaje(id_viaje)
-    if not viaje:
-        raise ValueError({"errors": [{"code": "not_found", "message": "Viaje no encontrado"}]}, 404)
+    viaje = validar_id_viaje(id_viaje)
     return construir_viaje_dto(viaje)
 
 def crear_viaje(body: dict, id_usuario: int) -> dict:

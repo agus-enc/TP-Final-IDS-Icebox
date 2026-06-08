@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from ..services.imagenes import agregar_imagen_viaje, eliminar_imagen_diario, eliminar_portada_viaje, actualizar_datos_imagen, obtener_imagenes_viaje
 from ..validators.imagenes import validar_datos_imagen_viaje
+from ..validators.viajes import validar_id_viaje
 
 imagenes_bp = Blueprint("imagenes", __name__)
 
@@ -40,20 +41,22 @@ def post_imagen_viaje(id_viaje_str):
 @imagenes_bp.route("/viajes/<string:id_viaje_str>/imagenes", methods=["GET"])
 def get_imagenes_viaje(id_viaje_str):
     try:
-        id_viaje = int(id_viaje_str)
-        imagenes = obtener_imagenes_viaje(id_viaje)
+        viaje = validar_id_viaje(id_viaje_str)
+        imagenes = obtener_imagenes_viaje(viaje["id_viaje"])
         return jsonify(imagenes), 200
-    except ValueError:
-        return jsonify({"errors": [{"code": "invalid", "message": "ID Invalido"}]}), 400
+    except ValueError as e:
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(e.args[0]), status
 
 @imagenes_bp.route("/viajes/<string:id_viaje_str>/imagenes/header", methods=["DELETE"])
 def delete_portada(id_viaje_str):
     try:
-        id_viaje = int(id_viaje_str)
-        eliminar_portada_viaje(id_viaje)
+        viaje = validar_id_viaje(id_viaje_str)
+        eliminar_portada_viaje(viaje["id_viaje"])
         return '', 204
-    except ValueError:
-        return jsonify({"errors": [{"message": "ID Inválido"}]}), 400
+    except ValueError as e:
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(e.args[0]), status
 
 @imagenes_bp.route("/imagenes/<int:id_imagen>", methods=["DELETE"])
 def delete_imagen_diario(id_imagen):

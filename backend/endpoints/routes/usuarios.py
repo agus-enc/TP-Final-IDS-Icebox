@@ -12,7 +12,9 @@ def registrar_usuario():
     try:
         validar_registro_usuario(data)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
     
     nombre_usuario = data.get('nombre_usuario')
     email = data.get("email")
@@ -34,7 +36,9 @@ def login():
     try:
         validar_login_usuario(data)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
     
     nombre_usuario = data.get('nombre_usuario')
     password = data.get('password')
@@ -57,14 +61,16 @@ def obtener_perfil(id_usuario):
     
     try:
         validar_id_usuario(id_usuario)
-    
+
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
     
     usuario = obtener_perfil_usuario(id_usuario)
     if not usuario:
         error_body = construir_error('user.not_found', 'Usuario no encontrado', f'No existe un usuario con id {id_usuario}')
-        return jsonify(error_body), 400
+        return jsonify(error_body), 404
     
     usuario.pop('password', None)
     return jsonify(usuario), 200
@@ -75,7 +81,9 @@ def actualizar_nombre_usuario(id_usuario):
     try:
         validar_id_usuario(id_usuario)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
     
     data = request.get_json() or {}
     nuevo_nombre = data.get('nombre_usuario')
@@ -98,7 +106,9 @@ def actualizar_email(id_usuario):
     try:
         validar_id_usuario(id_usuario)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
     
     data = request.get_json() or {}
     nuevo_email = data.get('email')
@@ -123,7 +133,9 @@ def actualizar_password(id_usuario):
     try:
         validar_id_usuario(id_usuario)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
     
     data = request.get_json() or {}
     nueva_password = data.get('password')
@@ -138,9 +150,6 @@ def actualizar_password(id_usuario):
         return jsonify(error_body), 404
     
     return jsonify({"message":"Contraseña modificada de forma segura"})
-         
-    
-
 
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=["DELETE"])
 def delete_usuario(id_usuario):
@@ -148,7 +157,9 @@ def delete_usuario(id_usuario):
     try:
         id_usuario_validado = validar_id_usuario(id_usuario)
     except ValueError as e:
-        return jsonify(e.args[0]), 400
+        error_dict = e.args[0]
+        status = e.args[1] if len(e.args) > 1 else 400
+        return jsonify(error_dict), status
     
     eliminado = eliminar_usuario(id_usuario_validado)
 

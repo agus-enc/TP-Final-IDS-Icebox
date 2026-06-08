@@ -7,10 +7,6 @@ from .storage import borrar_imagen_supabase
 def agregar_imagen_viaje(id_viaje: int, tipo: str, archivo_imagen, orden: int = 0, epigrafe: str = "") -> dict:
     """Orquesta las reglas de negocio (límites), la subida a Supabase y el guardado en BD."""
 
-    # Regla de Negocio: Existencia
-    if not obtener_viaje(id_viaje):
-        raise ValueError({"errors": [{"code": "not_found", "message": "El viaje no existe."}]}, 404)
-
     id_usuario = obtener_usuario_por_viaje(id_viaje)
 
     # Regla de Negocio: Límites Máximos
