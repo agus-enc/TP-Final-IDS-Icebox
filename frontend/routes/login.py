@@ -86,18 +86,16 @@ def login():
 
     return render_template('login.html')
 
-
 @login_bp.route('/logout')
 def logout():
     session.clear()
     flash('Sesión cerrada.', 'success')
     return redirect(url_for('login.login'))
 
-
 @login_bp.route("/actualizar-perfil", methods=['POST'])
 def actualizar_perfil():
 
-    id_usuario = session.get('id_usuario')
+    id_usuario = session.get('usuario_id')
     if not id_usuario:
         return redirect(url_for('login.login')) # Ajustar al nombre de tu vista
 

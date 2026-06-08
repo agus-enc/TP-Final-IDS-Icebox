@@ -36,7 +36,6 @@ def vista_admin_dashboard():
         flash("No se pudo conectar con el servidor de estadísticas.", "error")
         return redirect(url_for('login.login'))
 
-
 @admin_bp.route('/admin/descargar-reporte', methods=['GET'])
 def descargar_reporte():
     # 1. Le va a pedir el PDF al backend real
