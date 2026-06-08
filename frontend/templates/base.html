@@ -230,5 +230,11 @@
     
     {% block extra_js %}{% endblock %}
 
+    <script type="application/json" id="datos-ciudades-ssr">
+        {{ ciudades_db | tojson | safe }}
+    </script>
+
+    <script src="{{ url_for('static', filename='js/main.js')}}"></script>
+
 </body>
 </html>

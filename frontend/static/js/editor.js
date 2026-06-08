@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let contadorParadas = document.querySelectorAll('.tarjeta-parada').length + 1;
     let textareaActivo = null;
     const overlayTexto = document.getElementById('overlay-enfoque-texto');
+    const islaDeDatos = document.getElementById('datos-ciudades-ssr');
+    const baseDatosCiudades = islaDeDatos ? JSON.parse(islaDeDatos.textContent) : [];
 
     // FUNCIONES GENERALES
     // Autoguardado
@@ -58,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Iniciar Buscadores Base
     const wrappersBuscador = document.querySelectorAll('.tarjeta-parada .buscador-ciudad-wrapper');
     for (const wrapper of wrappersBuscador) {
-        window.inicializarBuscadorCiudades(wrapper);
+        window.inicializarBuscadorCiudades(wrapper, baseDatosCiudades);
     }
 
     // HEADER / PORTADA
@@ -134,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             listaResultadosClonado.id = "resultados-ciudad-" + contadorParadas;
             listaResultadosClonado.innerHTML = '';
             listaResultadosClonado.classList.remove('activa');
-            window.inicializarBuscadorCiudades(wrapperBuscadorClonado);
+            window.inicializarBuscadorCiudades(wrapperBuscadorClonado, baseDatosCiudades);
         }
 
         if (inputIdParada) {

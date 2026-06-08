@@ -1,5 +1,4 @@
-import json
-from flask import Blueprint, jsonify, Response
+from flask import Blueprint, jsonify
 from ..services.lugares import obtener_paises_visitados, obtener_paises, obtener_ciudades_por_pais, obtener_todas_las_ciudades
 from ..utils import construir_error
 
@@ -51,19 +50,3 @@ def get_todas_ciudades():
         return jsonify(ciudades_list), 200
     except Exception:
         return jsonify({"error": "Error interno"}), 500
-
-@lugares_bp.route("/ciudades/js", methods=["GET"])
-def get_ciudades_js():
-    """
-    Endpoint SSR dinámico.
-    Devuelve la base de datos de ciudades como un archivo .js legítimo.
-    """
-    try:
-        ciudades_list = obtener_todas_las_ciudades()
-        js_content = f"const CIUDADES_DB = {json.dumps(ciudades_list)};"
-
-        # Le decimos al navegador que esto es un Script
-        return Response(js_content, mimetype='application/javascript')
-    except Exception as e:
-        print(f"Error generando JS de ciudades: {e}")
-        return Response("const CIUDADES_DB = [];", mimetype='application/javascript')

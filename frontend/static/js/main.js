@@ -112,6 +112,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnCrearParada = document.getElementById('btn-crear-parada-creador');
     const lineaTiempoCreador = document.getElementById('linea-tiempo-creador');
     let contadorParadasCreador = 1;
+    const islaDeDatosCreador = document.getElementById('datos-ciudades-ssr');
+    const dbCreador = islaDeDatosCreador ? JSON.parse(islaDeDatosCreador.textContent) : [];
 
     if (btnNavCrear && modalCreador) {
         btnNavCrear.addEventListener('click', function(event) {
@@ -131,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const wrapperPrimeraParada = document.getElementById('wrapper-ciudad-creador-1');
-        if (wrapperPrimeraParada) window.inicializarBuscadorCiudades(wrapperPrimeraParada);
+        if (wrapperPrimeraParada) window.inicializarBuscadorCiudades(wrapperPrimeraParada, dbCreador);
 
         // Clonar Paradas
         btnCrearParada.addEventListener('click', function() {
@@ -206,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             lineaTiempoCreador.appendChild(nuevaTarjeta);
             nuevaTarjeta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            window.inicializarBuscadorCiudades(wrapperCiudad);
+            window.inicializarBuscadorCiudades(wrapperCiudad, dbCreador);
         });
 
         // Borrado de Paradas e Imanes
@@ -317,12 +319,12 @@ window.validarCiudadesViaje = function(formulario, evento) {
 };
 
 // Inicializar Buscadores de Ciudades
-window.inicializarBuscadorCiudades = function(wrapper) {
+window.inicializarBuscadorCiudades = function(wrapper, ciudadesDB) {
     const inputVisible = wrapper.querySelector('.input-buscador-ciudad');
     const inputOculto = wrapper.querySelector('input[type="hidden"]');
     const listaResultados = wrapper.querySelector('.lista-resultados-ciudad');
 
-    if (!inputVisible || !inputOculto || !listaResultados || typeof CIUDADES_DB === 'undefined') return;
+    if (!inputVisible || !inputOculto || !listaResultados || !ciudadesDB) return;
 
     inputVisible.addEventListener('input', function() {
         inputOculto.value = "";
@@ -334,10 +336,10 @@ window.inicializarBuscadorCiudades = function(wrapper) {
             return;
         }
 
-        const coincidencias = CIUDADES_DB.filter(ciudad =>
+        const coincidencias = ciudadesDB.filter(ciudad =>
             ciudad.nombre.toLowerCase().includes(valorBuscado) ||
-            (ciudad.pais && ciudad.pais.toLowerCase().includes(valorBuscado))
-        );
+            ciudad.pais.toLowerCase().includes(valorBuscado)
+        ).slice(0, 5);
 
         if (coincidencias.length > 0) {
             coincidencias.forEach(ciudad => {

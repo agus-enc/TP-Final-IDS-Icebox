@@ -103,15 +103,12 @@ def editor(id_viaje):
     resp_paradas = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/paradas")
     paradas_reales = resp_paradas.json() if resp_paradas.status_code == 200 else []
 
-    resp_lugares = requests.get(f"{BACKEND_URL}/ciudades")
-    lugares_reales = resp_lugares.json() if resp_lugares.status_code == 200 else []
-
     resp_imagenes = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes")
     imagenes_reales = resp_imagenes.json() if resp_imagenes.status_code == 200 else []
 
     viaje_real['url_portada'] = next((img['imagen_url'] for img in imagenes_reales if img['tipo'] == 'header'), None)
 
-    return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales, lugares=lugares_reales)
+    return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales)
 
 @viajes_bp.route('/viajes/<int:id_viaje>/diario', methods=['POST'])
 @login_required
@@ -224,9 +221,7 @@ def guardar_creador():
 @viajes_bp.route('/crear_viaje', methods=['GET'])
 @login_required
 def creador():
-    resp_lugares = requests.get(f"{BACKEND_URL}/ciudades")
-    lugares_reales = resp_lugares.json() if resp_lugares.status_code == 200 else []
-    return render_template('creador.html', lugares=lugares_reales)
+    return render_template('creador.html')
 
 @viajes_bp.route('/viajes/<int:id_viaje>/borrar', methods=['POST'])
 @login_required
