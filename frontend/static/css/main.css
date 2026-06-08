@@ -733,8 +733,8 @@ input:checked + .slider:before {
 
 .buscador-ciudad-wrapper {
     width: 95%;
-    max-width: 500px; /* FIX: Restauramos el límite original para la caja desplegable */
-    margin: 0 auto; /* Antes quizás estaba muy limitado. Ahora le damos libertad */
+    max-width: 500px;
+    margin: 0 auto;
     display: flex;
     justify-content: center;
 }

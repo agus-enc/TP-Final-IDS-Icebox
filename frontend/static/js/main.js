@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// CREADOR DE VIAJES
 document.addEventListener('DOMContentLoaded', function() {
 
     const btnNavCrear = document.getElementById('btn-nav-crear'); // Botón '+' del nav
@@ -110,32 +111,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnCerrarCreador = document.getElementById('btn-cerrar-creador');
     const btnCrearParada = document.getElementById('btn-crear-parada-creador');
     const lineaTiempoCreador = document.getElementById('linea-tiempo-creador');
-
     let contadorParadasCreador = 1;
 
     if (btnNavCrear && modalCreador) {
-
-        btnNavCrear.addEventListener('click', function(e) {
-            e.preventDefault();
+        btnNavCrear.addEventListener('click', function(event) {
+            event.preventDefault();
             modalCreador.classList.add('activo');
-            document.body.style.overflow = 'hidden'; // Evita scrollear la página de fondo
+            document.body.style.overflow = 'hidden';
         });
 
         function cerrarModal() {
             modalCreador.classList.remove('activo');
-            document.body.style.overflow = 'auto'; // Devuelve el scroll al body
+            document.body.style.overflow = '';
         }
 
         btnCerrarCreador.addEventListener('click', cerrarModal);
-        modalCreador.addEventListener('click', function(e) {
-            if (e.target === modalCreador) cerrarModal();
+        modalCreador.addEventListener('click', function(event) {
+            if (event.target === modalCreador) cerrarModal();
         });
 
-        // Inicializamos la parada original del HTML usando el helper global
         const wrapperPrimeraParada = document.getElementById('wrapper-ciudad-creador-1');
         if (wrapperPrimeraParada) window.inicializarBuscadorCiudades(wrapperPrimeraParada);
 
-        // 3. Clonar Paradas
+        // Clonar Paradas
         btnCrearParada.addEventListener('click', function() {
             contadorParadasCreador++;
 
@@ -165,14 +163,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 ulResultados.innerHTML = '';
             }
 
-            // 2. Reseña Oculta (El truco)
+            // Reseña Oculta
             const inputTextoOculto = nuevaTarjeta.querySelector('input[type="hidden"][name^="texto_parada_"]');
             if (inputTextoOculto) {
                 inputTextoOculto.name = `texto_parada_${contadorParadasCreador}`;
                 inputTextoOculto.value = "";
             }
 
-            // --- NUEVA LÓGICA DE CLONADO DE IMANES ---
+            // Clonar Imanes
             const seccionIman = nuevaTarjeta.querySelector('.seccion-iman');
             if (seccionIman) {
                 seccionIman.id = "seccion-iman-" + contadorParadasCreador;
@@ -187,19 +185,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Reset Archivo y Visuales
                 const inputArchivo = seccionIman.querySelector('.input-archivo-iman');
                 const contenedorFoto = seccionIman.querySelector('.contenedor-foto-iman');
-                const btnEliminar = seccionIman.querySelector('.btn-eliminar-iman');
 
                 if (inputArchivo && contenedorFoto) {
                     inputArchivo.id = "foto-parada-creador-" + contadorParadasCreador;
                     inputArchivo.name = "archivo_iman_" + contadorParadasCreador;
-                    inputArchivo.value = "";
-
                     contenedorFoto.setAttribute('for', "foto-parada-creador-" + contadorParadasCreador);
-                    contenedorFoto.className = "contenedor-foto-iman vacio";
-                    contenedorFoto.style.backgroundImage = 'none';
-                    contenedorFoto.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
                 }
-                if (btnEliminar) btnEliminar.style.display = 'none';
+
+                window.limpiarContenedorVisualIman(seccionIman);
 
                 // Reset Toggle y País
                 const toggleOficial = seccionIman.querySelector('.checkbox-iman-oficial');
@@ -211,55 +204,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // Inyectamos el clon al final y bajamos la pantalla
             lineaTiempoCreador.appendChild(nuevaTarjeta);
             nuevaTarjeta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             window.inicializarBuscadorCiudades(wrapperCiudad);
         });
 
-        // 3.5. Borrado de Paradas e Imanes
-        lineaTiempoCreador.addEventListener('click', function(e) {
-
-            // Borrar Parada Completa
-            if (e.target.classList.contains('btn-eliminar-parada')) {
-                const tarjeta = e.target.closest('.tarjeta-parada-creador');
+        // Borrado de Paradas e Imanes
+        lineaTiempoCreador.addEventListener('click', function(event) {
+            if (event.target.classList.contains('btn-eliminar-parada')) {
+                const tarjeta = event.target.closest('.tarjeta-parada-creador');
                 if (lineaTiempoCreador.querySelectorAll('.tarjeta-parada-creador').length > 1) {
                     tarjeta.remove();
                 }
             }
-
-            // Borrar Imán
-            const btnEliminarIman = e.target.closest('.btn-eliminar-iman');
-            if (btnEliminarIman) {
-                const seccion = btnEliminarIman.closest('.seccion-iman');
-                const label = seccion.querySelector('.contenedor-foto-iman');
-
-                seccion.querySelector('.input-archivo-iman').value = '';
-                label.style.backgroundImage = 'none';
-                label.classList.add('vacio');
-                label.innerHTML = `<span class="icono-mas">+</span><p>Subir Imán</p>`;
-
-                btnEliminarIman.style.display = 'none';
-                seccion.querySelector('.input-tipo-iman').value = 'ninguno';
-            }
         });
 
-        // --- VALIDACIÓN: Antes de enviar el formulario al Backend ---
+        // Validación
         const formCreador = document.getElementById('form-creador-viaje');
 
         if (formCreador) {
-            formCreador.addEventListener('submit', function(e) {
-                // Delegamos toda la lógica pesada a nuestro Helper global
-                window.validarCiudadesViaje(formCreador, e);
+            formCreador.addEventListener('submit', function(event) {
+                window.validarCiudadesViaje(formCreador, event);
             });
         }
     }
 });
 
-/* ========================================== */
-/* --- LÓGICA GLOBAL DE IMANES (DRY) -------- */
-/* ========================================== */
-
+/* --- LÓGICA GLOBAL DE IMANES -------- */
 window.limpiarContenedorVisualIman = function(seccion) {
     const label = seccion.querySelector('.contenedor-foto-iman');
     const inputArchivo = seccion.querySelector('.input-archivo-iman');
@@ -275,11 +246,11 @@ window.limpiarContenedorVisualIman = function(seccion) {
 };
 
 // Atrapa clicks del Creador Y del Editor
-document.addEventListener('change', function(e) {
-    // 2.1. Cuando suben una foto (Imán Personalizado)
-    if (e.target.matches('input[type="file"].input-archivo-iman')) {
-        const archivo = e.target.files[0];
-        const seccion = e.target.closest('.seccion-iman');
+document.addEventListener('change', function(event) {
+    // Imán Personalizado
+    if (event.target.matches('input[type="file"].input-archivo-iman')) {
+        const archivo = event.target.files[0];
+        const seccion = event.target.closest('.seccion-iman');
 
         if (archivo) {
             const urlTemporal = URL.createObjectURL(archivo);
@@ -288,32 +259,32 @@ document.addEventListener('change', function(e) {
             label.style.backgroundImage = `url('${urlTemporal}')`;
             label.classList.remove('vacio');
             label.innerHTML = '';
-
             seccion.querySelector('.btn-eliminar-iman').style.display = 'flex';
             seccion.querySelector('.input-tipo-iman').value = 'personalizado';
+
             const toggleOficial = seccion.querySelector('.checkbox-iman-oficial');
             if (toggleOficial) toggleOficial.checked = false;
         }
     }
 
-    // Cuando tocan el Toggle (Imán Oficial)
-    if (e.target.matches('.checkbox-iman-oficial')) {
-        const seccion = e.target.closest('.seccion-iman');
+    // Imán Oficial
+    if (event.target.matches('.checkbox-iman-oficial')) {
+        const seccion = event.target.closest('.seccion-iman');
         const inputTipo = seccion.querySelector('.input-tipo-iman');
 
-        if (e.target.checked) {
+        if (event.target.checked) {
             inputTipo.value = 'predeterminado';
-            window.limpiarContenedorVisualIman(seccion);
         } else {
             inputTipo.value = 'ninguno';
-            window.limpiarContenedorVisualIman(seccion);
         }
+
+        window.limpiarContenedorVisualIman(seccion);
     }
 });
 
-document.addEventListener('click', function(e) {
-    // Cuando tocan la X para borrar la foto
-    const btnEliminar = e.target.closest('.btn-eliminar-iman');
+// Botón para eliminar iman
+document.addEventListener('click', function(event) {
+    const btnEliminar = event.target.closest('.btn-eliminar-iman');
     if (btnEliminar) {
         const seccion = btnEliminar.closest('.seccion-iman');
         window.limpiarContenedorVisualIman(seccion);
@@ -321,7 +292,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// 3. Helper Global para validar ciudades antes de guardar (Creador y Editor)
+// Validar ciudades antes de guardar
 window.validarCiudadesViaje = function(formulario, evento) {
     let formValido = true;
     const inputsOcultos = formulario.querySelectorAll('input[type="hidden"][name^="ciudad_parada_"]');
@@ -338,13 +309,14 @@ window.validarCiudadesViaje = function(formulario, evento) {
     });
 
     if (!formValido) {
-        evento.preventDefault(); // Frenamos el envío al servidor
-        alert("⚠️ Por favor, selecciona una ciudad válida de la lista en todas tus paradas antes de guardar.");
-        return false; // Le avisamos a quien lo llamó que la validación falló
+        evento.preventDefault();
+        alert("Por favor, selecciona una ciudad válida de la lista en todas tus paradas antes de guardar.");
+        return false;
     }
-    return true; // Le avisamos a quien lo llamó que todo está perfecto
+    return true;
 };
-// 4. Helper Global para Inicializar Buscadores de Ciudades (Creador y Editor)
+
+// Inicializar Buscadores de Ciudades
 window.inicializarBuscadorCiudades = function(wrapper) {
     const inputVisible = wrapper.querySelector('.input-buscador-ciudad');
     const inputOculto = wrapper.querySelector('input[type="hidden"]');
@@ -353,8 +325,8 @@ window.inicializarBuscadorCiudades = function(wrapper) {
     if (!inputVisible || !inputOculto || !listaResultados || typeof CIUDADES_DB === 'undefined') return;
 
     inputVisible.addEventListener('input', function() {
-        inputOculto.value = ""; // Vaciamos por seguridad si escribe a mano
-        const valorBuscado = this.value.toLowerCase().trim();
+        inputOculto.value = "";
+        const valorBuscado = inputVisible.value.toLowerCase().trim();
         listaResultados.innerHTML = '';
 
         if (valorBuscado.length === 0) {
@@ -377,7 +349,6 @@ window.inicializarBuscadorCiudades = function(wrapper) {
                     inputOculto.value = ciudad.id_ciudad;
                     listaResultados.classList.remove('activa');
 
-                    // COMPATIBILIDAD MÁGICA: Funciona para el Creador Y para el Editor
                     const tarjeta = wrapper.closest('.tarjeta-parada, .tarjeta-parada-creador');
                     if (tarjeta) {
                         const inputPais = tarjeta.querySelector('.input-pais-iman');
@@ -397,8 +368,7 @@ window.inicializarBuscadorCiudades = function(wrapper) {
         }
     });
 
-    // Cerrar menú si hacen clic afuera
-    document.addEventListener('click', function(e) {
-        if (!wrapper.contains(e.target)) listaResultados.classList.remove('activa');
+    document.addEventListener('click', function(event) {
+        if (!wrapper.contains(event.target)) listaResultados.classList.remove('activa');
     });
 };

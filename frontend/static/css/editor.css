@@ -12,7 +12,7 @@ body {
     color: var(--color-texto);
     margin: 0;
     padding: 0;
-    overflow-y: auto !important;
+    overflow-y: auto;
 }
 
 .contenedor-viaje {
@@ -380,7 +380,7 @@ body {
     transform: translateY(-5px) scale(1.05);
 }
 
-/* --- FAB: GUARDAR VIAJE (Azul, abajo) --- */
+/* --- FAB: GUARDAR VIAJE --- */
 .btn-flotante-guardar {
     bottom: 40px;
     background-color: #252436;
@@ -392,7 +392,7 @@ body {
     box-shadow: 0 8px 20px rgb(26.7, 26.3, 39.2);
 }
 
-/* --- FAB: AGREGAR PARADA (Verde, apilado arriba) --- */
+/* --- FAB: AGREGAR PARADA --- */
 .btn-flotante-agregar {
     bottom: 120px; /* 40px del piso + 65px del botón de guardar + 15px de espacio */
     background-color: #4B5065;
