@@ -24,7 +24,8 @@
     margin: 40px auto;
     border: 3px solid #333333;
     background: white;
-    max-width: 550px;
+    max-width: 650px;
+    min-height: 500px;
     padding: 20px;
     box-shadow: 6px 6px 0px #333333;
     border-radius: 8px;
