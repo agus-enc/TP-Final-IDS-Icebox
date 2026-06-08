@@ -76,8 +76,7 @@ def obtener_perfil(id_usuario):
     return jsonify(usuario), 200
 
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=['PATCH'])
-def actualizar_nombre_usuario(id_usuario):
-
+def actualizar_perfil_usuario(id_usuario):
     try:
         validar_id_usuario(id_usuario)
     except ValueError as e:
@@ -85,71 +84,36 @@ def actualizar_nombre_usuario(id_usuario):
         status = e.args[1] if len(e.args) > 1 else 400
         return jsonify(error_dict), status
     
+    id_buscado = int(id_usuario)
+
     data = request.get_json() or {}
-    nuevo_nombre = data.get('nombre_usuario')
-
-    if not nuevo_nombre:
-        error_body = construir_error('missing.field', 'Campo faltante', 'Debe proporcionar un nombre de usuario')
-        return jsonify(error_body), 400
     
-    nombre_actualizado = modificar_nombre(id_usuario, nuevo_nombre)
+    nuevo_nombre = data.get('nombre_usuario')
+    nuevo_email = data.get('email')
+    nueva_password = data.get('password')
 
-    if not nombre_actualizado:
-        error_body = construir_error('user.not_found', 'No se pudo actualizar', 'El usuario no existe')
-        return jsonify(error_body), 404
+    if not nuevo_nombre and not nuevo_email and not nueva_password:
+        return jsonify({'message': 'No se proporcionaron campos para actualizar'}), 400
+
+    # 1. Si vino nombre, intentamos modificarlo pero NO frenamos el código si falla
+    if nuevo_nombre:
+        modificar_nombre(id_buscado, nuevo_nombre)
+
+    # 2. Si vino email, modificamos email
+    if nuevo_email:
+        try:
+            actualizado = modificar_email(id_buscado, nuevo_email)
+        except Exception as e:
+            return jsonify({'message': 'El email ya esta en uso'}), 400
+
+    # 3. Si vino password, modificamos password
+    if nueva_password:
+        actualizado = modificar_password(id_buscado, nueva_password)
+        if not actualizado:
+            return jsonify({'message': 'Usuario no encontrado para actualizar contraseña'}), 404
     
     return jsonify({'message': 'Datos de cuenta actualizados correctamente'}), 200
 
-@usuarios_bp.route('/usuarios/<int:id_usuario>', methods=['PATCH'])
-def actualizar_email(id_usuario):
-
-    try:
-        validar_id_usuario(id_usuario)
-    except ValueError as e:
-        error_dict = e.args[0]
-        status = e.args[1] if len(e.args) > 1 else 400
-        return jsonify(error_dict), status
-    
-    data = request.get_json() or {}
-    nuevo_email = data.get('email')
-
-    if not nuevo_email:
-        error_body = construir_error('missing.fields', 'Campo faltante', 'Debe proporcionar un email')
-        return jsonify(error_body), 400
-    
-    try:
-        actualizado = modificar_email(id_usuario, nuevo_email)
-        if not actualizado:
-            error_body = construir_error('user.not_found', 'No se pudo actualizar el email', 'El usuario no existe')
-            return jsonify(error_body), 404
-        return jsonify({"message":"Dirección de correo electrónico modificada con exito"})
-    except Exception as e:
-        error_body = construir_error('database.error', 'El email ya esta en uso', str(e))
-        return jsonify(error_body), 400
-    
-@usuarios_bp.route('/usuarios/<int:id_usuario>', methods=['PATCH'])
-def actualizar_password(id_usuario):
-     
-    try:
-        validar_id_usuario(id_usuario)
-    except ValueError as e:
-        error_dict = e.args[0]
-        status = e.args[1] if len(e.args) > 1 else 400
-        return jsonify(error_dict), status
-    
-    data = request.get_json() or {}
-    nueva_password = data.get('password')
-
-    if not nueva_password:
-        error_body = construir_error('missing.field', 'Campo faltante', 'Debe proporcionar una password')
-        return jsonify(error_body), 400
-    
-    actualizado = modificar_password(id_usuario, nueva_password)
-    if not actualizado:
-        error_body = construir_error('user.not_found', 'No se pudo actualzar', 'El usuario no existe')
-        return jsonify(error_body), 404
-    
-    return jsonify({"message":"Contraseña modificada de forma segura"})
 
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=["DELETE"])
 def delete_usuario(id_usuario):

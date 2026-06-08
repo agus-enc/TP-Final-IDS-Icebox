@@ -103,35 +103,35 @@ def actualizar_perfil():
     nuevo_email = request.form.get('nuevo_email')
     nueva_password = request.form.get('nueva_password')
 
-    # IMPORTANTE: Poner el puerto donde corre el Backend (ej: 5000 o 8080)
     url_backend = f"{BACKEND_URL}/usuarios/{id_usuario}"
 
-    cambios = False
-
-    # 1. USAMOS TU RUTA DE ACTUALIZAR NOMBRE
+    datos_a_actualizar = {}
+    
     if nuevo_nombre:
-        respuesta = requests.patch(f"{url_backend}/nombre", json={"nombre_usuario": nuevo_nombre})
-        if respuesta.status_code == 200:
-            session['nombre_usuario'] = nuevo_nombre
-            cambios = True
-
-    # 2. USAMOS TU RUTA DE ACTUALIZAR EMAIL
+        datos_a_actualizar['nombre_usuario'] = nuevo_nombre
     if nuevo_email:
-        respuesta = requests.patch(f"{url_backend}/email", json={"email": nuevo_email})
-        if respuesta.status_code == 200:
-            cambios = True
-        else:
-            flash('Error: El email ya está en uso', 'error')
-
-    # 3. USAMOS TU RUTA DE ACTUALIZAR PASSWORD
+        datos_a_actualizar['email'] = nuevo_email
     if nueva_password:
-        respuesta = requests.patch(f"{url_backend}/password", json={"password": nueva_password})
-        
-        if respuesta.status_code == 200:
-            cambios = True
+        datos_a_actualizar['password'] = nueva_password
 
-    if cambios:
-        flash('¡Perfil actualizado con éxito!', 'success')
+    # Si el usuario mandó al menos un campo para cambiar, hacemos una ÚNICA petición
+    if datos_a_actualizar:
+        try:
+            respuesta = requests.patch(url_backend, json=datos_a_actualizar)
+            
+            if respuesta.status_code == 200:
+                # Si se cambió el nombre, actualizamos la sesión de Flask en el momento
+                if nuevo_nombre:
+                    session['nombre_usuario'] = nuevo_nombre
+                flash('¡Perfil actualizado con éxito!', 'success')
+            else:
+                # Capturamos el error real del JSON del backend si existe
+                error_info = respuesta.json() if respuesta.text else {}
+                mensaje_error = error_info.get('message', 'Hubo un problema al actualizar los datos.')
+                flash(f"Error ({respuesta.status_code}): {mensaje_error}", 'error')
+                
+        except requests.exceptions.RequestException:
+            flash('No se pudo conectar con el servidor para actualizar el perfil.', 'error')
     else:
         flash('No se ingresaron cambios.', 'info')
 
