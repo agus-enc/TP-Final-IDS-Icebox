@@ -28,7 +28,6 @@ CREATE TABLE viajes (
     id_viaje INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
     titulo VARCHAR(150) NOT NULL,
-    fecha_viaje DATE, -- puede ser null si el usuario no quiere poner fecha
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
 );
 
