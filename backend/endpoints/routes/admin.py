@@ -55,7 +55,7 @@ def descargar_reporte():
     if not response or response[0]['rol'] != 'admin':
         return jsonify({"status":"error","message":"Acceso denegado, no eres administrador."}), 403
     
-    ruta_grafico = 'frontend/static/images/grafico_admin.png'
+    ruta_grafico = 'backend_grafico/static/images/grafico_admin.png'
     archivo_pdf = generar_pdf_reporte(ruta_grafico)
 
     return send_file(archivo_pdf, as_attachment=True)
