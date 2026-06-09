@@ -4,7 +4,7 @@
 
 html, body {
     background-image: none !important;
-    background-color: #b2a7b0 !important; /* El color liso que elegiste */
+    background-color: #b2a7b0 !important; 
     margin: 0;
     padding: 0;
 }
@@ -20,10 +20,8 @@ html, body {
     padding-top: 10px; 
     padding-bottom: 40px;
     
-    /* El fondo beige original */
     background-color: #b2a7b0 !important;
     background-position: center center; 
-    /* 'contain' hace que se adapte al alto de la pantalla sin cortarse */
     background-size: cover; 
 }
 
@@ -37,7 +35,7 @@ html, body {
     overflow: hidden;
 }
 
-/* Envoltura central reguladora de tamaños */
+/* Envoltura central de la heladera */
 .heladera-wrapper {
     display: flex;
     align-items: center; 
@@ -50,7 +48,7 @@ html, body {
    2. EL GABINETE DE LA HELADERA (Capa 1: Estructura Intermedia Flotante)
    ========================================================================= */
 .refrigerator, #puerta {
-    background-color: #4a4848; /* Gris oscuro base */
+    background-color: #4a4848;
     background-image: url("../images/fondo_heladera.png");
     background-size: cover;
     border-radius: 10px 10px 10px 10px;
@@ -61,12 +59,11 @@ html, body {
     position: relative; 
     overflow: visible; 
     
-    /* Sombras paralelas profundas para proyectar relieve sobre el fondo de viajes */
     box-shadow: 5px 5px 8px 5px rgba(0, 0, 0, 0.35), 0 10px 20px rgba(0, 0, 0, 0.2);
    
 }
 
-/* Puertas estéticas absolutas */
+/* Puertas estéticas */
 .refrigerator-door {
     background-color: #666769;
     background-image: url("../images/heladera.png");
@@ -86,7 +83,7 @@ html, body {
     box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.15);
 }
 
-/* Puerta inferior (Heladera común) */
+/* Puerta inferior (Heladera) */
 .refrigerator-door.bottom {
     border-radius: 8px 8px;
     bottom: 10px;
@@ -199,7 +196,7 @@ html, body {
     width: 100%;
     height: 100%;
     
-    object-fit: contain;     /* Renderiza el imán entero sin importar su forma */
+    object-fit: contain;     
     
     filter: drop-shadow(4px 4px 3px rgba(26, 35, 50, 0.45));
 }
@@ -209,7 +206,7 @@ html, body {
     transform: scale(1.1);
     
     filter: drop-shadow(8px 12px 6px rgba(0, 0, 0, 0.5)); 
-    z-index: 1000;           /* JS lo sube dinámicamente al frente de todo */
+    z-index: 1000;           /* JS lo sube al frente de todo */
 }
 
 #puerta .iman-viaje * {
@@ -225,7 +222,7 @@ html, body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    flex-shrink: 0; /* Evita que la heladera gigante lo aplaste */
+    flex-shrink: 0; /* Evita que la heladera lo aplaste */
     box-sizing: border-box;
 }
 

@@ -2,21 +2,24 @@ from ..dao.imanes import actualizar_posicion_iman, obtener_imanes_usuario, elimi
 from .procesador_ia import procesar_iman_ia
 from .storage import subir_archivo_supabase, borrar_imagen_supabase
 from ..dao.paradas import obtener_paradas_por_viaje
+from ..validators.imanes import validar_body_posicion_iman
 
-def modificar_posicion_iman(id_iman: int, ubicacion_heladera: bool, posicion_x: float, posicion_y: float) -> bool:
-    return actualizar_posicion_iman(id_iman, ubicacion_heladera, posicion_x, posicion_y)
+def modificar_posicion_iman(id_iman: int, body: dict) -> bool:
+    """Procesa la actualización de coordenadas validando la estructura del JSON."""
+    datos_limpios = validar_body_posicion_iman(body)
+    return actualizar_posicion_iman(
+        id_iman,
+        datos_limpios["ubicacion_heladera"],
+        datos_limpios["posicion_x"],
+        datos_limpios["posicion_y"]
+    )
 
 def listar_imanes(id_usuario: int, ubicacion_param: str = None) -> list:
     """
     Lógica para mapear los filtros de imanes
     Por defecto asume 'False' (vista de cajón)
     """
-
-    if ubicacion_param == "heladera":
-        en_heladera = True
-    else:
-        en_heladera = False
-    
+    en_heladera = (ubicacion_param == "heladera")
     return obtener_imanes_usuario(id_usuario, en_heladera)
 
 def eliminar_iman(id_iman: int) -> bool:

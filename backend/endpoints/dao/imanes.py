@@ -1,5 +1,13 @@
 from ..db import ejecutar_consulta, ejecutar_mutacion
 
+def obtener_iman_por_id(id_iman: int) -> dict | None:
+    """Busca un imán por su ID y devuelve su diccionario (o None si no existe)"""
+
+    sql = "SELECT id_iman, id_usuario, ubicación_heladera, posicion_x, posicion_y FROM imanes WHERE id_iman = %(id_iman)s"
+
+    resultados = ejecutar_consulta(sql, {'id_iman': id_iman})
+    return resultados[0] if resultados else None
+
 def obtener_imanes_usuario(id_usuario: int, en_heladera: bool) -> list:
     """
     Trae los imanes del usuario filtrados por su ubicación (heladera = True, cajón = False)
