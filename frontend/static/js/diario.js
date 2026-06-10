@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentSlotWrapper = null;
 
-    // 1. CARGAR IMAGEN EN EL SLOT
+    // CARGAR IMAGEN EN EL SLOT
     inputsFoto.forEach(input => {
         input.addEventListener('change', function() {
             if (this.files && this.files[0]) {
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. LÓGICA DE CADA TARJETA (Abrir, Borrar, Reemplazar)
+    // LÓGICA DE CADA TARJETA (Abrir, Borrar, Reemplazar)
     document.querySelectorAll('.slot-foto-wrapper').forEach(wrapper => {
 
         const btnReemplazar = wrapper.querySelector('.btn-reemplazar');
@@ -61,7 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputFoto.value = ''; // Limpia el archivo
                 imgPreview.src = '';
                 imgPreview.style.display = 'none';
-                label.style.display = 'flex';
+                label.style.display = '';
+                label.classList.remove('oculto');
+                label.classList.add('vacio');
                 controles.style.display = 'none';
                 epigrafeOculto.value = ''; // Borra el texto del epígrafe
                 wrapper.classList.remove('con-foto');
@@ -89,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 3. GUARDAR EL EPÍGRAFE
+    // GUARDAR EL EPÍGRAFE
     btnGuardarEpi.addEventListener('click', () => {
         if (currentSlotWrapper) {
             const epigrafeOculto = currentSlotWrapper.querySelector('.epigrafe-data');
@@ -98,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 4. FUNCIONES DE CIERRE DEL MODAL
+    // FUNCIONES DE CIERRE DEL MODAL
     function cerrarModal() {
         modalEnfoque.classList.remove('activo');
         document.body.style.overflow = 'auto';
