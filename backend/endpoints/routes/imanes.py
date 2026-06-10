@@ -89,7 +89,8 @@ def get_imanes_por_usuario_pais(id_usuario, codigo_pais):
 @imanes_bp.route('/imanes/<id_iman>/resena', methods=['GET'])
 def get_resena_iman(id_iman):
     try:
-        id_iman_validado = validar_id_iman(id_iman)
+        resultado_validacion = validar_id_iman(id_iman)
+        id_iman_validado = resultado_validacion["id_iman"]
     except ValueError as e:
         error_dict = e.args[0]
         status = e.args[1] if len(e.args) > 1 else 400
