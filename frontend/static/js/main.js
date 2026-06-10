@@ -339,7 +339,7 @@ window.inicializarBuscadorCiudades = function(wrapper, ciudadesDB) {
         const coincidencias = ciudadesDB.filter(ciudad =>
             ciudad.nombre.toLowerCase().includes(valorBuscado) ||
             ciudad.pais.toLowerCase().includes(valorBuscado)
-        ).slice(0, 5);
+        );
 
         if (coincidencias.length > 0) {
             coincidencias.forEach(ciudad => {

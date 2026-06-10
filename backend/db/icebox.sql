@@ -48,7 +48,7 @@ CREATE TABLE imanes (
     id_parada INT NOT NULL, 
     imagen_url VARCHAR(255),
     predeterminado BOOLEAN DEFAULT FALSE, -- iman predeterminado
-    ubicación_heladera BOOLEAN DEFAULT FALSE, -- control de vista en heladera o en cajon
+    ubicacion_heladera BOOLEAN DEFAULT FALSE, -- control de vista en heladera o en cajon
     posicion_x FLOAT DEFAULT 0, -- necesario para que se guarde la posición del Drag and Drop
     posicion_y FLOAT DEFAULT 0,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
