@@ -3,7 +3,7 @@ from ..db import ejecutar_consulta, ejecutar_mutacion
 def obtener_iman_por_id(id_iman: int) -> dict | None:
     """Busca un imán por su ID y devuelve su diccionario (o None si no existe)"""
 
-    sql = "SELECT id_iman, id_usuario, ubicación_heladera, posicion_x, posicion_y FROM imanes WHERE id_iman = %(id_iman)s"
+    sql = "SELECT id_iman, id_usuario, ubicacion_heladera, posicion_x, posicion_y FROM imanes WHERE id_iman = %(id_iman)s"
 
     resultados = ejecutar_consulta(sql, {'id_iman': id_iman})
     return resultados[0] if resultados else None
@@ -14,12 +14,12 @@ def obtener_imanes_usuario(id_usuario: int, en_heladera: bool) -> list:
     """
 
     sql = """
-        SELECT id_iman, id_usuario, imanes.id_ciudad, imanes.id_parada, paradas.id_viaje, imagen_url, predeterminado, ubicación_heladera, posicion_x, posicion_y
+        SELECT id_iman, id_usuario, imanes.id_ciudad, imanes.id_parada, paradas.id_viaje, imagen_url, predeterminado, ubicacion_heladera, posicion_x, posicion_y
         FROM imanes
         INNER JOIN paradas
         ON imanes.id_parada = paradas.id_parada
         WHERE id_usuario = %(id_usuario)s
-            AND ubicación_heladera = %(en_heladera)s
+            AND ubicacion_heladera = %(en_heladera)s
         """
 
     parametros = {
@@ -36,7 +36,7 @@ def actualizar_posicion_iman(id_iman: int, ubicacion_heladera: bool, posicion_x:
     """
     sql = """
           UPDATE imanes
-          SET ubicación_heladera = %(ubicacion_heladera)s,
+          SET ubicacion_heladera = %(ubicacion_heladera)s,
               posicion_x         = %(posicion_x)s,
               posicion_y         = %(posicion_y)s
           WHERE id_iman = %(id_iman)s \
