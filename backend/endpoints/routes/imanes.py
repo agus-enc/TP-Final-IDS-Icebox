@@ -96,7 +96,7 @@ def get_resena_iman(id_iman):
         status = e.args[1] if len(e.args) > 1 else 400
         return jsonify(error_dict), status
 
-    relato = obtener_resena_iman(id_iman_validado['id_iman'])
+    relato = obtener_resena_iman(id_iman_validado)
 
     if relato is None:
         return jsonify({"relato_texto": ""}), 200

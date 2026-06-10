@@ -14,7 +14,7 @@ def inicializar_estructura():
         conexion = mysql.connector.connect(**DB_CONFIG)
         cursor = conexion.cursor()
 
-        ruta_sql = 'db/init.sql' if os.path.exists('db/init.sql') else 'db/icebox.sql'
+        ruta_sql = 'db/icebox.sql'
 
         if not os.path.exists(ruta_sql):
             print(f"❌ Error: No se encontró el archivo SQL en '{ruta_sql}'")
