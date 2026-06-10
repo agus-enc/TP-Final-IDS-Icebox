@@ -7,7 +7,6 @@ def construir_viaje_dto(viaje: dict) -> dict:
         "id_viaje": viaje["id_viaje"],
         "id_usuario": viaje["id_usuario"],
         "titulo": viaje["titulo"],
-        "fecha_viaje": viaje["fecha_viaje"]
     }
 
 def obtener_viaje_por_id(id_viaje: int) -> dict:
@@ -20,15 +19,13 @@ def crear_viaje(body: dict, id_usuario: int) -> dict:
 
     nuevo_id = insertar_viaje(
         id_usuario=id_usuario,
-        titulo=datos_limpios["titulo"],
-        fecha_viaje=datos_limpios["fecha_viaje"]
+        titulo=datos_limpios["titulo"]
     )
 
     return construir_viaje_dto({
         "id_viaje": nuevo_id,
         "id_usuario": id_usuario,
-        "titulo": datos_limpios["titulo"],
-        "fecha_viaje": datos_limpios["fecha_viaje"]
+        "titulo": datos_limpios["titulo"]
         })
 
 def eliminar_viaje(id_viaje: int) -> bool:

@@ -1,11 +1,11 @@
 from db import ejecutar_consulta, ejecutar_mutacion
 
-def insertar_viaje(id_usuario: int, titulo: str, fecha_viaje: str) -> int:
+def insertar_viaje(id_usuario: int, titulo: str) -> int:
     """Inserta un nuevo viaje y retorna el id generado."""
 
-    sql = 'INSERT INTO viajes (id_usuario, titulo, fecha_viaje) VALUES (%(id_usuario)s, %(titulo)s, %(fecha_viaje)s)'
+    sql = 'INSERT INTO viajes (id_usuario, titulo) VALUES (%(id_usuario)s, %(titulo)s)'
 
-    return ejecutar_mutacion(sql, {"id_usuario": id_usuario, "titulo": titulo, "fecha_viaje": fecha_viaje})
+    return ejecutar_mutacion(sql, {"id_usuario": id_usuario, "titulo": titulo})
 
 def obtener_viaje(id_viaje: int) -> dict | None:
     """Obtener un viaje especifico por id."""
@@ -29,5 +29,5 @@ def eliminar_viaje_por_id(id_viaje: int) -> bool:
 
 def obtener_viajes_por_usuario_db(id_usuario: int) -> list:
     """Obtiene todos los viajes de un usuario específico."""
-    sql = 'SELECT id_viaje, id_usuario, titulo, fecha_viaje FROM viajes WHERE id_usuario = %(id_usuario)s'
+    sql = 'SELECT id_viaje, id_usuario, titulo FROM viajes WHERE id_usuario = %(id_usuario)s'
     return ejecutar_consulta(sql, {"id_usuario": id_usuario})

@@ -1,5 +1,5 @@
 from ..constants import (MIN_ID)
-from ..utils import validar_formato_fecha, construir_error, validar_entero, validar_minimo
+from ..utils import construir_error, validar_entero, validar_minimo
 from dao.viajes import obtener_viaje
 
 def validar_body_viaje(body: dict) -> dict:
@@ -11,7 +11,7 @@ def validar_body_viaje(body: dict) -> dict:
         raise ValueError(construir_error(
             "invalid.body",
             "El cuerpo de la petición está vacío",
-            "Se requiere un JSON con 'titulo' y 'fecha_viaje'"
+            "Se requiere un JSON con 'titulo'"
         ))
 
     errores = []
@@ -24,26 +24,11 @@ def validar_body_viaje(body: dict) -> dict:
             description=f"El titulo es un campo obligatorio."
         )['errors'][0])
 
-    fecha_viaje = body.get("fecha_viaje")
-    if fecha_viaje:
-        if not isinstance(fecha_viaje, str):
-            errores.append(construir_error(
-                code='invalid.date',
-                message=f'Campo requerido: Fecha.',
-                description=f"La fecha es un campo obligatorio."
-            )['errors'][0])
-        else:
-            try:
-                validar_formato_fecha(fecha_viaje)
-            except ValueError as e:
-                errores.extend(e.args[0]['errors'])
-
     if errores:
         raise ValueError({"errors": errores})
 
     return {
         "titulo": titulo.strip(),
-        "fecha_viaje": fecha_viaje
     }
 
 def validar_id_viaje(id_str: str) -> dict:
