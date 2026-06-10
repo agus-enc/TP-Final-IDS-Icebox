@@ -35,12 +35,13 @@ def obtener_resena_iman(id_iman: int) -> str | None:
     return obtener_relato_por_iman(id_iman)
 
 def procesar_lote_imanes(id_viaje: int, lista_datos: list, archivos_dict: dict) -> list:
-    # --- 0. OBTENER VERDAD ABSOLUTA DE LA BD ---
-    # Traemos las paradas de este viaje para deducir los países sin confiar en el Frontend
+    """Valída la existencia y el tipo de los imanes, borra y/o crea imanes
+    tanto en la BD como en Supabase según corresponda"""
+    # Traemos las paradas de este viaje para deducir los países comparando con la BD
     paradas_db = obtener_paradas_por_viaje(id_viaje)
     mapa_paises = {p['id_parada']: p['pais_ciudad'] for p in paradas_db}
 
-    # --- 1. FASE DE VALIDACIÓN ESTRICTA (Dry-Run) ---
+    # Validación
     paises_usados_en_lote = set()
     imanes_a_procesar = []
 
@@ -69,8 +70,6 @@ def procesar_lote_imanes(id_viaje: int, lista_datos: list, archivos_dict: dict) 
                     {"errors": [{"message": f"Ya has usado el imán oficial de {pais} anteriormente en este viaje."}]})
 
             paises_usados_en_lote.add(pais)
-
-            # Sobrescribimos el país en el diccionario para que la Fase 2 use el correcto
             item['pais'] = pais
             imanes_a_procesar.append(item)
 
@@ -80,17 +79,17 @@ def procesar_lote_imanes(id_viaje: int, lista_datos: list, archivos_dict: dict) 
                 raise ValueError({"errors": [{"message": f"No se recibió el archivo de imagen."}]})
             imanes_a_procesar.append(item)
 
-    # --- 2. FASE DE EJECUCIÓN (Lote 100% válido) ---
+    # Ejecución
     resultados = []
 
     for item in imanes_a_procesar:
         id_parada = item['id_parada']
         tipo = item['tipo']
 
-        # 1. Averiguamos si existía un imán antes de hacer cualquier cosa
+        # Averiguamos si existía un imán anterior
         iman_viejo = obtener_iman_por_parada(id_parada)
 
-        # CASO A: El usuario decidió borrar el imán
+        # Caso borrar imán
         if tipo == 'ninguno':
             if iman_viejo:
                 if not iman_viejo['predeterminado']:
@@ -98,9 +97,8 @@ def procesar_lote_imanes(id_viaje: int, lista_datos: list, archivos_dict: dict) 
                 eliminar_iman_por_parada(id_parada)
             continue
 
-        # CASO B: El usuario eligió el imán oficial (Bandera)
+        # Caso imán oficial
         if tipo == 'predeterminado':
-            # Como es instantáneo, podemos limpiar la mesa primero sin riesgo
             if iman_viejo:
                 if not iman_viejo['predeterminado']:
                     borrar_imagen_supabase(iman_viejo['imagen_url'])
@@ -111,29 +109,24 @@ def procesar_lote_imanes(id_viaje: int, lista_datos: list, archivos_dict: dict) 
             nuevo_id = crear_iman(id_parada, url_estatica, predeterminado=True)
             resultados.append({"id_iman": nuevo_id, "id_parada": id_parada, "url": url_estatica})
 
-        # CASO C: El usuario subió una foto nueva (Riesgo de IA y Nube)
+        # Caso iman nuevo
         elif tipo == 'personalizado':
             archivo = archivos_dict[item['archivo_key']]
-
-            # Paso riesgoso 1: Inteligencia Artificial
             bytes_png = procesar_iman_ia(archivo)
-
-            # Paso riesgoso 2: Subir a Supabase
             url_publica = subir_archivo_supabase(
                 file_bytes=bytes_png, filename=f"parada_{id_parada}.png",
                 content_type="image/png", subcarpeta=f"viaje_{id_viaje}", bucket_name="imanes"
             )
 
-            # Paso seguro: Transacción en BD
             try:
-                # 1. Aseguramos el imán nuevo primero
+                # Aseguramos el imán nuevo primero
                 nuevo_id = crear_iman(id_parada, url_publica, predeterminado=False)
 
-                # 2. AHORA limpiamos el viejo usando su ID EXACTO (para no matar al nuevo)
+                # Limpiamos el viejo usando su ID para no matar al nuevo
                 if iman_viejo:
                     if not iman_viejo['predeterminado']:
                         borrar_imagen_supabase(iman_viejo['imagen_url'])
-                    eliminar_iman(iman_viejo['id_iman'])  # ¡Usamos la función por ID!
+                    eliminar_iman(iman_viejo['id_iman'])
 
                 resultados.append({"id_iman": nuevo_id, "id_parada": id_parada, "url": url_publica})
 

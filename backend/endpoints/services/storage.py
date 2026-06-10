@@ -34,24 +34,22 @@ def subir_archivo_supabase(file_bytes: bytes, filename: str, content_type: str, 
 
     return url_publica
 
-
 def subir_imagen_parada(archivo_flask, id_viaje: int) -> str:
     """
-    Wrapper (Envoltorio) para mantener retrocompatibilidad.
+    Arma el "DTO" de una imagen para ser subida a Supabase
     """
     return subir_archivo_supabase(
         file_bytes=archivo_flask.read(),
         filename=archivo_flask.filename,
         content_type=archivo_flask.content_type,
         subcarpeta=f"viaje_{id_viaje}",
-        bucket_name=BUCKET_NAME  # Usa el bucket de "imagenes-viajes" por defecto
+        bucket_name=BUCKET_NAME
     )
-
 
 def borrar_imagen_supabase(url_publica: str) -> bool:
     """
-    Toma cualquier URL pública de Supabase, AUTO-DETECTA el bucket
-    y la ruta interna, y ejecuta el borrado sin importar si es imán o foto.
+    Toma cualquier URL pública de Supabase, auto-detecta el bucket
+    y la ruta interna, y ejecuta el borrado.
     """
     if not url_publica:
         return False

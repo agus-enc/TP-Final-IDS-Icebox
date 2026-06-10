@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnGuardarEpi = document.getElementById('btn-guardar-epigrafe');
 
     let totalSlots = document.querySelectorAll('.slot-foto-wrapper').length;
-    let currentSlotWrapper = null;
+    let actualSlotWrapper = null;
 
     function inicializarSlot(wrapper) {
         const inputFoto = wrapper.querySelector('.input-foto-diario');
@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
 
-                reader.onload = function(e) {
-                    imgPreview.src = e.target.result;
+                reader.onload = function(event) {
+                    imgPreview.src = event.target.result;
                     imgPreview.style.display = 'block';
                     label.style.display = 'none';
                     controles.style.display = 'flex';
@@ -39,15 +39,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (btnReemplazar) {
-            btnReemplazar.addEventListener('click', function(e) {
-                e.stopPropagation();
+            btnReemplazar.addEventListener('click', function(event) {
+                event.stopPropagation();
                 inputFoto.click();
             });
         }
 
         if (btnBorrar) {
-            btnBorrar.addEventListener('click', function(e) {
-                e.stopPropagation();
+            btnBorrar.addEventListener('click', function(event) {
+                event.stopPropagation();
                 inputFoto.value = '';
                 imgPreview.src = '';
                 imgPreview.style.display = 'none';
@@ -65,10 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // MODO ZEN
-        wrapper.addEventListener('click', function(e) {
-            if (this.classList.contains('con-foto') && !e.target.closest('.btn-control-foto') && e.target.type !== 'file') {
-                e.preventDefault();
-                currentSlotWrapper = this;
+        wrapper.addEventListener('click', function(event) {
+            if (this.classList.contains('con-foto') && !event.target.closest('.btn-control-foto') && event.target.type !== 'file') {
+                event.preventDefault();
+                actualSlotWrapper = this;
                 imgEnfoque.src = imgPreview.src;
                 inputEpigrafe.value = epigrafeOculto.value;
 
@@ -87,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // LÓGICA DEL MODAL
     btnGuardarEpi.addEventListener('click', () => {
-        if (currentSlotWrapper) {
-            const epigrafeOculto = currentSlotWrapper.querySelector('.epigrafe-data');
+        if (actualSlotWrapper) {
+            const epigrafeOculto = actualSlotWrapper.querySelector('.epigrafe-data');
             epigrafeOculto.value = inputEpigrafe.value;
             cerrarModal();
         }
@@ -97,17 +97,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function cerrarModal() {
         modalEnfoque.classList.remove('activo');
         document.body.style.overflow = 'auto';
-        currentSlotWrapper = null;
+        actualSlotWrapper = null;
     }
 
     btnCerrarModal.addEventListener('click', cerrarModal);
 
-    modalEnfoque.addEventListener('click', (e) => {
-        if (e.target === modalEnfoque) cerrarModal();
+    modalEnfoque.addEventListener('click', (event) => {
+        if (event.target === modalEnfoque) cerrarModal();
     });
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modalEnfoque.classList.contains('activo')) {
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modalEnfoque.classList.contains('activo')) {
             cerrarModal();
         }
     });
@@ -116,8 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAgregarPaginas = document.getElementById('btn-agregar-paginas');
 
     if (btnAgregarPaginas) {
-        btnAgregarPaginas.addEventListener('click', function(e) {
-            e.preventDefault();
+        btnAgregarPaginas.addEventListener('click', function(event) {
+            event.preventDefault();
 
             const moldeLibro = document.querySelector('.libro-abierto');
             const nuevoLibro = moldeLibro.cloneNode(true);

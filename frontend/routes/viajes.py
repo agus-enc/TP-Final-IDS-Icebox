@@ -194,11 +194,6 @@ def guardar_creador():
 
     id_viaje = res_v.json().get('id_viaje')
 
-    foto_portada = request.files.get('foto_portada')
-    if foto_portada and foto_portada.filename != '':
-        archivos = {'imagen': (foto_portada.filename, foto_portada.read(), foto_portada.content_type)}
-        requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data={'tipo': 'header'})
-
     paradas_data = parsear_formulario_paradas(request.form, request.files)
     lote_imanes = []
     archivos_imanes = {}

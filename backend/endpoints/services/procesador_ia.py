@@ -7,13 +7,11 @@ def procesar_iman_ia(archivo_flask) -> bytes:
     y devuelve los bytes puros en formato PNG transparente.
     """
     try:
-        # 1. Leemos los bytes crudos directamente de la petición de Flask
         input_bytes = archivo_flask.read()
 
-        # 2. La IA de rembg recibe bytes y devuelve bytes (ya en formato PNG)
+        # La IA de rembg recibe bytes y devuelve bytes (ya en formato PNG)
         output_bytes = remove(input_bytes)
 
-        # 3. Devolvemos la salida lista para ser inyectada en Supabase
         return output_bytes
 
     except Exception as e:
