@@ -1,17 +1,16 @@
 html, body {
     margin: 0 !important;
-    overflow: hidden !important;
+    /* overflow: hidden !important; */
 }
 
 .contenedor-diario {
     padding: 20px 30px;
     max-width: 1400px;
     margin: 0 auto;
-    height: calc(100vh - 110px);
+    min-height: calc(100vh - 110px);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    overflow: hidden;
 }
 
 .header-diario {
@@ -68,7 +67,10 @@ html, body {
     border: 1px solid #dcdde1;
     flex-grow: 1;
     box-sizing: border-box;
-    min-height: 0; /* Fundamental en Flexbox para que los elementos internos no desborden */
+    margin-bottom: 40px;
+    flex-shrink: 0;
+    height: calc(100vh - 200px);
+    min-height: 600px;
 }
 
 /* Pliegue central del libro */
@@ -312,4 +314,30 @@ html, body {
     font-family: inherit;
     cursor: pointer;
     transition: 0.2s;
+}
+
+/* --- BOTÓN AÑADIR PÁGINAS --- */
+.btn-agregar-paginas {
+    display: block;
+    margin: 0 auto 40px auto;
+    padding: 15px 40px;
+    background-color: transparent;
+    color: #7f8c8d;
+    border: 2px dashed #bdc3c7;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.btn-agregar-paginas:hover {
+    border-color: #9a6b30;
+    color: #9a6b30;
+}
+
+/* Oculta permanentemente el input feo nativo del navegador */
+.input-foto-diario {
+    display: none !important;
 }

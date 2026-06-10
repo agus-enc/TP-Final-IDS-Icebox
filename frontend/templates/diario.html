@@ -17,25 +17,29 @@
         <button type="submit" class="btn-guardar-diario">Guardar Diario</button>
     </header>
 
+    {% set total_libros = (slots|length) // 10 %}
+
+    {% for libro_idx in range(total_libros) %}
     <div class="libro-abierto">
+
         <div class="pagina pagina-izquierda">
-            {% for i in range(0, 5) %}
+            {% for i in range(libro_idx * 10, libro_idx * 10 + 5) %}
             {% set img = slots[i] %}
             <div class="slot-foto-wrapper slot-{{ loop.index }} {% if img %}con-foto{% endif %}">
                 <label for="foto-{{ i+1 }}" class="slot-foto {% if img %}oculto{% else %}vacio{% endif %}" {% if img %}style="display: none;"{% endif %}>
                     <span class="icono-mas">+</span>
                 </label>
-                <input type="file" id="foto-{{ i+1 }}" name="nueva_foto_{{ i+1 }}" class="input-foto-diario" accept="image/png, image/jpeg" style="display: none;">
+                <input type="file" id="foto-{{ i+1 }}" name="nueva_foto_{{ i+1 }}" class="input-foto-diario" accept="image/*">
+                <img class="img-preview" src="{{ img.imagen_url if img else '' }}" {% if img %}style="display: block;"{% endif %}>
 
                 {% if img %}
-                    <input type="hidden" class="input-img-actual" name="id_foto_existente_{{ i+1 }}" value="{{ img.id_imagen }}">
+                    <input type="hidden" name="id_foto_existente_{{ i+1 }}" value="{{ img.id_imagen }}">
+                    <input type="hidden" class="input-img-actual" value="{{ img.imagen_url }}">
+                    <input type="hidden" class="input-borrar-img" name="borrar_foto[]" value="">
                 {% endif %}
-                <input type="hidden" name="borrar_foto[]" class="input-borrar-img" value="">
 
-                <img src="{{ img.imagen_url if img else '' }}" class="img-preview" {% if not img %}style="display: none;"{% endif %}>
-
-                <div class="controles-foto" {% if not img %}style="display: none;"{% endif %}>
-                    <button type="button" class="btn-control-foto btn-reemplazar" title="Cambiar Foto">
+                <div class="controles-foto" {% if img %}style="display: flex;"{% endif %}>
+                    <button type="button" class="btn-control-foto btn-reemplazar" title="Reemplazar Foto">
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
                     </button>
                     <button type="button" class="btn-control-foto btn-borrar" title="Eliminar Foto">
@@ -49,23 +53,24 @@
         </div>
 
         <div class="pagina pagina-derecha">
-            {% for i in range(5, 10) %}
+            {% for i in range(libro_idx * 10 + 5, libro_idx * 10 + 10) %}
             {% set img = slots[i] %}
+
             <div class="slot-foto-wrapper slot-{{ loop.index }} {% if img %}con-foto{% endif %}">
                 <label for="foto-{{ i+1 }}" class="slot-foto {% if img %}oculto{% else %}vacio{% endif %}" {% if img %}style="display: none;"{% endif %}>
                     <span class="icono-mas">+</span>
                 </label>
-                <input type="file" id="foto-{{ i+1 }}" name="nueva_foto_{{ i+1 }}" class="input-foto-diario" accept="image/png, image/jpeg" style="display: none;">
+                <input type="file" id="foto-{{ i+1 }}" name="nueva_foto_{{ i+1 }}" class="input-foto-diario" accept="image/*">
+                <img class="img-preview" src="{{ img.imagen_url if img else '' }}" {% if img %}style="display: block;"{% endif %}>
 
                 {% if img %}
-                    <input type="hidden" class="input-img-actual" name="id_foto_existente_{{ i+1 }}" value="{{ img.id_imagen }}">
+                    <input type="hidden" name="id_foto_existente_{{ i+1 }}" value="{{ img.id_imagen }}">
+                    <input type="hidden" class="input-img-actual" value="{{ img.imagen_url }}">
+                    <input type="hidden" class="input-borrar-img" name="borrar_foto[]" value="">
                 {% endif %}
-                <input type="hidden" name="borrar_foto[]" class="input-borrar-img" value="">
 
-                <img src="{{ img.imagen_url if img else '' }}" class="img-preview" {% if not img %}style="display: none;"{% endif %}>
-
-                <div class="controles-foto" {% if not img %}style="display: none;"{% endif %}>
-                    <button type="button" class="btn-control-foto btn-reemplazar" title="Cambiar Foto">
+                <div class="controles-foto" {% if img %}style="display: flex;"{% endif %}>
+                    <button type="button" class="btn-control-foto btn-reemplazar" title="Reemplazar Foto">
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
                     </button>
                     <button type="button" class="btn-control-foto btn-borrar" title="Eliminar Foto">
@@ -77,7 +82,12 @@
             </div>
             {% endfor %}
         </div>
+
     </div>
+    {% endfor %}
+    <button type="button" id="btn-agregar-paginas" class="btn-agregar-paginas" title="Añadir más páginas al diario">
+            + Añadir más páginas
+        </button>
 
 </form>
 

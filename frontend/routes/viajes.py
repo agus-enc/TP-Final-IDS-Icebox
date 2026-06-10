@@ -113,29 +113,32 @@ def editor(id_viaje):
 @viajes_bp.route('/viajes/<int:id_viaje>/diario', methods=['POST'])
 @login_required
 def guardar_diario(id_viaje):
-    # 1. Ejecutar las eliminaciones primero
+    # Ejecutar las eliminaciones primero
     fotos_a_borrar = request.form.getlist('borrar_foto[]')
     for id_img in fotos_a_borrar:
         if id_img.strip():
             requests.delete(f"{BACKEND_URL}/imagenes/{id_img.strip()}")
 
-    # 2. Analizar y procesar los 10 Slots de forma independiente
-    for i in range(1, 11):
+    # Procesar los Slots dinámicamente
+    i = 1
+    while f'epigrafe_{i}' in request.form or f'nueva_foto_{i}' in request.files:
+
         archivo = request.files.get(f'nueva_foto_{i}')
         epigrafe = request.form.get(f'epigrafe_{i}', '')
         id_existente = request.form.get(f'id_foto_existente_{i}')
 
-        # A. Hay archivo nuevo (Slot virgen o se reemplazó foto)
+        # Hay archivo nuevo
         if archivo and archivo.filename != '':
             archivos = {'imagen': (archivo.filename, archivo.read(), archivo.content_type)}
             payload = {'tipo': 'diario', 'orden': i, 'epigrafe': epigrafe}
             requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data=payload)
 
-        # B. No hay archivo nuevo, pero la foto ya existía y NO fue borrada
+        # No hay archivo nuevo, pero la foto ya existía y NO fue borrada
         elif id_existente and id_existente not in fotos_a_borrar:
-            # Actualizamos su epígrafe por si el usuario lo modificó
             payload_update = {'orden': i, 'epigrafe': epigrafe}
             requests.put(f"{BACKEND_URL}/imagenes/{id_existente}", json=payload_update)
+
+        i += 1
 
     flash("¡Diario de fotos actualizado con éxito!", "success")
     return redirect(url_for('viajes.diario', id_viaje=id_viaje))
@@ -154,11 +157,22 @@ def diario(id_viaje):
     imagenes_todas = resp_img.json() if resp_img.status_code == 200 else []
     imagenes_diario = [img for img in imagenes_todas if img.get('tipo') == 'diario']
 
-    # --- Mapear fotos a sus 10 slots exactos ---
-    slots = [None] * 10
+    # Mapear fotos a sus slots dinámicos
+    if not imagenes_diario:
+        total_slots = 10
+    else:
+        # Buscamos el orden más alto guardado
+        max_orden = max((img.get('orden', 0) for img in imagenes_diario), default=0)
+        # Redondeamos a la decena superior
+        total_slots = ((max_orden - 1) // 10 + 1) * 10
+        if total_slots == 0:
+            total_slots = 10
+
+    slots = [None] * total_slots
     for img in imagenes_diario:
         orden = img.get('orden', 0)
-        if 1 <= orden <= 10:
+
+        if 1 <= orden <= total_slots:
             slots[orden - 1] = img
 
     return render_template('diario.html', viaje=viaje_real, slots=slots)
