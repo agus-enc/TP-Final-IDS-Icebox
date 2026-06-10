@@ -14,7 +14,8 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
-function highlightFeature(e) { // Resaltar el país al pasar el mouse
+// Resaltar el país al pasar el mouse
+function highlightFeature(e) { 
     var layer = e.target;
     layer.setStyle({
         weight: 2,
@@ -48,7 +49,7 @@ function cargarImanesEnSidebar(codigoPais) {
     const botonIman = document.createElement('button');
     botonIman.className = 'iman-viaje';
     
-    const imagenElemento = document.createElement('img');
+    const imagenElemento = document.createElement('img'); // Imagen Iman
     imagenElemento.src = iman.imagen_url;
     imagenElemento.alt = `${iman.nombre_ciudad}`;
     imagenElemento.className = 'iman-imagen-real';
@@ -65,7 +66,7 @@ function cargarImanesEnSidebar(codigoPais) {
 
     const destinoDiv = document.createElement('div');
     destinoDiv.className = 'iman-destino';
-    destinoDiv.innerText = iman.nombre_ciudad;
+    destinoDiv.innerText = iman.nombre_ciudad; // Nombre de la ciudad
 
     bloqueTexto.appendChild(destinoDiv);
 
@@ -97,6 +98,7 @@ function cerrarModal() {
     }
 }
 
+// Cerrar el modal al hacer clic en el fondo
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal-resenia');
     if (modal) {
@@ -121,7 +123,7 @@ fetch(urlPaises)
         return {
           color: "#2b2b2b29", 
           weight: 1.5,
-          fillColor: esVisitado ? "#9A8C98" : "#2b81c800", // Azul si fue, transparente si no
+          fillColor: esVisitado ? "#9A8C98" : "#2b81c800",
           fillOpacity: esVisitado ? 0.6 : 0.1
         };
       },
@@ -153,7 +155,7 @@ fetch(urlPaises)
     console.error("Error al cargar las divisiones del mundo:", error);
   });
 
-var info = L.control();
+var info = L.control(); // Control para mostrar información 
 
 info.onAdd = function (map) {
     this._div = L.DomUtil.create('div', 'info'); 
@@ -167,7 +169,7 @@ info.update = function (props) {
 };
 info.addTo(map);
 
-//boton de compartir
+// Botón de compartir
 const shareControl = L.control({ position: 'topright' });
 
 shareControl.onAdd = function (map) {
