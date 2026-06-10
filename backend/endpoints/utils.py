@@ -1,5 +1,3 @@
-from datetime import datetime
-
 def construir_error(code: str, message: str, description: str, level: str = 'error'):
     return {
         'errors': [{
@@ -9,16 +7,6 @@ def construir_error(code: str, message: str, description: str, level: str = 'err
             'description': description
         }]
     }
-
-def validar_formato_fecha(fecha: str):
-    try:
-        datetime.strptime(fecha, '%Y-%m-%d')
-    except ValueError:
-        raise ValueError(construir_error(
-            code='invalid.date.format',
-            message=f"Formato de '{fecha}' inválido",
-            description=f"El valor '{fecha}' no cumple el formato esperado: '%Y-%m-%d'"
-        ))
 
 def validar_entero(numero: str) -> int:
     try:

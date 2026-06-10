@@ -4,7 +4,7 @@ from dao.viajes import obtener_viaje
 
 def validar_body_viaje(body: dict) -> dict:
     """
-    Valida que el JSON recibido contenga el título y una fecha válida.
+    Valida que el JSON recibido sea valido.
     Retorna un diccionario limpio solo con los datos que interesan.
     """
     if not body:
