@@ -1,6 +1,6 @@
 from ..constants import (MIN_ID)
 from ..utils import construir_error, validar_entero, validar_minimo
-from dao.viajes import obtener_viaje
+from ..dao.viajes import obtener_viaje
 
 def validar_body_viaje(body: dict) -> dict:
     """

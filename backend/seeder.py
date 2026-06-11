@@ -1,9 +1,11 @@
 import json
 import mysql.connector
+import os
 
 # --- CONFIGURACIÓN DE LA BASE DE DATOS ---
 DB_CONFIG = {
-    'host': 'localhost',
+    'host': os.getenv('DB_HOST', 'localhost'),
+    'port': int(os.getenv('DB_PORT', 3306)),
     'user': 'root',
     'password': 'root',
     'database': 'ICEBOX',
@@ -11,18 +13,23 @@ DB_CONFIG = {
 }
 
 def poblar_base_de_datos():
-    # 1. Cargar los archivos JSON
-    print("Abriendo archivos JSON...")
-    with open('countries.json', 'r', encoding='utf-8') as f:
-        countries_data = json.load(f)['data']
-
-    with open('cities.json', 'r', encoding='utf-8') as f:
-        cities_data = json.load(f)['data']
-
     try:
         # 2. Conectar a MySQL
         conexion = mysql.connector.connect(**DB_CONFIG)
         cursor = conexion.cursor()
+
+        cursor.execute('SELECT COUNT(*) FROM paises')
+        if cursor.fetchone()[0] > 0:
+            print("✔ Las tablas ya están pobladas. Omitiendo el seeder.")
+            return  # Corta la ejecución de la función aquí mismo
+
+        # 1. Cargar los archivos JSON
+        print("Abriendo archivos JSON...")
+        with open('countries.json', 'r', encoding='utf-8') as f:
+            countries_data = json.load(f)['data']
+
+        with open('cities.json', 'r', encoding='utf-8') as f:
+            cities_data = json.load(f)['data']
 
         # ==========================================
         # FASE 1: INSERTAR PAÍSES
@@ -90,7 +97,7 @@ def poblar_base_de_datos():
 
         if ciudades_omitidas > 0:
             print(
-                f"⚠️ Nota: Se omitieron {ciudades_omitidas} ciudades porque el nombre de su país en cities.json no coincidía exactamente con el de countries.json.")
+                f"Nota: Se omitieron {ciudades_omitidas} ciudades porque el nombre de su país en cities.json no coincidía exactamente con el de countries.json.")
 
     except mysql.connector.Error as err:
         print(f"❌ Error de MySQL: {err}")

@@ -1,9 +1,11 @@
 from mysql.connector import connect
 from contextlib import contextmanager
+import os
 
 def get_connection():
     return connect(
-        host="localhost",
+        host=os.getenv('DB_HOST', 'localhost'),
+        port=int(os.getenv('DB_PORT', 3306)),
         user="root",
         password="root",
         database="ICEBOX"

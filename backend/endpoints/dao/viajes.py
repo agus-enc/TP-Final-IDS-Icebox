@@ -1,4 +1,4 @@
-from db import ejecutar_consulta, ejecutar_mutacion
+from ..db import ejecutar_consulta, ejecutar_mutacion
 
 def insertar_viaje(id_usuario: int, titulo: str) -> int:
     """Inserta un nuevo viaje y retorna el id generado."""

@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: mysql_db
+    environment:
+      MYSQL_DATABASE: ICEBOX
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./backend/db/icebox.sql:/docker-entrypoint-initdb.d/icebox.sql
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: backend
+    environment:
+      - DB_HOST=db
+    env_file:
+      - ./backend/.env
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    environment:
+      BACKEND_URL: http://backend:5000/endpoints
+    ports:
+      - "8000:8000"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
