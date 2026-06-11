@@ -26,10 +26,19 @@ source venv/bin/activate
 echo "Actualizando pip e instalando dependencias desde requirements.txt..."
 pip install --upgrade pip
 
-if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt
+echo "📦 Instalando dependencias del BACKEND..."
+if [ -f "backend/requirements.txt" ]; then
+    pip install -r backend/requirements.txt
 else
-    echo "❌ Error crítico: No se encontró el archivo requirements.txt en la raíz."
+    echo "Error crítico: No se encontró el archivo requirements.txt en la carpeta /backend."
+    exit 1
+fi
+
+echo "📦 Instalando dependencias del FRONTEND..."
+if [ -f "frontend/requirements.txt" ]; then
+    pip install -r frontend/requirements.txt
+else
+    echo "Error crítico: No se encontró el archivo requirements.txt en la carpeta /frontend."
     exit 1
 fi
 
