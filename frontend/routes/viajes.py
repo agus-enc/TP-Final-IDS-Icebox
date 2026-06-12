@@ -7,6 +7,15 @@ from auth import login_required
 
 viajes_bp = Blueprint('viajes', __name__)
 
+def es_propietario_del_viaje(id_viaje):
+    """Verifica si el viaje solicitado pertenece al usuario de la sesión actual"""
+    resp = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
+    if resp.status_code == 200:
+        viaje = resp.json()
+        return viaje.get('id_usuario') == session.get('usuario_id')
+
+    return False
+
 @viajes_bp.route('/biblioteca')
 @login_required
 def biblioteca():
@@ -21,9 +30,37 @@ def biblioteca():
         
     return render_template('biblioteca.html', viajes=viajes)
 
+@viajes_bp.route('/viajes/<int:id_viaje>/editar', methods=['GET'])
+@login_required
+def editor(id_viaje):
+    if not es_propietario_del_viaje(id_viaje):
+        flash("Acceso denegado: Este viaje pertenece a otro usuario.", "error")
+        return redirect(url_for('viajes.biblioteca'))
+
+    resp_viaje = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
+    if resp_viaje.status_code != 200:
+        flash("El viaje que buscas no existe o fue eliminado.", "error")
+        return redirect(url_for('viajes.biblioteca'))
+
+    viaje_real = resp_viaje.json()
+
+    resp_paradas = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/paradas")
+    paradas_reales = resp_paradas.json() if resp_paradas.status_code == 200 else []
+
+    resp_imagenes = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes")
+    imagenes_reales = resp_imagenes.json() if resp_imagenes.status_code == 200 else []
+
+    viaje_real['url_portada'] = next((img['imagen_url'] for img in imagenes_reales if img['tipo'] == 'header'), None)
+
+    return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales)
+
 @viajes_bp.route('/viajes/<int:id_viaje>/editar', methods=['POST'])
 @login_required
 def guardar_editor(id_viaje):
+    if not es_propietario_del_viaje(id_viaje):
+        flash("Acceso denegado.", "error")
+        return redirect(url_for('viajes.biblioteca'))
+
     # Actualizar Título y Portada
     titulo_nuevo = request.form.get('titulo_viaje')
     requests.put(f"{BACKEND_URL}/viajes/{id_viaje}", json={"titulo": titulo_nuevo})
@@ -90,62 +127,13 @@ def guardar_editor(id_viaje):
 
     return redirect(url_for('viajes.editor', id_viaje=id_viaje))
 
-@viajes_bp.route('/viajes/<int:id_viaje>/editar', methods=['GET'])
-@login_required
-def editor(id_viaje):
-    resp_viaje = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
-    if resp_viaje.status_code != 200:
-        flash("El viaje que buscas no existe o fue eliminado.", "error")
-        return redirect(url_for('viajes.biblioteca'))
-
-    viaje_real = resp_viaje.json()
-
-    resp_paradas = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/paradas")
-    paradas_reales = resp_paradas.json() if resp_paradas.status_code == 200 else []
-
-    resp_imagenes = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes")
-    imagenes_reales = resp_imagenes.json() if resp_imagenes.status_code == 200 else []
-
-    viaje_real['url_portada'] = next((img['imagen_url'] for img in imagenes_reales if img['tipo'] == 'header'), None)
-
-    return render_template('editor.html', viaje=viaje_real, paradas=paradas_reales)
-
-@viajes_bp.route('/viajes/<int:id_viaje>/diario', methods=['POST'])
-@login_required
-def guardar_diario(id_viaje):
-    # Ejecutar las eliminaciones primero
-    fotos_a_borrar = request.form.getlist('borrar_foto[]')
-    for id_img in fotos_a_borrar:
-        if id_img.strip():
-            requests.delete(f"{BACKEND_URL}/imagenes/{id_img.strip()}")
-
-    # Procesar los Slots dinámicamente
-    i = 1
-    while f'epigrafe_{i}' in request.form or f'nueva_foto_{i}' in request.files:
-
-        archivo = request.files.get(f'nueva_foto_{i}')
-        epigrafe = request.form.get(f'epigrafe_{i}', '')
-        id_existente = request.form.get(f'id_foto_existente_{i}')
-
-        # Hay archivo nuevo
-        if archivo and archivo.filename != '':
-            archivos = {'imagen': (archivo.filename, archivo.read(), archivo.content_type)}
-            payload = {'tipo': 'diario', 'orden': i, 'epigrafe': epigrafe}
-            requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data=payload)
-
-        # No hay archivo nuevo, pero la foto ya existía y NO fue borrada
-        elif id_existente and id_existente not in fotos_a_borrar:
-            payload_update = {'epigrafe': epigrafe}
-            requests.put(f"{BACKEND_URL}/imagenes/{id_existente}", json=payload_update)
-
-        i += 1
-
-    flash("¡Diario de fotos actualizado con éxito!", "success")
-    return redirect(url_for('viajes.diario', id_viaje=id_viaje))
-
 @viajes_bp.route('/viajes/<int:id_viaje>/diario', methods=['GET'])
 @login_required
 def diario(id_viaje):
+    if not es_propietario_del_viaje(id_viaje):
+        flash("Acceso denegado: Este viaje pertenece a otro usuario.", "error")
+        return redirect(url_for('viajes.biblioteca'))
+
     resp_viaje = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
     if resp_viaje.status_code != 200:
         flash("El viaje que buscas no existe o fue eliminado.", "error")
@@ -176,6 +164,48 @@ def diario(id_viaje):
             slots[orden - 1] = img
 
     return render_template('diario.html', viaje=viaje_real, slots=slots)
+
+@viajes_bp.route('/viajes/<int:id_viaje>/diario', methods=['POST'])
+@login_required
+def guardar_diario(id_viaje):
+    if not es_propietario_del_viaje(id_viaje):
+        flash("Acceso denegado.", "error")
+        return redirect(url_for('viajes.biblioteca'))
+
+    # Ejecutar las eliminaciones primero
+    fotos_a_borrar = request.form.getlist('borrar_foto[]')
+    for id_img in fotos_a_borrar:
+        if id_img.strip():
+            requests.delete(f"{BACKEND_URL}/imagenes/{id_img.strip()}")
+
+    # Procesar los Slots dinámicamente
+    i = 1
+    while f'epigrafe_{i}' in request.form or f'nueva_foto_{i}' in request.files:
+
+        archivo = request.files.get(f'nueva_foto_{i}')
+        epigrafe = request.form.get(f'epigrafe_{i}', '')
+        id_existente = request.form.get(f'id_foto_existente_{i}')
+
+        # Hay archivo nuevo
+        if archivo and archivo.filename != '':
+            archivos = {'imagen': (archivo.filename, archivo.read(), archivo.content_type)}
+            payload = {'tipo': 'diario', 'orden': i, 'epigrafe': epigrafe}
+            requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data=payload)
+
+        # No hay archivo nuevo, pero la foto ya existía y NO fue borrada
+        elif id_existente and id_existente not in fotos_a_borrar:
+            payload_update = {'epigrafe': epigrafe}
+            requests.put(f"{BACKEND_URL}/imagenes/{id_existente}", json=payload_update)
+
+        i += 1
+
+    flash("¡Diario de fotos actualizado con éxito!", "success")
+    return redirect(url_for('viajes.diario', id_viaje=id_viaje))
+
+@viajes_bp.route('/crear_viaje', methods=['GET'])
+@login_required
+def creador():
+    return render_template('creador.html')
 
 @viajes_bp.route('/crear_viaje', methods=['POST'])
 @login_required
@@ -227,14 +257,13 @@ def guardar_creador():
     # Redirigimos al editor del viaje recién creado
     return redirect(url_for('viajes.editor', id_viaje=id_viaje))
 
-@viajes_bp.route('/crear_viaje', methods=['GET'])
-@login_required
-def creador():
-    return render_template('creador.html')
-
 @viajes_bp.route('/viajes/<int:id_viaje>/borrar', methods=['POST'])
 @login_required
 def borrar_viaje(id_viaje):
+    if not es_propietario_del_viaje(id_viaje):
+        flash("Acceso denegado: No puedes borrar un viaje que no es tuyo.", "error")
+        return redirect(url_for('viajes.biblioteca'))
+
     resp = requests.delete(f"{BACKEND_URL}/viajes/{id_viaje}")
     if resp.status_code in [200, 204]:
          flash("Viaje eliminado con éxito", "success")
