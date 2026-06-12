@@ -73,6 +73,7 @@ html, body {
     left: 8px;
     right: 8px;
     box-sizing: border-box;
+    pointer-events: none;
 }
 
 /* Puerta superior (Freezer) */
@@ -89,7 +90,6 @@ html, body {
     bottom: 10px;
     height: 62%;
     box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.08);
-    pointer-events: none;
 }
 
 /* Manijas */
