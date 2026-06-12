@@ -70,9 +70,8 @@ def delete_imagen_diario(id_imagen):
 @imagenes_bp.route("/imagenes/<int:id_imagen>", methods=["PUT"])
 def update_imagen(id_imagen):
     data = request.json or {}
-    orden = int(data.get('orden', 0))
     epigrafe = data.get('epigrafe', '')
 
-    if actualizar_datos_imagen(id_imagen, orden, epigrafe):
+    if actualizar_datos_imagen(id_imagen, epigrafe):
         return jsonify({"message": "Actualizado correctamente"}), 200
     return jsonify({"errors": [{"message": "No se pudo actualizar."}]}), 400

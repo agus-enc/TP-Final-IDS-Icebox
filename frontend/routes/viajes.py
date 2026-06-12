@@ -135,7 +135,7 @@ def guardar_diario(id_viaje):
 
         # No hay archivo nuevo, pero la foto ya existía y NO fue borrada
         elif id_existente and id_existente not in fotos_a_borrar:
-            payload_update = {'orden': i, 'epigrafe': epigrafe}
+            payload_update = {'epigrafe': epigrafe}
             requests.put(f"{BACKEND_URL}/imagenes/{id_existente}", json=payload_update)
 
         i += 1
