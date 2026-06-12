@@ -13,17 +13,17 @@ DB_CONFIG = {
 }
 
 def poblar_base_de_datos():
+    conexion = None
+    cursor = None
     try:
-        # 2. Conectar a MySQL
         conexion = mysql.connector.connect(**DB_CONFIG)
         cursor = conexion.cursor()
 
         cursor.execute('SELECT COUNT(*) FROM paises')
         if cursor.fetchone()[0] > 0:
             print("✔ Las tablas ya están pobladas. Omitiendo el seeder.")
-            return  # Corta la ejecución de la función aquí mismo
+            return
 
-        # 1. Cargar los archivos JSON
         print("Abriendo archivos JSON...")
         with open('countries.json', 'r', encoding='utf-8') as f:
             countries_data = json.load(f)['data']
@@ -31,9 +31,6 @@ def poblar_base_de_datos():
         with open('cities.json', 'r', encoding='utf-8') as f:
             cities_data = json.load(f)['data']
 
-        # ==========================================
-        # FASE 1: INSERTAR PAÍSES
-        # ==========================================
         print("Fase 1: Insertando países...")
 
         sql_pais = """INSERT INTO paises (nombre, bandera, codigo)
@@ -46,7 +43,6 @@ def poblar_base_de_datos():
             bandera = country.get('flag', '')
             codigo = country.get('iso3', '')
 
-            # Insertamos el país
             cursor.execute(sql_pais, (nombre[:100], bandera[:255], codigo[:3]))
 
         conexion.commit()
@@ -58,10 +54,6 @@ def poblar_base_de_datos():
             mapa_paises[nombre_db] = id_pais_db
 
         print(f"Países insertados con éxito.")
-
-        # ==========================================
-        # FASE 2: INSERTAR CIUDADES
-        # ==========================================
         print("Fase 2: Insertando ciudades (esto puede tardar unos segundos)...")
 
         sql_ciudad = "INSERT IGNORE INTO ciudades (id_pais, nombre) VALUES (%s, %s)"
@@ -73,7 +65,7 @@ def poblar_base_de_datos():
             nombre_pais_json = country_block.get('country')
             lista_ciudades = country_block.get('cities', [])
 
-            # Buscamos si el país de cities.json existe en nuestro mapa de countries.json
+            # Buscamos si el país de cities.json existe en countries.json
             if nombre_pais_json in mapa_paises:
                 valores_batch = []
                 ciudades_vistas = set()
@@ -90,7 +82,6 @@ def poblar_base_de_datos():
                     ciudades_insertadas += cursor.rowcount
                     conexion.commit()
             else:
-                # Si el país está escrito distinto en ambos JSON (ej. "US" vs "United States")
                 ciudades_omitidas += len(lista_ciudades)
 
         print(f"{ciudades_insertadas} ciudades vinculadas e insertadas con éxito.")
@@ -100,15 +91,15 @@ def poblar_base_de_datos():
                 f"Nota: Se omitieron {ciudades_omitidas} ciudades porque el nombre de su país en cities.json no coincidía exactamente con el de countries.json.")
 
     except mysql.connector.Error as err:
-        print(f"❌ Error de MySQL: {err}")
-        if 'conexion' in locals():
-            conexion.rollback()  # Deshacer si hubo error
+        print(f"Error de MySQL: {err}")
+        if conexion:
+            conexion.rollback()
     finally:
-        if 'cursor' in locals():
+        if cursor:
             cursor.close()
-        if 'conexion' in locals():
+        if conexion:
             conexion.close()
-        print("🔌 Conexión cerrada.")
+        print("Conexión cerrada.")
 
 
 if __name__ == '__main__':
