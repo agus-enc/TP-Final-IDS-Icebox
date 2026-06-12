@@ -8,6 +8,9 @@ viajes_bp = Blueprint("viajes", __name__)
 
 @viajes_bp.route("/<int:id_usuario>/viajes", methods=["POST"])
 def post_viaje(id_usuario):
+    id_solicitante = request.headers.get('X-User-Id')
+    if str(id_usuario) != str(id_solicitante):
+        return jsonify({"errors": [{"message": "Acceso denegado. No puedes crear un viaje para otro usuario."}]}), 403
     try:
         id_usuario = validar_id_usuario(id_usuario)
     except ValueError as e:
@@ -28,8 +31,11 @@ def post_viaje(id_usuario):
 
 @viajes_bp.route('/viajes/<int:id_viaje>', methods=['DELETE'])
 def delete_viaje(id_viaje):
+    id_solicitante = request.headers.get('X-User-Id')
     try:
         viaje_existente = validar_id_viaje(id_viaje)
+        if str(viaje_existente['id_usuario']) != str(id_solicitante):
+            return jsonify({"errors": [{"message": "Acceso denegado. No puedes borrar este viaje."}]}), 403
     except ValueError as e:
         error_dict = e.args[0]
         status = e.args[1] if len(e.args) > 1 else 400
@@ -71,8 +77,11 @@ def get_viaje(id_viaje):
 
 @viajes_bp.route('/viajes/<int:id_viaje>', methods=['PUT'])
 def put_viaje(id_viaje):
+    id_solicitante = request.headers.get('X-User-Id')
     try:
         viaje_existente = validar_id_viaje(id_viaje)
+        if str(viaje_existente['id_usuario']) != str(id_solicitante):
+            return jsonify({"errors": [{"message": "Acceso denegado."}]}), 403
     except ValueError as e:
         error_dict = e.args[0]
         status = e.args[1] if len(e.args) > 1 else 400

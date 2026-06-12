@@ -1,20 +1,11 @@
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from utils import parsear_formulario_paradas, procesar_paquete_iman
+from utils import parsear_formulario_paradas, procesar_paquete_iman, es_propietario_del_viaje
 from constants import BACKEND_URL
 from auth import login_required
 
 viajes_bp = Blueprint('viajes', __name__)
-
-def es_propietario_del_viaje(id_viaje):
-    """Verifica si el viaje solicitado pertenece al usuario de la sesión actual"""
-    resp = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
-    if resp.status_code == 200:
-        viaje = resp.json()
-        return viaje.get('id_usuario') == session.get('usuario_id')
-
-    return False
 
 @viajes_bp.route('/biblioteca')
 @login_required
@@ -61,17 +52,19 @@ def guardar_editor(id_viaje):
         flash("Acceso denegado.", "error")
         return redirect(url_for('viajes.biblioteca'))
 
-    # Actualizar Título y Portada
+    id_usuario = session.get('usuario_id')
+    headers = {'X-User-Id': str(id_usuario)}
+
     titulo_nuevo = request.form.get('titulo_viaje')
-    requests.put(f"{BACKEND_URL}/viajes/{id_viaje}", json={"titulo": titulo_nuevo})
+    requests.put(f"{BACKEND_URL}/viajes/{id_viaje}", json={"titulo": titulo_nuevo}, headers=headers)
 
     foto_portada = request.files.get('foto_portada')
     if foto_portada and foto_portada.filename != '':
         archivos = {'imagen': (foto_portada.filename, foto_portada.read(), foto_portada.content_type)}
-        requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data={'tipo': 'header'})
+        requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data={'tipo': 'header'}, headers=headers)
 
     if request.form.get('borrar_portada') == 'true':
-        requests.delete(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes/header")
+        requests.delete(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes/header", headers=headers)
 
     # Borrar paradas eliminadas en la UI
     str_borradas = request.form.get('paradas_borradas')
@@ -79,7 +72,7 @@ def guardar_editor(id_viaje):
         ids_a_borrar = str_borradas.split(',')
         for id_p in ids_a_borrar:
             if id_p.strip():
-                requests.delete(f"{BACKEND_URL}/paradas/{id_p.strip()}")
+                requests.delete(f"{BACKEND_URL}/paradas/{id_p.strip()}", headers=headers)
 
     # Procesar Paradas e Imanes usando los Helpers
     paradas_data = parsear_formulario_paradas(request.form, request.files)
@@ -98,9 +91,9 @@ def guardar_editor(id_viaje):
 
         # Guardar o Actualizar Parada
         if id_parada:
-            requests.put(f"{BACKEND_URL}/paradas/{id_parada}", json=payload_parada)
+            requests.put(f"{BACKEND_URL}/paradas/{id_parada}", json=payload_parada, headers=headers)
         else:
-            resp_parada = requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada)
+            resp_parada = requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada, headers=headers)
             if resp_parada.status_code in [200, 201]:
                 id_parada = resp_parada.json().get('id_parada')
 
@@ -172,16 +165,18 @@ def guardar_diario(id_viaje):
         flash("Acceso denegado.", "error")
         return redirect(url_for('viajes.biblioteca'))
 
+    id_usuario = session.get('usuario_id')
+    headers = {'X-User-Id': str(id_usuario)}
+
     # Ejecutar las eliminaciones primero
     fotos_a_borrar = request.form.getlist('borrar_foto[]')
     for id_img in fotos_a_borrar:
         if id_img.strip():
-            requests.delete(f"{BACKEND_URL}/imagenes/{id_img.strip()}")
+            requests.delete(f"{BACKEND_URL}/imagenes/{id_img.strip()}", headers=headers)
 
     # Procesar los Slots dinámicamente
     i = 1
     while f'epigrafe_{i}' in request.form or f'nueva_foto_{i}' in request.files:
-
         archivo = request.files.get(f'nueva_foto_{i}')
         epigrafe = request.form.get(f'epigrafe_{i}', '')
         id_existente = request.form.get(f'id_foto_existente_{i}')
@@ -190,12 +185,12 @@ def guardar_diario(id_viaje):
         if archivo and archivo.filename != '':
             archivos = {'imagen': (archivo.filename, archivo.read(), archivo.content_type)}
             payload = {'tipo': 'diario', 'orden': i, 'epigrafe': epigrafe}
-            requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data=payload)
+            requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/imagenes", files=archivos, data=payload, headers=headers)
 
-        # No hay archivo nuevo, pero la foto ya existía y NO fue borrada
+        # No hay archivo nuevo, pero la foto ya existía y no fue borrada
         elif id_existente and id_existente not in fotos_a_borrar:
             payload_update = {'epigrafe': epigrafe}
-            requests.put(f"{BACKEND_URL}/imagenes/{id_existente}", json=payload_update)
+            requests.put(f"{BACKEND_URL}/imagenes/{id_existente}", json=payload_update, headers=headers)
 
         i += 1
 
@@ -216,7 +211,8 @@ def guardar_creador():
         return redirect(url_for('viajes.creador'))
 
     usuario_id = session.get('usuario_id')
-    res_v = requests.post(f"{BACKEND_URL}/{usuario_id}/viajes", json={"titulo": titulo})
+    headers = {'X-User-Id': str(usuario_id)}
+    res_v = requests.post(f"{BACKEND_URL}/{usuario_id}/viajes", json={"titulo": titulo}, headers=headers)
 
     if res_v.status_code not in [200, 201]:
         flash("Error crítico al crear el viaje en el servidor.", "error")
@@ -236,8 +232,7 @@ def guardar_creador():
             "texto_resena": p_data['texto_resena']
         }
 
-        resp_parada = requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada)
-
+        resp_parada = requests.post(f"{BACKEND_URL}/viajes/{id_viaje}/paradas", json=payload_parada, headers=headers)
         if resp_parada.status_code in [200, 201]:
             id_parada = resp_parada.json().get('id_parada')
             procesar_paquete_iman(lote_imanes, archivos_imanes, id_parada, p_data)
@@ -245,8 +240,7 @@ def guardar_creador():
     # Envia batch de imanes al backendd
     if lote_imanes:
         payload_batch = {"id_viaje": id_viaje, "imanes_data": json.dumps(lote_imanes)}
-        res_batch = requests.post(f"{BACKEND_URL}/imanes/batch", data=payload_batch, files=archivos_imanes)
-
+        res_batch = requests.post(f"{BACKEND_URL}/imanes/batch", data=payload_batch, files=archivos_imanes, headers=headers)
         if res_batch.status_code != 201:
             flash("Viaje creado, pero hubo un error de validación con los imanes elegidos.", "error")
         else:
@@ -264,7 +258,9 @@ def borrar_viaje(id_viaje):
         flash("Acceso denegado: No puedes borrar un viaje que no es tuyo.", "error")
         return redirect(url_for('viajes.biblioteca'))
 
-    resp = requests.delete(f"{BACKEND_URL}/viajes/{id_viaje}")
+    id_usuario = session.get('usuario_id')
+    headers = {'X-User-Id': str(id_usuario)}
+    resp = requests.delete(f"{BACKEND_URL}/viajes/{id_viaje}", headers=headers)
     if resp.status_code in [200, 204]:
          flash("Viaje eliminado con éxito", "success")
     else:

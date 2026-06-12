@@ -1,12 +1,21 @@
 from flask import Blueprint, request, jsonify
 from ..services.paradas import crear_parada, eliminar_parada, eliminar_relato, modificar_relato_parada, modificar_ciudad_parada, editar_parada_completa, obtener_paradas_de_viaje
 from ..validators.paradas import  validar_id_parada
+from ..validators.viajes import validar_id_viaje
 from ..utils import construir_error
 
 paradas_bp = Blueprint("paradas", __name__)
 
 @paradas_bp.route("/viajes/<int:id_viaje>/paradas", methods=["POST"])
 def post_parada(id_viaje):
+    id_solicitante = request.headers.get('X-User-Id')
+    try:
+        viaje_bd = validar_id_viaje(id_viaje)
+        if str(viaje_bd['id_usuario']) != str(id_solicitante):
+            return jsonify({"errors": [{"message": "Acceso denegado. Este viaje no te pertenece."}]}), 403
+    except ValueError as e:
+        return jsonify(e.args[0]), 400
+
     try:
         body = request.get_json(silent=True)
         if not body:
@@ -40,11 +49,16 @@ def get_paradas_viaje(id_viaje):
 
 @paradas_bp.route('/paradas/<int:id_parada>', methods=['DELETE'])
 def delete_parada(id_parada):
+    id_solicitante = request.headers.get('X-User-Id')
     try:
-        id_parada_validada = validar_id_parada(id_parada)
+        parada_validada = validar_id_parada(id_parada)
+        viaje_bd = validar_id_viaje(str(parada_validada['id_viaje']))
+        if str(viaje_bd['id_usuario']) != str(id_solicitante):
+            return jsonify({"errors": [{"message": "Acceso denegado. Esta parada no es tuya."}]}), 403
     except ValueError as e:
         return jsonify(e.args[0]), 400
 
+    id_parada_validada = parada_validada['id_parada']
     eliminado = eliminar_parada(id_parada_validada)
 
     if not eliminado:
@@ -59,7 +73,8 @@ def delete_parada(id_parada):
 @paradas_bp.route('/paradas/<id_parada>/relato', methods=['DELETE'])
 def delete_relato_parada(id_parada):
     try:
-        id_parada_validada = validar_id_parada(id_parada)
+        parada_validada = validar_id_parada(id_parada)
+        id_parada_validada = parada_validada['id_parada']
     except ValueError as e:
         return jsonify(e.args[0]), 400
 
@@ -119,10 +134,16 @@ def patch_ciudad(id_parada):
 @paradas_bp.route("/paradas/<int:id_parada>", methods=["PUT"])
 def put_parada(id_parada):
     """Endpoint unificado para actualizar ciudad y texto de una parada."""
+    id_solicitante = request.headers.get('X-User-Id')
     try:
-        id_parada_validada = validar_id_parada(id_parada)
+        parada_validada = validar_id_parada(id_parada)
+        viaje_bd = validar_id_viaje(str(parada_validada['id_viaje']))
+        if str(viaje_bd['id_usuario']) != str(id_solicitante):
+            return jsonify({"errors": [{"message": "Acceso denegado. Esta parada no es tuya."}]}), 403
     except ValueError as e:
         return jsonify(e.args[0]), 400
+
+    id_parada_validada = parada_validada['id_parada']
 
     try:
         body = request.get_json(silent=True)

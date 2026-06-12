@@ -108,14 +108,17 @@ def get_resena_iman(id_iman):
 @imanes_bp.route('/imanes/batch', methods=['POST'])
 def crear_imanes_batch():
     try:
+        id_solicitante = request.headers.get('X-User-Id')
         id_viaje_str = request.form.get('id_viaje')
-        # El frontend enviará TODA la estructura de datos empaquetada en este string JSON
         imanes_data_str = request.form.get('imanes_data')
 
         if not id_viaje_str or not imanes_data_str:
             return jsonify({"errors": [{"message": "Faltan datos obligatorios (id_viaje, imanes_data)."}]}), 400
 
         viaje_validado = validar_id_viaje(id_viaje_str)
+        if str(viaje_validado['id_usuario']) != str(id_solicitante):
+            return jsonify({"errors": [{"message": "Acceso denegado. Este viaje no te pertenece."}]}), 403
+
         id_viaje = viaje_validado["id_viaje"]
         lista_datos = json.loads(imanes_data_str)
 

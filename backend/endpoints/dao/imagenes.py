@@ -39,7 +39,7 @@ def eliminar_portada_viaje_db(id_viaje: int) -> bool:
 
 def obtener_imagen_por_id_db(id_imagen: int) -> dict:
     """Trae la información de una imagen específica"""
-    sql = "SELECT id_imagen, imagen_url FROM imagenes WHERE id_imagen = %(id_imagen)s"
+    sql = "SELECT id_imagen, imagen_url, id_usuario FROM imagenes WHERE id_imagen = %(id_imagen)s"
     res = ejecutar_consulta(sql, {'id_imagen': id_imagen})
     return res[0] if res else None
 
