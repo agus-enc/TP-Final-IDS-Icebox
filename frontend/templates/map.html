@@ -32,6 +32,7 @@
   <script>
     const PAISES_VISITADOS = {{ paises_visitados | tojson }};
     const DATOS_IMANES = {{ datos_imanes | tojson }};
+    const USUARIO_ID = "{{ usuario_id }}";
   </script>
   <script src="{{ url_for('static', filename='js/map.js') }}"></script>
 {% endblock %}

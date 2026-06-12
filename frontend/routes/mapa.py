@@ -5,7 +5,7 @@ from constants import BACKEND_URL
 
 mapa_bp = Blueprint('mapa', __name__)
 
-@mapa_bp.route('/mapa/<int:id_usuario>')
+@mapa_bp.route('/mapa')
 @login_required
 def mostrar_mapa(id_usuario):
 
@@ -54,7 +54,8 @@ def mostrar_mapa(id_usuario):
 
     return render_template('map.html', 
                            paises_visitados=paises_codigos, 
-                           datos_imanes=datos_imanes)
+                           datos_imanes=datos_imanes,
+                           usuario_id=id_usuario)
 
 @mapa_bp.route('/mi-mapa')
 @login_required
