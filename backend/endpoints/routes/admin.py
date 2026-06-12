@@ -1,5 +1,6 @@
 from flask import Blueprint, session, jsonify, send_file, request
-from endpoints.services.admin import generar_grafico_viajes, generar_pdf_reporte, obtener_estadisticas_viajes
+from ..dao.admin import obtener_estadisticas_viajes
+from endpoints.services.admin import generar_grafico_viajes, generar_pdf_reporte
 from endpoints.db import ejecutar_consulta
 
 admin_bp = Blueprint('admin', __name__)
