@@ -3,11 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const zonaDevolver = document.getElementById("zona-devolver");
     if (!cajon || !zonaDevolver) return;
 
-    let urlDeMiCajon = cajon.getAttribute("data-backend") || "http://127.0.0.1:5000/endpoints";
-    if (urlDeMiCajon === "http://127.0.0.1:5000") {
-        urlDeMiCajon = "http://127.0.0.1:5000/endpoints";
+    // URL de la API
+    let urlDeMiCajon = cajon.getAttribute("data-backend");
+
+    if (urlDeMiCajon && urlDeMiCajon.includes("//backend:")) {
+        urlDeMiCajon = `${window.location.protocol}//${window.location.hostname.split(':')[0]}:5000/endpoints`;
     }
-    
+
     let usuarioId = cajon.getAttribute("data-usuario");
 
     let imanSeleccionado = null;
@@ -80,12 +82,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const rectGaveta = zonaDevolver.getBoundingClientRect();
         const idIman = imanSeleccionado.getAttribute("data-id");
+        
+        // 🌟 Guardamos la referencia fija del elemento para evitar el error de null
+        const elementoAEliminar = imanSeleccionado; 
 
         if (ev.clientX <= rectGaveta.right) {
-            imanSeleccionado.style.transform = "scale(0)";
-            imanSeleccionado.style.transition = "transform 0.2s ease";
+            elementoAEliminar.style.transform = "scale(0)";
+            elementoAEliminar.style.transition = "transform 0.2s ease";
+            
             setTimeout(() => { 
-                imanSeleccionado.remove(); 
+                elementoAEliminar.remove(); 
             }, 200);
 
             const xAleatorio = Math.floor(Math.random() * 180) + 50;  
@@ -111,12 +117,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 "X-User-Id": String(usuarioId)
             },
             body: JSON.stringify({
-                ubicacion_heladera: enHeladera ? 1 : 0,
+                ubicacion_heladera: enHeladera ? 1 : 0, 
                 posicion_x: parseInt(x),
                 posicion_y: parseInt(y)
             })
         })
-        .then(res => console.log("Guardado en Back base:", res.status))
-        .catch(err => console.log("Error de conexión:", err));
+        .then(res => {
+            if (res.ok) {
+                console.log(`¡Éxito! El imán ${id} ya está guardado en la heladera.`);
+            } else {
+                console.error("El backend recibió la orden pero devolvió un error:", res.status);
+            }
+        })
+        .catch(err => console.log("Error de conexión Cajón:", err));
     }
 });
