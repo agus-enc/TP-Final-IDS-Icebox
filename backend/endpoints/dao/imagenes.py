@@ -48,6 +48,6 @@ def eliminar_imagen_por_id_db(id_imagen: int) -> bool:
     sql = "DELETE FROM imagenes WHERE id_imagen = %(id_imagen)s AND tipo = 'diario'"
     return ejecutar_mutacion(sql, {'id_imagen': id_imagen}) > 0
 
-def actualizar_datos_imagen_db(id_imagen: int, orden: int, epigrafe: str) -> bool:
-    sql = "UPDATE imagenes SET orden = %(orden)s, epigrafe = %(epigrafe)s WHERE id_imagen = %(id_imagen)s AND tipo = 'diario'"
-    return ejecutar_mutacion(sql, {'id_imagen': id_imagen, 'orden': orden, 'epigrafe': epigrafe}) > 0
+def actualizar_datos_imagen_db(id_imagen: int, epigrafe: str) -> bool:
+    sql = "UPDATE imagenes SET epigrafe = %(epigrafe)s WHERE id_imagen = %(id_imagen)s AND tipo = 'diario'"
+    return ejecutar_mutacion(sql, {'id_imagen': id_imagen, 'epigrafe': epigrafe}) > 0

@@ -88,5 +88,5 @@ def eliminar_imagen_diario(id_imagen: int) -> bool:
 
     return eliminado
 
-def actualizar_datos_imagen(id_imagen: int, orden: int, epigrafe: str) -> bool:
-    return actualizar_datos_imagen_db(id_imagen, orden, epigrafe)
+def actualizar_datos_imagen(id_imagen: int, epigrafe: str) -> bool:
+    return actualizar_datos_imagen_db(id_imagen, epigrafe)
