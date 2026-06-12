@@ -11,9 +11,11 @@ imanes_bp = Blueprint("imanes", __name__)
 
 @imanes_bp.route("/imanes/<int:id_iman>/posicion", methods=["PATCH", "OPTIONS"])
 def cambiar_posicion_iman(id_iman):
+    origen = request.headers.get("Origin", "*")
+
     if request.method == "OPTIONS":
         response = make_response()
-        response.headers.add("Access-Control-Allow-Origin", "http://127.0.0.1:8000")
+        response.headers.add("Access-Control-Allow-Origin", origen)
         response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-User-Id")
         response.headers.add("Access-Control-Allow-Methods", "PATCH, OPTIONS")
         return response
@@ -25,20 +27,20 @@ def cambiar_posicion_iman(id_iman):
         iman_existente = validar_autorizacion_iman(id_usuario, id_iman)
 
         modificar_posicion_iman(iman_existente["id_iman"], body)
-        
+
         response = make_response("", 204)
-        response.headers.add("Access-Control-Allow-Origin", "http://127.0.0.1:8000")
+        response.headers.add("Access-Control-Allow-Origin", origen)
         return response
 
     except ValueError as e:
         error_dict = e.args[0]
         status = e.args[1] if len(e.args) > 1 else 400
         response = make_response(jsonify(error_dict), status)
-        response.headers.add("Access-Control-Allow-Origin", "http://127.0.0.1:8000")
+        response.headers.add("Access-Control-Allow-Origin", origen)
         return response
     except Exception as e:
         response = make_response(jsonify(construir_error("INTERNAL_ERROR", "Error interno", str(e))), 500)
-        response.headers.add("Access-Control-Allow-Origin", "http://127.0.0.1:8000")
+        response.headers.add("Access-Control-Allow-Origin", origen)
         return response
     
 @imanes_bp.route("/imanes", methods=["GET"])
