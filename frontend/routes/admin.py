@@ -21,13 +21,16 @@ def vista_admin_dashboard():
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
-            # Extraemos los datos del JSON
+            
             datos = response.json()
             ciudades_top = datos.get('ciudades', [])
             visitas_top = datos.get('visitas', [])
+
+            ubicaciones_top = datos.get('ubicaciones', [])
+            imanes_cant = datos.get('cant_imanes', [])
             
-            # Renderizamos inyectando los datos al HTML
-            return render_template('admin_dashboard.html', ciudades=ciudades_top, visitas=visitas_top)
+            
+            return render_template('admin_dashboard.html', ciudades=ciudades_top, visitas=visitas_top, ubicaciones=ubicaciones_top, cant_imanes=imanes_cant)
         else:
             flash("Error de autorizacion en el servidor.", "error")
             return redirect(url_for('login.login'))
@@ -38,7 +41,7 @@ def vista_admin_dashboard():
 
 @admin_bp.route('/admin/descargar-reporte', methods=['GET'])
 def descargar_reporte():
-    # 1. Le va a pedir el PDF al backend real
+    
     url = f"{BACKEND_URL}/admin/descargar-reporte"
     headers = {'X-User-Id': str(session.get('usuario_id'))}
     

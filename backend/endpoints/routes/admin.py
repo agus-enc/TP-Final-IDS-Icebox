@@ -1,6 +1,6 @@
 from flask import Blueprint, session, jsonify, send_file, request
-from ..dao.admin import obtener_estadisticas_viajes
-from endpoints.services.admin import generar_grafico_viajes, generar_pdf_reporte
+from ..dao.admin import obtener_estadisticas_viajes, obtener_estadisticas_ubicacion_imanes
+from endpoints.services.admin import generar_grafico_viajes, generar_pdf_reporte, generar_grafico_imanes
 from endpoints.db import ejecutar_consulta
 
 admin_bp = Blueprint('admin', __name__)
@@ -20,6 +20,7 @@ def vista_admin_dashboard():
         return jsonify({"status":"error","message":"Acceso denegado, no eres administrador."}), 403
     
     generar_grafico_viajes()
+    generar_grafico_imanes()
     
     datos_db = obtener_estadisticas_viajes()
     ciudades = []
@@ -33,12 +34,25 @@ def vista_admin_dashboard():
             ciudades.append(fila['nombre'])
             cantidades.append(fila['cantidad'])
 
-    # 3. Mandamos el JSON con los datos incluidos
+    datos_imanes_db = obtener_estadisticas_ubicacion_imanes()
+    ubicaciones = []
+    cant_imanes = []
+
+    if not datos_imanes_db:
+        ubicaciones = ['Sin imanes cargados']
+        cant_imanes = [0]
+    else:
+        for fila in datos_imanes_db:
+            ubicaciones.append(fila['ubicacion_heladera'])
+            cant_imanes.append(fila['cantidad'])
+
     return jsonify({
         "status": "success", 
         "message": "Gráfico generado con éxito.",
         "ciudades": ciudades,
-        "visitas": cantidades
+        "visitas": cantidades,
+        "ubicaciones": ubicaciones, 
+        "cant_imanes": cant_imanes
     }), 200
 
 
@@ -57,6 +71,7 @@ def descargar_reporte():
         return jsonify({"status":"error","message":"Acceso denegado, no eres administrador."}), 403
     
     ruta_grafico = 'backend_grafico/static/images/grafico_admin.png'
+    ruta_grafico_imanes = generar_grafico_imanes()
     archivo_pdf = generar_pdf_reporte(ruta_grafico)
 
     return send_file(archivo_pdf, as_attachment=True)

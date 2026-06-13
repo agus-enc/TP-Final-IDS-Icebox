@@ -4,7 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from reportlab.pdfgen import canvas
 from endpoints.db import ejecutar_consulta
-from ..dao.admin import obtener_estadisticas_viajes
+from ..dao.admin import obtener_estadisticas_viajes, obtener_estadisticas_ubicacion_imanes
 
 def generar_grafico_viajes():
 
@@ -34,7 +34,36 @@ def generar_grafico_viajes():
     plt.close()
     return ruta_grafico
 
-def generar_pdf_reporte(ruta_grafico):
+def generar_grafico_imanes():
+    
+    datos_db = obtener_estadisticas_ubicacion_imanes()
+    ubicaciones = []
+    cantidades = []
+    
+    if not datos_db:
+        ubicaciones = ['Sin imanes cargados']
+        cantidades = [0]
+
+    else:
+            for fila in datos_db:
+                ubicaciones.append(fila['ubicacion_heladera'])
+                cantidades.append(fila['cantidad'])
+
+    plt.figure(figsize=(6, 6))
+    
+    colores = ['#7485e6', '#a3b1ff']
+    
+    plt.pie(cantidades, labels=ubicaciones, colors=colores, autopct='%1.1f%%', startangle=140, wedgeprops={'edgecolor': '#333333', 'linewidth': 2})
+    plt.title('Distribución de Imanes (Heladera vs Cajón)', fontsize=12, fontweight='bold', pad=15)
+
+    ruta_grafico = os.path.join('frontend', 'static', 'images', 'grafico_imanes.png')
+    os.makedirs(os.path.dirname(ruta_grafico), exist_ok=True)
+    
+    plt.savefig(ruta_grafico, bbox_inches='tight', dpi=1000)
+    plt.close()
+    return ruta_grafico
+
+def generar_pdf_reporte(ruta_grafico, ruta_grafico_imanes):
     """
     Genera el reporte PDF insertando la imagen del grafico
     """
@@ -53,6 +82,10 @@ def generar_pdf_reporte(ruta_grafico):
 
     if os.path.exists(ruta_grafico):
         c.drawImage(ruta_grafico, 100, 350, width=400, height=300)
+    
+    if os.path.exists(ruta_grafico_imanes):
+        c.drawString(100, 320, "Distribución de Imanes:")
+        c.drawImage(ruta_grafico_imanes, 100, 20, width=400, height=280)
 
     c.showPage()
     c.save()

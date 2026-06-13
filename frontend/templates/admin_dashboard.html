@@ -27,6 +27,17 @@
         </div>
     </div>
 
+    <div class="chart-card" style="margin-top: 30px;">
+        <h3>Imanes en Heladera</h3>
+
+        <p id="resumen-imanes" style="text-align: center; font-size: 1.1em; margin-bottom: 20px;"></p>
+        
+        <div class="canvas-container" style="position: relative; height: 350px; width: 100%;">
+            <canvas id="graficoImanes"></canvas>
+        </div>
+        
+    </div>
+
     <a href= "{{ url_for('admin.descargar_reporte') }}" class="btn-download-pdf">
         Descargar Reporte en PDF
     </a>
@@ -40,6 +51,8 @@
 <script>
     const labelsCiudades = {{ ciudades | tojson | safe }};
     const dataVisitas = {{ visitas | tojson | safe }};
+    const labelsImanes = {{ ubicaciones | tojson | safe }};
+    const dataImanes = {{ cant_imanes | tojson | safe }};
 </script>
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}

@@ -14,3 +14,13 @@ def obtener_estadisticas_viajes():
     """
     resultados = ejecutar_consulta(sql, None)
     return resultados
+
+def obtener_estadisticas_ubicacion_imanes():
+    
+    sql = """
+        SELECT ubicacion_heladera, COUNT(*) as cantidad 
+        FROM imanes 
+        GROUP BY ubicacion_heladera
+    """
+    resultados = ejecutar_consulta(sql, None)
+    return resultados
