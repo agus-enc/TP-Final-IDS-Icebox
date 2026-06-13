@@ -104,7 +104,7 @@ def guardar_editor(id_viaje):
     # Enviar Batch de Imanes
     if lote_imanes:
         payload_batch = {"id_viaje": id_viaje, "imanes_data": json.dumps(lote_imanes)}
-        res_batch = requests.post(f"{BACKEND_URL}/imanes/batch", data=payload_batch, files=archivos_imanes)
+        res_batch = requests.post(f"{BACKEND_URL}/imanes/batch", data=payload_batch, files=archivos_imanes, headers=headers)
 
         if res_batch.status_code != 201:
             try:
