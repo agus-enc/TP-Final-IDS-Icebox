@@ -182,7 +182,8 @@ shareControl.onAdd = function (map) {
     `;
     
     div.onclick = function() {
-        navigator.clipboard.writeText(window.location.href).then(() => {
+        const urlCompartir = window.location.origin + '/mapa/' + USUARIO_ID + '?token=' + TOKEN_MAPA;
+        navigator.clipboard.writeText(urlCompartir).then(() => {
             alert("¡Link copiado al portapapeles!");
         });
     };

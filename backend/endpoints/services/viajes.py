@@ -1,5 +1,10 @@
 from ..dao.viajes import insertar_viaje, eliminar_viaje_por_id, actualizar_titulo_viaje, obtener_viaje, obtener_viajes_por_usuario_db
 from ..validators.viajes import validar_body_viaje, validar_id_viaje
+import hashlib
+SECRET_KEY = "icebox_ids"
+
+def generar_firma_mapa(id_usuario):
+    return hashlib.sha256(f"{id_usuario}{SECRET_KEY}".encode()).hexdigest()[:8]
 
 def construir_viaje_dto(viaje: dict) -> dict:
     """ Construye el dict de respuesta básico de un viaje. """

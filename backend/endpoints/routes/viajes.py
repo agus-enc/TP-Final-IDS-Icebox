@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ..validators.usuarios import validar_id_usuario
-from ..services.viajes import crear_viaje, eliminar_viaje, obtener_todos_los_viajes, editar_titulo_viaje, obtener_viaje_por_id, obtener_viajes_por_usuario
+from ..services.viajes import crear_viaje, eliminar_viaje, obtener_todos_los_viajes, editar_titulo_viaje, obtener_viaje_por_id, obtener_viajes_por_usuario, generar_firma_mapa
 from ..validators.viajes import validar_id_viaje
 from ..utils import construir_error
 
@@ -108,3 +108,22 @@ def get_viajes_usuario(id_usuario):
     viajes = obtener_viajes_por_usuario(id_usuario) 
     
     return jsonify(viajes), 200
+
+@viajes_bp.route("/<int:id_usuario>/validar-acceso", methods=["GET"])
+def validar_acceso_mapa(id_usuario):
+    id_solicitante = request.headers.get('X-User-Id')
+    
+    if str(id_usuario) == str(id_solicitante):
+        return jsonify({"permitido": True, "token_compartir": generar_firma_mapa(id_usuario)}), 200
+        
+    token_recibido = request.args.get('token')
+    token_correcto = generar_firma_mapa(id_usuario)
+    
+    if token_recibido == token_correcto:
+        try:
+            validar_id_usuario(id_usuario) 
+            return jsonify({"permitido": True, "token_compartir": token_correcto}), 200
+        except ValueError as e:
+            return jsonify(e.args[0]), 400
+            
+    return jsonify({"errors": [{"message": "Acceso denegado. El enlace no es válido."}]}), 403
