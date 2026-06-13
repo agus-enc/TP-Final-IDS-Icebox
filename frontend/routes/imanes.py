@@ -22,7 +22,7 @@ def mostrar_heladera():
     except Exception as e:
         flash("No se pudieron cargar los imanes de la heladera.", "error")
 
-    return render_template('heladera.html', imanes=imanes_heladera, usuario_id=usuario_id)
+    return render_template('heladera.html', imanes=imanes_heladera, usuario_id=usuario_id, backend_url=BACKEND_URL)
 
 @imanes_bp.route('/cajon')
 @login_required
@@ -40,4 +40,4 @@ def cajon():
     except Exception as e:
         flash("No se pudieron cargar los imanes del cajón.", "error")
 
-    return render_template('cajon.html', imanes=imanes_cajon, usuario_id=usuario_id)
+    return render_template('cajon.html', imanes=imanes_cajon, usuario_id=usuario_id, backend_url=BACKEND_URL)

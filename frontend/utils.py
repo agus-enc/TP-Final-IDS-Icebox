@@ -1,3 +1,7 @@
+import requests
+from flask import session
+from constants import BACKEND_URL
+
 def parsear_formulario_paradas(formulario, archivos):
     """
     Extrae y organiza todos los datos crudos del formulario HTML
@@ -28,7 +32,6 @@ def parsear_formulario_paradas(formulario, archivos):
     paradas_data.sort(key=lambda x: x['indice'])
     return paradas_data
 
-
 def procesar_paquete_iman(lote_imanes, archivos_imanes, id_parada, datos_parada):
     """
     Agrega el imán de una parada específica al lote maestro que viajará al backend.
@@ -57,3 +60,15 @@ def procesar_paquete_iman(lote_imanes, archivos_imanes, id_parada, datos_parada)
                 "archivo_key": archivo_key
             })
 
+
+def es_propietario_del_viaje(id_viaje):
+    """Verifica si el viaje solicitado pertenece al usuario de la sesión actual"""
+    if session.get('es_admin'):
+        return True
+
+    resp = requests.get(f"{BACKEND_URL}/viajes/{id_viaje}")
+    if resp.status_code == 200:
+        viaje = resp.json()
+        return str(viaje.get('id_usuario')) == str(session.get('usuario_id'))
+
+    return False

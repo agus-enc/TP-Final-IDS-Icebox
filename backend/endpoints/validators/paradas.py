@@ -1,5 +1,6 @@
 from ..constants import (MIN_ID)
 from ..utils import construir_error, validar_entero, validar_minimo
+from ..dao.paradas import obtener_parada
 
 def validar_body_parada(body: dict) -> dict:
     """ Valida los campos de una parada"""
@@ -39,10 +40,24 @@ def validar_body_parada(body: dict) -> dict:
 
     return body
 
-def validar_id_parada(id_str: str) -> int:
-    """Valida que el id de la parada recibido en la URL sea un entero válido y mayor a cero."""
-    id_parada = validar_entero(id_str)
-    return validar_minimo(id_parada, MIN_ID, 'id_parada')
+def validar_id_parada(id_str: str) -> dict:
+    """Valida formato del ID y verifica que la parada exista en la BD."""
+    try:
+        id_parada = validar_entero(id_str)
+        id_parada = validar_minimo(id_parada, MIN_ID, 'id_parada')
+    except ValueError as e:
+        raise e
+
+    parada = obtener_parada(id_parada)
+    if not parada:
+        error = construir_error(
+            code="not_found",
+            message="La parada especificada no existe.",
+            description="No se encontró una parada con ese ID en la base de datos."
+        )
+        raise ValueError({"errors": [error]}, 404)
+
+    return parada
 
 def validar_relato(body: dict) -> dict:
     """Valida el cambio parcial del relato de una parada"""

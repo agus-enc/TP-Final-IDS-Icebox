@@ -4,11 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!puerta || !zonaGuardar) return;
 
     // URL de la API
-    let urlDeMiHeladera = puerta.getAttribute("data-backend") || "http://127.0.0.1:5000/endpoints";
-    if (urlDeMiHeladera === "http://127.0.0.1:5000") {
-        urlDeMiHeladera = "http://127.0.0.1:5000/endpoints";
-    }
+    let urlDeMiHeladera = puerta.getAttribute("data-backend");
     
+    if (urlDeMiHeladera && urlDeMiHeladera.includes("//backend:")) {
+        urlDeMiHeladera = `${window.location.protocol}//${window.location.hostname.split(':')[0]}:5000/endpoints`;
+    }
+
     let usuarioId = puerta.getAttribute("data-usuario");
 
     let imanSeleccionado = null;
@@ -32,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener("mouseup", soltar);
     });
 
-    // REDIRECCIÓN: Usa id_parada
     puerta.addEventListener("click", (e) => {
         const iman = e.target.closest(".iman-viaje");
         if (!iman) return;
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 posicion_y: parseInt(posY)
             })
         })
-        .then(res => console.log("Cambio impactado en Back:", res.status))
-        .catch(err => console.log("Error de conexión:", err));
+        .then(res => console.log("Cambio impactado en Back Heladera:", res.status))
+        .catch(err => console.log("Error de conexión Heladera:", err));
     }
 });

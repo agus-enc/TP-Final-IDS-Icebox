@@ -44,6 +44,18 @@ def obtener_paradas_por_viaje(id_viaje: int) -> list:
     '''
     return ejecutar_consulta(sql, {'id_viaje': id_viaje})
 
+def obtener_parada(id_parada: int) -> dict | None:
+    """
+    Busca una parada específica por su ID. Retorna el diccionario con los datos si existe, o None si no existe.
+    """
+    sql = '''
+          SELECT id_parada, id_viaje, id_ciudad, orden_en_ruta, relato_texto
+          FROM paradas
+          WHERE id_parada = %(id_parada)s \
+          '''
+    resultados = ejecutar_consulta(sql, {'id_parada': id_parada})
+    return resultados[0] if resultados else None
+
 def eliminar_relato_parada_db(id_parada: int) -> bool:
     """Busca la parada y pone su columna relato_texto en NULL. Retorna True si se modificó, False si la parada no existía."""
     sql_vaciar = 'UPDATE paradas SET relato_texto = NULL WHERE id_parada = %(id_parada)s'
