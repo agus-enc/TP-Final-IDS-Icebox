@@ -17,10 +17,11 @@
     <input type="password" name="password" placeholder="Contraseña" required />
     
     <button type="submit" class="submit action-button">Ingresar</button>
-    <div style="margin-top: 20px; font-family: 'Poppins', sans-serif; font-size: 13px; color: #666">
+    
+    <div class="registro-prompt">
       ¿No tenés cuenta?
       <br>
-      <a href="{{url_for('login.vista_registro')}}" style="color: #7485e6; font-weight: bold; text-decoration: underline; cursor: pointer">
+      <a href="{{url_for('login.vista_registro')}}" class="registro-link">
         Registrate acá
       </a>
     </div>

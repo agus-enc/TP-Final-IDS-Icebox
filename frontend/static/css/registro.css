@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
 
-/* Contenedor principal alineado con el login */
 .registro-wrapper {
     padding: 0;
     margin: 0 auto;
@@ -13,7 +12,6 @@
     align-items: center;
 }
 
-/* La caja principal idéntica al #msform fieldset */
 .registro-card {
     background: #F2E9E4;
     border: 0 none;
@@ -22,11 +20,10 @@
     padding: 30px;
     box-sizing: border-box;
     width: 100%;
-    max-width: 420px; /* Mismo ancho que el login */
+    max-width: 420px; 
     font-family: 'Montserrat', sans-serif;
 }
 
-/* Título igual al .fs-title del login */
 .registro-card h2 {
     font-size: 20px;
     text-transform: uppercase;
@@ -34,26 +31,23 @@
     margin-top: 0;
     margin-bottom: 25px;
     font-weight: 600;
-    border-bottom: none; /* Chau línea gruesa brutalista */
+    border-bottom: none; 
     display: block;
 }
 
-/* Espaciado de los campos */
 .form-group, .form-group-last {
     text-align: left;
     margin-bottom: 14px;
 }
 
-/* Textos arriba de los casilleros */
 .form-group label, .form-group-last label {
     font-size: 14px;
-    color: #7f8c8d; /* Gris suave, como el subtítulo del login */
+    color: #7f8c8d; 
     margin-bottom: 8px;
     font-weight: 600;
     display: block;
 }
 
-/* Casilleros idénticos a los del login */
 .registro-input {
     padding: 14px;
     border: 1px solid #dcdcdc;
@@ -63,16 +57,14 @@
     font-family: 'Montserrat', sans-serif;
     color: #2C3E50;
     font-size: 14px;
-    box-shadow: none; /* Chau sombra negra dura */
+    box-shadow: none; 
 }
 
-/* Borde verde al hacer click en un casillero */
 .registro-input:focus {
     border-color: #27AE60;
     outline: none;
 }
 
-/* Botón idéntico al .action-button del login */
 .btn-registro {
     width: 100%;
     background: #4A4E64;
@@ -85,16 +77,14 @@
     margin-top: 10px;
     font-size: 16px;
     transition: background 0.2s ease;
-    box-shadow: none; /* Chau sombra negra dura */
+    box-shadow: none;
     font-family: 'Montserrat', sans-serif;
 }
 
-/* Cambio a verde cuando pasas el mouse por el botón */
 .btn-registro:hover {
     background: #219653;
 }
 
-/* Link para volver atrás */
 .back-link {
     color: #7f8c8d;
     font-size: 14px;

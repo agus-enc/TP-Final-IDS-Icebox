@@ -141,3 +141,8 @@
     max-width: 100%; 
     flex: 1;
 }
+
+.admin-link {
+    color: #922831;
+    font-weight: bold;
+}

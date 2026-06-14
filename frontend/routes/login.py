@@ -97,7 +97,7 @@ def actualizar_perfil():
 
     id_usuario = session.get('usuario_id')
     if not id_usuario:
-        return redirect(url_for('login.login')) # Ajustar al nombre de tu vista
+        return redirect(url_for('login.login')) 
 
     nuevo_nombre = request.form.get('nuevo_nombre')
     nuevo_email = request.form.get('nuevo_email')
@@ -114,18 +114,16 @@ def actualizar_perfil():
     if nueva_password:
         datos_a_actualizar['password'] = nueva_password
 
-    # Si el usuario mandó al menos un campo para cambiar, hacemos una ÚNICA petición
     if datos_a_actualizar:
         try:
             respuesta = requests.patch(url_backend, json=datos_a_actualizar)
             
             if respuesta.status_code == 200:
-                # Si se cambió el nombre, actualizamos la sesión de Flask en el momento
+                
                 if nuevo_nombre:
                     session['nombre_usuario'] = nuevo_nombre
                 flash('¡Perfil actualizado con éxito!', 'success')
             else:
-                # Capturamos el error real del JSON del backend si existe
                 error_info = respuesta.json() if respuesta.text else {}
                 mensaje_error = error_info.get('message', 'Hubo un problema al actualizar los datos.')
                 flash(f"Error ({respuesta.status_code}): {mensaje_error}", 'error')

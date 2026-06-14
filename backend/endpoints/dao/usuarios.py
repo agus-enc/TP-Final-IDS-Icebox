@@ -27,6 +27,8 @@ def obtener_usuario_por_nombre(nombre_usuario: str) -> dict | None:
     return resultados[0] if resultados else None
 
 def obtener_usuario_por_viaje(id_viaje: int) -> int | None:
+    """Consulta a la base de datos un usuario segun su id de viaje"""
+
     sql = 'SELECT id_usuario FROM viajes WHERE id_viaje = %(id_viaje)s'
     resultados = ejecutar_consulta(sql, {'id_viaje': id_viaje})
     return resultados[0]['id_usuario'] if resultados else None

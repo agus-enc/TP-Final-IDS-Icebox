@@ -18,13 +18,12 @@
     width: 86%;
     margin: 0 7%;
     
-    /* Se muestra fijo de entrada */
+    
     display: block;
     opacity: 1;
     transform: scale(1);
 }
 
-/* Inputs de texto */
 #msform input[type="text"], 
 #msform input[type="password"] {
     padding: 14px;
@@ -43,9 +42,8 @@
     outline: none;
 }
 
-/* Botón Verde de Ingresar */
 #msform .action-button {
-    width: 100%; /* Ocupa todo el ancho para que quede más armónico */
+    width: 100%;
     background: #4A4E64;
     font-weight: bold;
     color: white;
@@ -76,14 +74,31 @@
     margin-bottom: 25px;
 }
 
-/* =========================================================
-   🛠️ ESTILOS PARA EL MODAL DE AJUSTES DE USUARIO
-   ========================================================= */
+.registro-prompt {
+    margin-top: 20px; 
+    font-family: 'Poppins', sans-serif; 
+    font-size: 13px; 
+    color: #666;
+}
 
-/* Dropdown correcciones de color y bordes */
+.registro-link {
+    color: #7485e6; 
+    font-weight: bold; 
+    text-decoration: underline; 
+    cursor: pointer;
+}
+
 .user-dropdown .usuario-logueado {
     font-weight: bold; 
     border-bottom: 1px solid #dfd0cb;
+}
+
+.usuario-header {
+    font-weight: bold;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    pointer-events: none;
 }
 
 .user-dropdown #btn-abrir-ajustes {
@@ -94,47 +109,36 @@
     color: #2980b9 !important;
 }
 
-/* Contenedor del Modal Ajustes */
-/* =========================================================
-   🛠️ CORRECCIÓN: POSICIONAMIENTO Y FONDO OSCURO DEL MODAL
-   ========================================================= */
-
-/* Este es el contenedor que cubre TODA la pantalla */
 #modal-ajustes-usuario.modal-creador-oculto {
-    display: none;             /* Oculto por defecto */
-    position: fixed;           /* Se queda quieto aunque hagas scroll */
+    display: none;             
+    position: fixed;           
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.6); /* Fondo negro con 60% de opacidad (oscurece la página) */
-    backdrop-filter: blur(3px); /* Opcional: un leve desenfoque al fondo para que resalte más */
-    z-index: 99999;            /* Un número altísimo para asegurarse de que pase al frente de la heladera e imanes */
-    
-    /* Truco definitivo para centrar el cuadro perfectamente en el medio */
+    background-color: rgba(0, 0, 0, 0.6); 
+    backdrop-filter: blur(3px); 
+    z-index: 99999;            
     justify-content: center;
     align-items: center;
 }
 
-/* Cuando JS le agrega la clase 'activo', pasa de 'none' a 'flex' para mostrarse */
 #modal-ajustes-usuario.modal-creador-oculto.activo {
     display: flex;
 }
 
-/* Este es el cuadro blanco/crema de los ajustes en sí */
 .modal-ajustes-dimensiones {
-    position: relative;        /* Para que la 'X' se acomode bien arriba a la derecha */
-    width: 90%;                /* Se adapta a pantallas chicas */
-    max-width: 480px;          /* Ancho máximo en monitores */
-    background-color: #f7ebe1; /* Podés cambiarlo por tu color exacto de fondo */
-    border: 3px solid #333;    /* Estilo neubrutalista a juego */
+    position: relative;       
+    width: 90%;            
+    max-width: 480px;        
+    background-color: #f7ebe1; 
+    border: 3px solid #333;
     border-radius: 16px;
-    box-shadow: 6px 6px 0px #333; /* Sombra sólida neubrutalista */
-    overflow: hidden;          /* Evita que el header tape las esquinas redondeadas */
-    animation: aparecerModal 0.25s ease-out; /* Animación sutil de entrada */
+    box-shadow: 6px 6px 0px #333;
+    overflow: hidden;         
+    animation: aparecerModal 0.25s ease-out; 
 }
 
-/* Animación para que aparezca desde el centro con un efecto suave */
 @keyframes aparecerModal {
     from {
         transform: scale(0.9);
@@ -171,7 +175,6 @@
     box-shadow: 1px 1px 0px #333;
 }
 
-/* Cuerpo del Formulario */
 .form-ajustes-cuerpo {
     padding: 25px; 
     display: flex; 
@@ -200,7 +203,6 @@
     font-size: 16px;
 }
 
-/* Separadores y Botones */
 .ajustes-separador {
     border: none; 
     border-top: 2px dashed #333; 

@@ -1,6 +1,6 @@
+//LOGIN Y AJUSTES DE USUARIO
 document.addEventListener('DOMContentLoaded', () => {
    
-    // 1. Hacer desaparecer los carteles de alerta de Flask a los 3 segundos
     const alerts = document.querySelectorAll('.flash-message');
     alerts.forEach(alert => {
         setTimeout(() => {
@@ -9,13 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     });
 
-    // 2. LÓGICA DE DETECCIÓN DE RUTA DE FLASK Y CLICKS EN VIVO
-    
     const list = document.querySelectorAll('.router ul .list');
     const currentUrl = window.location.pathname;
 
     list.forEach((item) => {
-        // --- PARTE A: Lo que pasa cuando la página recién carga ---
         item.classList.remove('active');
         const link = item.querySelector('a').getAttribute('href');
        
@@ -23,20 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
             item.classList.add('active');
         }
 
-        // --- PARTE B: Lo que pasa cuando haces clic (NUEVO) ---
         item.addEventListener('click', function() {
-            // Le sacamos la clase active a todos los botones
             list.forEach(li => li.classList.remove('active'));
-            // Se la ponemos solo al que acabas de clickear
             this.classList.add('active');
         });
     });
 });
 
-// Lógica para el menú desplegable del usuario
-// =========================================================
-// 👤 LÓGICA INTEGRADA: MENÚ DESPLEGABLE Y MODAL DE AJUSTES
-// =========================================================
 document.addEventListener('DOMContentLoaded', function() {
     const userMenuTrigger = document.getElementById('user-menu-trigger');
     const userDropdown = document.getElementById('user-dropdown');
@@ -47,56 +37,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (userMenuTrigger && userDropdown) {
         
-        // Al hacer clic en el botón/área de usuario
         userMenuTrigger.addEventListener('click', function(event) {
 
-            // CASO TUYO: Si hicieron clic exactamente en "Ajustes de Usuario"
             if (event.target.closest('#btn-abrir-ajustes')) {
                 event.preventDefault();
-                event.stopPropagation(); // Evita que el click reactive el menú padre
+                event.stopPropagation(); 
 
                 console.log("¡EL BOTÓN SI RESPONDE AL CLIC!");
                 
-                userDropdown.classList.remove('show'); // Escondemos el dropdown
+                userDropdown.classList.remove('show');
 
                 
                 if (modalAjustes) {
                     modalAjustes.classList.add('activo');
                 }
-                return; // Cortamos la ejecución acá
+                return; 
             }
 
-            // Si el clic vino de cualquier otro enlace del dropdown (Cerrar Sesión, Admin), dejamos que siga viaje
             if (event.target.closest('.dropdown-item')) {
                 return; 
             }
 
-            // Comportamiento normal: Abrir o cerrar el menú desplegable al tocar el botón de usuario
             event.preventDefault(); 
             event.stopPropagation(); 
             userDropdown.classList.toggle('show');
         });
 
-        // Si hacen clic en cualquier otro lado de la pantalla, se cierra solo el dropdown
         window.addEventListener('click', function(event) {
             if (!userMenuTrigger.contains(event.target)) {
                 userDropdown.classList.remove('show');
             }
         });
     }
-
- // Funciones exclusivas para cerrar tu modal de Ajustes
+    
     if (modalAjustes) {
         function cerrarModalAjustes() {
             modalAjustes.classList.remove('activo'); 
             const form = document.getElementById('form-ajustes-usuario');
-            if (form) form.reset(); // Limpia los inputs para que no queden contraseñas escritas
+            if (form) form.reset();
         }
 
         if (btnCerrarAjustes) btnCerrarAjustes.addEventListener('click', cerrarModalAjustes);
         if (btnCancelarAjustes) btnCancelarAjustes.addEventListener('click', cerrarModalAjustes);
         
-        // Cerrar si tocan la parte oscura de afuera del recuadro
         modalAjustes.addEventListener('click', function(e) {
             if (e.target === modalAjustes) cerrarModalAjustes();
         });

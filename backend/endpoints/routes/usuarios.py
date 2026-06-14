@@ -25,7 +25,6 @@ def registrar_usuario():
         return jsonify({"message": "Usuario registrado con exito", "id_usuario": nuevo_id}), 201
     
     except Exception as e:
-        print("❌ ERROR REAL DEL BACKEND:", str(e))
         error_body = construir_error('database.error', 'Error al registrar', str(e))
         return jsonify(error_body), 400
 
@@ -49,7 +48,6 @@ def login():
         error_body = construir_error('invalid.credentials', 'Credenciales incorrectas', 'El email o la contraseña no coinciden')
         return jsonify(error_body), 401
     
-    """Si coinciden, le devolvemos los datos del usuario (sin la password)"""
     usuario.pop('password', None)
     return jsonify({
         "message": "Autenticacion exitosa",
@@ -95,18 +93,15 @@ def actualizar_perfil_usuario(id_usuario):
     if not nuevo_nombre and not nuevo_email and not nueva_password:
         return jsonify({'message': 'No se proporcionaron campos para actualizar'}), 400
 
-    # 1. Si vino nombre, intentamos modificarlo pero NO frenamos el código si falla
     if nuevo_nombre:
         modificar_nombre(id_buscado, nuevo_nombre)
 
-    # 2. Si vino email, modificamos email
     if nuevo_email:
         try:
             actualizado = modificar_email(id_buscado, nuevo_email)
         except Exception as e:
             return jsonify({'message': 'El email ya esta en uso'}), 400
 
-    # 3. Si vino password, modificamos password
     if nueva_password:
         actualizado = modificar_password(id_buscado, nueva_password)
         if not actualizado:

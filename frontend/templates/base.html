@@ -44,7 +44,7 @@
                 
                 <div class="user-dropdown" id="user-dropdown">
                     {% if session.nombre_usuario %}
-                        <div class="dropdown-item" style="font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.2); padding-bottom: 5px; margin-bottom: 5px; pointer-events: none;">
+                        <div class="dropdown-item usuario-header">
                             👤 {{ session.nombre_usuario }}
                         </div>
                     {% endif %}
@@ -54,7 +54,7 @@
                     </a>
                     
                     {% if session.es_admin %}
-                        <a href="{{ url_for('admin.vista_admin_dashboard') }}" class="dropdown-item" style="color: #ff4757; font-weight: bold;">
+                        <a href="{{ url_for('admin.vista_admin_dashboard') }}" class="dropdown-item admin-link">
                             <ion-icon name="settings-outline"></ion-icon> Panel Admin
                         </a>
                     {% endif %}

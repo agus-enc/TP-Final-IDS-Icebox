@@ -1,7 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
-/* --- GLOBALES ----------------------------- */
-/* VARIABLES GLOBALES */
 :root {
     --color-borde: #DFD0CB;
     --color-texto: #2c3e50;
@@ -13,8 +11,6 @@ body {
     padding-bottom: 110px !important;
     overflow-x: hidden;
 }
-
-/* --- BARRA DE NAVEGACIÓN (ROUTER) --------- */
 
 .router {
     width: 480px;
@@ -93,7 +89,6 @@ body {
     overflow: visible !important;
 }
 
-/* Estados Activos */
 .router ul li.active a .icon {
     color: #ffffff;
     transform: translateY(-35px);
@@ -104,7 +99,6 @@ body {
     transform: translateY(15px);
 }
 
-/* Animaciones del Indicador */
 .router ul li:nth-child(1).active ~ .indicador { transform: translateX(calc(70px * 0)); }
 .router ul li:nth-child(2).active ~ .indicador { transform: translateX(calc(70px * 1)); }
 .router ul li:nth-child(3).active ~ .indicador { transform: translateX(calc(70px * 2)); }
@@ -149,10 +143,6 @@ body {
     box-shadow: -1px -10px 0 0 #333333;
 }
 
-/* ========================================== */
-/* --- ALERTAS GLOBALES (FLASH MESSAGES) ---- */
-/* ========================================== */
-
 .flash-container {
     position: fixed;
     top: 20px;
@@ -181,10 +171,6 @@ body {
 .flash-message.success {
     background-color: #a8ded9;
 }
-
-/* ========================================== */
-/* --- MENÚ DESPLEGABLE DE USUARIO ---------- */
-/* ========================================== */
 
 .user-dropdown {
     position: absolute;
@@ -224,10 +210,6 @@ body {
     background-color: #f7f7f7;
     border-radius: 4px;
 }
-
-/* ========================================== */
-/* --- MODAL CREADOR DE VIAJES -------------- */
-/* ========================================== */
 
 .modal-creador-oculto {
     position: fixed;
@@ -293,7 +275,6 @@ body {
     background: rgba(0,0,0,0.7);
 }
 
-/* --- Header y Título del Creador --- */
 .header-creador {
     position: relative;
     width: 100%;
@@ -357,7 +338,6 @@ body {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5)
 }
 
-/* --- Línea de Tiempo y Tarjetas --- */
 .linea-tiempo-creador {
     padding: 20px 30px;
     display: flex;
@@ -412,7 +392,6 @@ body {
     display: none;
 }
 
-/* --- Cuerpo e Imán de la Parada --- */
 .tarjeta-cuerpo-reducido {
     padding: 15px;
     display: flex;
@@ -424,7 +403,6 @@ body {
     height: 180px;
 }
 
-/* --- Botones Inferiores --- */
 .acciones-creador {
     display: flex;
     justify-content: center;
@@ -608,7 +586,6 @@ body {
     font-weight: 500;
 }
 
-/* El Switch (Toggle) */
 .switch {
     position: relative;
     display: inline-block;
@@ -709,7 +686,7 @@ input:checked + .slider:before {
 .input-buscador-ciudad {
     background-color: #e3cec2;
     width: 100%;
-    min-width: 200px; /* Evita que el input desaparezca o se vea minúsculo si está vacío */
+    min-width: 200px;
     max-width: 100%;
     padding: 8px 12px;
     border: transparent;
