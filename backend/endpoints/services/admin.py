@@ -84,7 +84,6 @@ def generar_pdf_reporte(ruta_grafico, ruta_grafico_imanes):
         c.drawImage(ruta_grafico, 100, 350, width=400, height=300)
     
     if os.path.exists(ruta_grafico_imanes):
-        c.drawString(100, 320, "Distribución de Imanes:")
         c.drawImage(ruta_grafico_imanes, 100, 20, width=400, height=280)
 
     c.showPage()

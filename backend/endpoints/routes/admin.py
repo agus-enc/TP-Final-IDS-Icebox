@@ -72,6 +72,6 @@ def descargar_reporte():
     
     ruta_grafico = 'backend_grafico/static/images/grafico_admin.png'
     ruta_grafico_imanes = generar_grafico_imanes()
-    archivo_pdf = generar_pdf_reporte(ruta_grafico)
+    archivo_pdf = generar_pdf_reporte(ruta_grafico, ruta_grafico_imanes)
 
     return send_file(archivo_pdf, as_attachment=True)
