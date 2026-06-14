@@ -35,8 +35,7 @@ def mostrar_mapa(id_usuario=None):
         print(f"Error al validar permisos: {e}")
         flash("Error de conexión con el servidor.", "danger")
         return redirect(url_for('mapa.mostrar_mapa'))
-
-    id_usuario = session.get('usuario_id')
+    
     url_backend = f"{BACKEND_URL}/usuarios/{id_usuario}/paises/visitados"
 
     paises_codigos = []
