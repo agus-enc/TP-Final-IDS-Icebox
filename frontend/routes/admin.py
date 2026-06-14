@@ -12,7 +12,6 @@ def vista_admin_dashboard():
         
         return redirect(url_for('login.login'))
     
-    #CONEXION CON EL BACK
     url = f"{BACKEND_URL}/admin/dashboard"
     headers = {'X-User-Id': str(session.get('usuario_id'))}
 
@@ -28,9 +27,23 @@ def vista_admin_dashboard():
 
             ubicaciones_top = datos.get('ubicaciones', [])
             imanes_cant = datos.get('cant_imanes', [])
+
+            ciudades_reseñas = datos.get('ciudades_reseñas', [])
+            cant_reseñas = datos.get('cant_reseñas', [])
+
+            usuarios = datos.get('usuarios', [])
+            cant_viajes = datos.get('cant_viajes', [])
             
             
-            return render_template('admin_dashboard.html', ciudades=ciudades_top, visitas=visitas_top, ubicaciones=ubicaciones_top, cant_imanes=imanes_cant)
+            return render_template('admin_dashboard.html', 
+                                   ciudades=ciudades_top, 
+                                   visitas=visitas_top, 
+                                   ubicaciones=ubicaciones_top, 
+                                   cant_imanes=imanes_cant, 
+                                   ciudades_reseñas=ciudades_reseñas, 
+                                   cant_reseñas=cant_reseñas,
+                                   usuarios=usuarios,
+                                   cant_viajes=cant_viajes)
         else:
             flash("Error de autorizacion en el servidor.", "error")
             return redirect(url_for('login.login'))
@@ -47,7 +60,6 @@ def descargar_reporte():
     
     response = requests.get(url, headers=headers)
     
-    # 2. Si el backend devuelve el archivo, el front lo descarga
     if response.status_code == 200:
         from flask import Response
         return Response(response.content, mimetype='application/pdf', 

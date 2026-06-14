@@ -65,10 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctxImanes.getContext('2d'), {
             type: 'pie',
             data: {
-                labels: labelsImanes,
+                labels: etiquetasLegibles,
                 datasets: [{
                     data: dataImanes,
-                    backgroundColor: ['#7485e6', '#a3b1ff'], 
+                    backgroundColor: ['#7485e6', '#cbd5e1'], 
                     borderColor: '#333333',
                     borderWidth: 2
                 }]
@@ -79,5 +79,78 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // --- GRÁFICO 3: RESEÑAS POR CIUDAD (Dona) ---
+    const ctxResenas = document.getElementById('graficoResenas');
+    if (ctxResenas) {
+        new Chart(ctxResenas.getContext('2d'), {
+            type: 'doughnut', 
+            data: {
+                labels: labelsResenas, // Las ciudades que vienen del back
+                datasets: [{
+                    data: dataResenas, // Las cantidades de reseñas
+                    // Gama de lilas, azules y grises en degradé
+                    backgroundColor: ['#7485e6', '#a3b1ff', '#cbd5e1', '#94a3b8', '#e2e8f0'], 
+                    borderColor: '#333333',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right', // Leyenda al costado para que no tape el gráfico
+                        labels: {
+                            color: '#333333',
+                            font: {
+                                size: 13,
+                                weight: '600'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const ctxUsuarios = document.getElementById('graficoUsuarios').getContext('2d');
+    new Chart(ctxUsuarios, {
+        type: 'bar', 
+        data: {
+            labels: labelsUsuarios, // Usa la constante global del HTML
+            datasets: [{
+                label: 'Cantidad de Viajes Creados',
+                data: dataViajes,     // Usa la constante global del HTML
+                backgroundColor: ['#7485e6','#a3b1ff','#94a3b8','#cbd5e1','#e2e8f0'],
+                borderColor: '#333333',
+                borderWidth: 1.5
+            }]
+        },
+        options: {
+            indexAxis: 'y', // Hace que las barras sean horizontales
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false 
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1, // Números enteros
+                        color: '#333333'
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: '#333333'
+                    }
+                }
+            }
+        }
+    });
 
 });

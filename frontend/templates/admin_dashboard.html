@@ -18,31 +18,43 @@
     <h1 class="admin-title">
         Panel de Control: Administrador        
     </h1>
-    
-    <div class="chart-card">
-        <h3>Estadísticas de Viajes Globales</h3>
 
-        <div style="position: relative; height: 400px; width: 100%;">
-            <canvas id="miGrafico"></canvas>
+    <div class="fila-tarjetas">
+        <div class="chart-card">
+            <h3>Estadísticas de Viajes Globales</h3>
+            <div class="canvas-container">
+                <canvas id="miGrafico"></canvas>
+            </div>
+        </div>
+        
+        <div class="chart-card">
+            <h3>Imanes en Heladera</h3>
+            <p id="resumen-imanes"></p>
+            <div class="canvas-container">
+                <canvas id="graficoImanes"></canvas>
+            </div>
         </div>
     </div>
 
-    <div class="chart-card" style="margin-top: 30px;">
-        <h3>Imanes en Heladera</h3>
-
-        <p id="resumen-imanes" style="text-align: center; font-size: 1.1em; margin-bottom: 20px;"></p>
-        
-        <div class="canvas-container" style="position: relative; height: 350px; width: 100%;">
-            <canvas id="graficoImanes"></canvas>
+    <div class="fila-tarjetas fila-segunda">
+        <div class="chart-card tarjeta-completa">
+            <h3>Top Ciudades con Más Reseñas</h3>
+            <div class="canvas-container">
+                <canvas id="graficoResenas"></canvas>
+            </div>
         </div>
-        
+
+        <div class="chart-card">
+            <h3>Ranking de Viajeros Frecuentes (Top 5)</h3>
+            <div class="canvas-container">
+                <canvas id="graficoUsuarios"></canvas>
+            </div>
+        </div>
     </div>
 
     <a href= "{{ url_for('admin.descargar_reporte') }}" class="btn-download-pdf">
         Descargar Reporte en PDF
     </a>
-
-    
 </div>
 
 
@@ -53,6 +65,10 @@
     const dataVisitas = {{ visitas | tojson | safe }};
     const labelsImanes = {{ ubicaciones | tojson | safe }};
     const dataImanes = {{ cant_imanes | tojson | safe }};
+    const labelsResenas = {{ ciudades_reseñas | tojson }};
+    const dataResenas = {{ cant_reseñas | tojson }};
+    const labelsUsuarios = {{ usuarios | tojson | safe }};
+    const dataViajes = {{ cant_viajes | tojson | safe }};
 </script>
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}
