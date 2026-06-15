@@ -25,8 +25,8 @@ def agregar_imagen_viaje(id_viaje: int, tipo: str, archivo_imagen, orden: int = 
 
         return {"mensaje": "Portada actualizada", "url": url_publica_nueva, "tipo": tipo}
 
-    if tipo == 'diario' and cantidad_actual >= 10:
-        raise ValueError({"errors": [{"code": "limit_reached", "message": "Límite de 10 imágenes alcanzado."}]}, 403)
+    if tipo == 'diario' and cantidad_actual >= 50:
+        raise ValueError({"errors": [{"code": "limit_reached", "message": "Límite de 50 imágenes alcanzado."}]}, 403)
 
     url_publica = subir_imagen_parada(archivo_imagen, id_viaje)
     insertar_imagen_viaje_db(id_usuario, id_viaje, url_publica, tipo, orden, epigrafe)
