@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from ..utils import construir_error
 from ..validators.usuarios import validar_id_usuario, validar_registro_usuario, validar_login_usuario
-from ..services.usuarios import eliminar_usuario, registrar_nuevo_usuario, autenticar_usuario, obtener_perfil_usuario, modificar_nombre, modificar_email, modificar_password
+from ..services.usuarios import registrar_nuevo_usuario, autenticar_usuario, obtener_perfil_usuario, modificar_nombre, modificar_email, modificar_password
 
 usuarios_bp = Blueprint("usuarios", __name__)
 
@@ -108,25 +108,3 @@ def actualizar_perfil_usuario(id_usuario):
             return jsonify({'message': 'Usuario no encontrado para actualizar contraseña'}), 404
     
     return jsonify({'message': 'Datos de cuenta actualizados correctamente'}), 200
-
-
-@usuarios_bp.route("/usuarios/<int:id_usuario>", methods=["DELETE"])
-def delete_usuario(id_usuario):
-    
-    try:
-        id_usuario_validado = validar_id_usuario(id_usuario)
-    except ValueError as e:
-        error_dict = e.args[0]
-        status = e.args[1] if len(e.args) > 1 else 400
-        return jsonify(error_dict), status
-    
-    eliminado = eliminar_usuario(id_usuario_validado)
-
-    if not eliminado:
-        return jsonify(construir_error(
-            code="USER NOT FOUND",
-            message="Usuario no encontrado",
-            description=f"No existe el usuario con id '{id_usuario_validado}'"
-        )), 404
-    
-    return "", 204

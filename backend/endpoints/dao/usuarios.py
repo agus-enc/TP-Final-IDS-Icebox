@@ -63,11 +63,3 @@ def actualizar_password_usuario(id_usuario: int, password: str) -> bool:
     filas_afectadas = ejecutar_mutacion(sql, {"id_usuario": id_usuario, "password": password})
 
     return filas_afectadas > 0
-
-def eliminar_usuario_por_id(id_usuario: int) -> bool:
-    """
-    Elimina un usuario por id. Retorna True si fue eliminado, False si no existía
-    """
-    sql = "DELETE FROM usuarios WHERE id_usuario = %(id_usuario)s"
-    filas_afectadas = ejecutar_mutacion(sql, {"id_usuario" : id_usuario})
-    return filas_afectadas > 0
