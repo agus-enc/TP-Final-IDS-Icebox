@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnCancelarAjustes = document.getElementById('btn-cancelar-ajustes');
 
     if (userMenuTrigger && userDropdown) {
-        
         userMenuTrigger.addEventListener('click', function(event) {
 
             if (event.target.closest('#btn-abrir-ajustes')) {
