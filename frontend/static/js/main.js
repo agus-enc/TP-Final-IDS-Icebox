@@ -19,18 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentUrl.includes(link) || (currentUrl === '/' && link.includes('heladera'))) {
             item.classList.add('active');
         }
-
-        item.addEventListener('click', function() {
-            list.forEach(li => li.classList.remove('active'));
-            this.classList.add('active');
-        });
     });
 });
 
 document.addEventListener('DOMContentLoaded', function() {
     const userMenuTrigger = document.getElementById('user-menu-trigger');
     const userDropdown = document.getElementById('user-dropdown');
-    const btnAbrirAjustes = document.getElementById('btn-abrir-ajustes');
     const modalAjustes = document.getElementById('modal-ajustes-usuario');
     const btnCerrarAjustes = document.getElementById('btn-cerrar-ajustes');
     const btnCancelarAjustes = document.getElementById('btn-cancelar-ajustes');

@@ -7,7 +7,6 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/heladera.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login-style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/biblioteca.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/map.css') }}">
     {% block extra_css%}{% endblock %}
@@ -50,7 +49,7 @@
                     {% endif %}
 
                     <a href="#" class="dropdown-item" id="btn-abrir-ajustes">
-                        <ion-icon name="settings-outline"></ion-icon> Ajustes de Usuario
+                        <ion-icon name="settings-outline"></ion-icon>Ajustes de Usuario
                     </a>
                     
                     {% if session.es_admin %}
