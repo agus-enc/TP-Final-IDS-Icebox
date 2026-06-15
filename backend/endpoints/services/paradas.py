@@ -4,7 +4,8 @@ from ..dao.lugares import obtener_ciudad_por_id
 from ..dao.paradas import insertar_parada_con_iman, eliminar_parada_por_id, eliminar_relato_parada_db, actualizar_relato_parada_db, actualizar_ciudad_parada_db, actualizar_parada_completa, obtener_paradas_por_viaje
 from ..validators.paradas import validar_body_parada, validar_relato, validar_ciudad, validar_edicion_parada
 from ..validators.viajes import validar_id_viaje
-from ..utils import validar_minimo
+from ..dao.imanes import obtener_iman_por_parada, eliminar_iman_por_id
+from .storage import borrar_imagen_supabase
 
 def crear_parada(id_viaje: int, body: dict) -> dict:
     """ Verifica que el viaje de la parada exista, la crea y devuelve su DTO aplicando la logica de negocio. """
@@ -60,7 +61,13 @@ def obtener_paradas_de_viaje(id_viaje: int) -> list:
     return paradas_db
 
 def eliminar_parada(id_parada: int) -> bool:
-    """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""
+    """Elimina una parada por id, limpiando previamente su imán de Supabase y BD si corresponde."""
+    iman = obtener_iman_por_parada(id_parada)
+    if iman:
+        if not iman.get('predeterminado') and iman.get('imagen_url'):
+            borrar_imagen_supabase(iman['imagen_url'])
+        eliminar_iman_por_id(iman['id_iman'])
+
     return eliminar_parada_por_id(id_parada)
 
 def eliminar_relato(id_parada: int) -> bool:
