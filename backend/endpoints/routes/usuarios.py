@@ -54,24 +54,7 @@ def login():
         "usuario": usuario,
     }), 200
 
-@usuarios_bp.route("/usuarios/<int:id_usuario>", methods=['GET'])
-def obtener_perfil(id_usuario):
-    
-    try:
-        validar_id_usuario(id_usuario)
 
-    except ValueError as e:
-        error_dict = e.args[0]
-        status = e.args[1] if len(e.args) > 1 else 400
-        return jsonify(error_dict), status
-    
-    usuario = obtener_perfil_usuario(id_usuario)
-    if not usuario:
-        error_body = construir_error('user.not_found', 'Usuario no encontrado', f'No existe un usuario con id {id_usuario}')
-        return jsonify(error_body), 404
-    
-    usuario.pop('password', None)
-    return jsonify(usuario), 200
 
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=['PATCH'])
 def actualizar_perfil_usuario(id_usuario):
