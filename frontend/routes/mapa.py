@@ -8,6 +8,7 @@ mapa_bp = Blueprint('mapa', __name__)
 @mapa_bp.route('/mapa', defaults={'id_usuario': None})
 @mapa_bp.route('/mapa/<int:id_usuario>')
 @login_required
+<<<<<<< Updated upstream
 def mostrar_mapa(id_usuario=None):
 
     if id_usuario is None:
@@ -36,6 +37,11 @@ def mostrar_mapa(id_usuario=None):
         flash("Error de conexión con el servidor.", "danger")
         return redirect(url_for('mapa.mostrar_mapa'))
     
+=======
+def mostrar_mapa():
+
+    id_usuario = session.get('usuario_id')
+>>>>>>> Stashed changes
     url_backend = f"{BACKEND_URL}/usuarios/{id_usuario}/paises/visitados"
 
     paises_codigos = []
