@@ -1,5 +1,10 @@
 from ..dao.viajes import insertar_viaje, eliminar_viaje_por_id, actualizar_titulo_viaje, obtener_viaje, obtener_viajes_por_usuario_db
 from ..validators.viajes import validar_body_viaje, validar_id_viaje
+from ..dao.imagenes import obtener_imagenes_viaje_db
+from .imagenes import eliminar_portada_viaje, eliminar_imagen_diario
+from ..dao.paradas import obtener_paradas_por_viaje
+from ..dao.imanes import eliminar_iman_por_id
+from .storage import borrar_imagen_supabase
 import hashlib
 SECRET_KEY = "icebox_ids"
 
@@ -31,10 +36,30 @@ def crear_viaje(body: dict, id_usuario: int) -> dict:
         "id_viaje": nuevo_id,
         "id_usuario": id_usuario,
         "titulo": datos_limpios["titulo"]
-        })
+    })
 
 def eliminar_viaje(id_viaje: int) -> bool:
-    """Elimina un viaje por id. Retorna True si existía y fue eliminado, False si no existía."""
+    """Elimina un viaje por id, limpiando previamente imágenes en Supabase y BD."""
+    viaje = obtener_viaje(id_viaje)
+    if not viaje:
+        return False
+
+    imagenes = obtener_imagenes_viaje_db(id_viaje)
+    for img in imagenes:
+        if img.get('tipo') == 'header':
+            eliminar_portada_viaje(id_viaje)
+        elif img.get('tipo') == 'diario':
+            eliminar_imagen_diario(img['id_imagen'])
+
+    paradas = obtener_paradas_por_viaje(id_viaje)
+    for parada in paradas:
+        id_iman = parada.get('id_iman')
+        if id_iman:
+            if not parada.get('predeterminado') and parada.get('imagen_url'):
+                borrar_imagen_supabase(parada['imagen_url'])
+
+            eliminar_iman_por_id(id_iman)
+
     return eliminar_viaje_por_id(id_viaje)
 
 def obtener_todos_los_viajes() -> list:
