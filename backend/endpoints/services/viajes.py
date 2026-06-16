@@ -62,10 +62,6 @@ def eliminar_viaje(id_viaje: int) -> bool:
 
     return eliminar_viaje_por_id(id_viaje)
 
-def obtener_todos_los_viajes() -> list:
-    """Obtiene la lista completa de viajes desde la base de datos"""
-    return "" # obtener_todos_los_viajes_db()
-
 def editar_titulo_viaje(id_viaje: int, body: dict) -> bool:
     """Valida y actualiza el titulo de viaje existente"""
     datos_viaje = validar_body_viaje(body)

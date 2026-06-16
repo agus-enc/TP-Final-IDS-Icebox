@@ -1,8 +1,7 @@
-import json
 from ..dao.usuarios import obtener_usuario_por_viaje
 from ..dao.lugares import obtener_ciudad_por_id
-from ..dao.paradas import insertar_parada_con_iman, eliminar_parada_por_id, eliminar_relato_parada_db, actualizar_relato_parada_db, actualizar_ciudad_parada_db, actualizar_parada_completa, obtener_paradas_por_viaje
-from ..validators.paradas import validar_body_parada, validar_relato, validar_ciudad, validar_edicion_parada
+from ..dao.paradas import insertar_parada_con_iman, eliminar_parada_por_id, actualizar_parada_completa, obtener_paradas_por_viaje
+from ..validators.paradas import validar_body_parada, validar_edicion_parada
 from ..validators.viajes import validar_id_viaje
 from ..dao.imanes import obtener_iman_por_parada, eliminar_iman_por_id
 from .storage import borrar_imagen_supabase
@@ -69,25 +68,6 @@ def eliminar_parada(id_parada: int) -> bool:
         eliminar_iman_por_id(iman['id_iman'])
 
     return eliminar_parada_por_id(id_parada)
-
-def eliminar_relato(id_parada: int) -> bool:
-    """Busca la parada y pone su columna relato_texto en NULL. Retorna True si se modificó, False si la parada no existía."""
-    return eliminar_relato_parada_db(id_parada)
-
-def modificar_relato_parada(id_parada: int, body: dict) -> dict:
-    """Valida y actualiza únicamente el relato de la parada."""
-    body_validado = validar_relato(body)
-    relato_str = json.dumps(body_validado['relato_texto'])
-    actualizar_relato_parada_db(id_parada, relato_str)
-    
-    return {"status": "success", "message": "Relato de la parada actualizado correctamente."}
-
-def modificar_ciudad_parada(id_parada: int, body: dict) -> dict:
-    """Valida y actualiza únicamente la ciudad de la parada."""
-    body_validado = validar_ciudad(body)
-    actualizar_ciudad_parada_db(id_parada, body_validado['id_ciudad'])
-    
-    return {"status": "success", "message": "Ciudad de la parada actualizada correctamente."}
 
 def editar_parada_completa(id_parada: int, body: dict) -> bool:
     """Valida y actualiza ciudad y texto de una parada existente."""

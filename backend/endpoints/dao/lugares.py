@@ -17,17 +17,6 @@ def obtener_paises_por_usuario(id_usuario: int) -> list:
 
     return ejecutar_consulta(sql, {"id_usuario": id_usuario})
 
-def obtener_todos_los_paises_db() -> list:
-    """Trae todos los países de la tabla"""
-    sql = "SELECT id_pais, nombre FROM paises WHERE 1 = %(dummy)s"
-    resultados = ejecutar_consulta(sql, {'dummy': 1})
-
-    return resultados
-
-def obtener_ciudades_por_pais_db(id_pais: int) -> list:
-    sql = 'SELECT id_ciudad, nombre FROM ciudades WHERE id_pais = %(id_pais)s'
-    return ejecutar_consulta(sql, {'id_pais': id_pais})
-
 def obtener_todas_las_ciudades_db() -> list:
     sql = '''
         SELECT c.id_ciudad, c.nombre, p.nombre as pais 

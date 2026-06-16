@@ -1,4 +1,4 @@
-from ..dao.usuarios import insertar_usuario, obtener_usuario_por_nombre, obtener_usuario, actualizar_nombre_usuario, actualizar_mail_usuario, actualizar_password_usuario
+from ..dao.usuarios import insertar_usuario, obtener_usuario_por_nombre, actualizar_nombre_usuario, actualizar_mail_usuario, actualizar_password_usuario
 
 def registrar_nuevo_usuario(nombre_usuario: str, email: str, password: str) -> int:
     """ Llama a db.py para insertar en la tabla usuarios"""
@@ -11,10 +11,6 @@ def autenticar_usuario(nombre_usuario: str, password: str) -> bool:
         if usuario['password'] == password:
             return usuario
         return None
-
-def obtener_perfil_usuario(id_usuario: int) -> dict | None:
-    """Llama a la funcion en el db para traer el usuario por ID"""
-    return obtener_usuario(id_usuario)
 
 def modificar_nombre(id_usuario: int, nombre_usuario: str) -> bool:
     return actualizar_nombre_usuario(id_usuario, nombre_usuario)

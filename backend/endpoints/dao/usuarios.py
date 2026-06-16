@@ -33,13 +33,6 @@ def obtener_usuario_por_viaje(id_viaje: int) -> int | None:
     resultados = ejecutar_consulta(sql, {'id_viaje': id_viaje})
     return resultados[0]['id_usuario'] if resultados else None
 
-def obtener_usuario_por_email(email: str) -> dict | None:
-    """Busca un usuario por su mail (util para el login)"""
-
-    sql = "SELECT * FROM usuarios WHERE email = %(email)s"
-    resultados = ejecutar_consulta(sql, {"email": email})
-    return resultados[0] if resultados else None
-
 def actualizar_nombre_usuario(id_usuario: int, nombre_usuario: str) -> bool:
     """Actualiza el nombre de usuario"""
 

@@ -3,8 +3,7 @@ import requests
 from werkzeug.utils import secure_filename
 from ..constants import SUPABASE_URL, SUPABASE_KEY, BUCKET_NAME
 
-def subir_archivo_supabase(file_bytes: bytes, filename: str, content_type: str, subcarpeta: str,
-                           bucket_name: str = BUCKET_NAME) -> str:
+def subir_archivo_supabase(file_bytes: bytes, filename: str, content_type: str, subcarpeta: str, bucket_name: str = BUCKET_NAME) -> str:
     """
     Sube bytes puros a cualquier bucket de Supabase.
     """

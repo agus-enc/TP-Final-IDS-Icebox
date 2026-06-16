@@ -92,7 +92,6 @@ def vista_admin_dashboard():
         "cant_viajes": cant_viajes
     }), 200
 
-
 @admin_bp.route('/admin/descargar-reporte', methods=['GET'])
 def descargar_reporte():
 

@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from ..utils import construir_error
 from ..validators.usuarios import validar_id_usuario, validar_registro_usuario, validar_login_usuario
-from ..services.usuarios import registrar_nuevo_usuario, autenticar_usuario, obtener_perfil_usuario, modificar_nombre, modificar_email, modificar_password
+from ..services.usuarios import registrar_nuevo_usuario, autenticar_usuario, modificar_nombre, modificar_email, modificar_password
 
 usuarios_bp = Blueprint("usuarios", __name__)
 
@@ -54,8 +54,6 @@ def login():
         "usuario": usuario,
     }), 200
 
-
-
 @usuarios_bp.route("/usuarios/<int:id_usuario>", methods=['PATCH'])
 def actualizar_perfil_usuario(id_usuario):
     try:
@@ -82,7 +80,7 @@ def actualizar_perfil_usuario(id_usuario):
     if nuevo_email:
         try:
             actualizado = modificar_email(id_buscado, nuevo_email)
-        except Exception as e:
+        except Exception:
             return jsonify({'message': 'El email ya esta en uso'}), 400
 
     if nueva_password:

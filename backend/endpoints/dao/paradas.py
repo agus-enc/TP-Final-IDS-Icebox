@@ -56,39 +56,10 @@ def obtener_parada(id_parada: int) -> dict | None:
     resultados = ejecutar_consulta(sql, {'id_parada': id_parada})
     return resultados[0] if resultados else None
 
-def eliminar_relato_parada_db(id_parada: int) -> bool:
-    """Busca la parada y pone su columna relato_texto en NULL. Retorna True si se modificó, False si la parada no existía."""
-    sql_vaciar = 'UPDATE paradas SET relato_texto = NULL WHERE id_parada = %(id_parada)s'
-    filas_afectadas = ejecutar_mutacion(sql_vaciar, {'id_parada': id_parada})
-
-    return filas_afectadas > 0
-
 def eliminar_parada_por_id(id_parada: int) -> bool:
     """Elimina un parada por id. Retorna True si existía y fue eliminado, False si no existía."""
     sql_borrar = 'DELETE FROM paradas WHERE id_parada = %(id_parada)s'
     filas_afectadas = ejecutar_mutacion(sql_borrar, {'id_parada': id_parada})
-    return filas_afectadas > 0
-
-def actualizar_relato_parada_db(id_parada: int, relato_str: str) -> bool:
-    """Actualiza la columna relato_texto de una parada específica. Retorna True si existía."""
-    sql = 'UPDATE paradas SET relato_texto = %(relato_texto)s WHERE id_parada = %(id_parada)s'
-
-    filas_afectadas = ejecutar_mutacion(sql, {
-        'relato_texto': relato_str,
-        'id_parada': id_parada
-    })
-
-    return filas_afectadas > 0
-
-def actualizar_ciudad_parada_db(id_parada: int, id_ciudad: int) -> bool:
-    """Actualiza la columna id_ciudad de una parada específica. Retorna True si existía."""
-    sql = 'UPDATE paradas SET id_ciudad = %(id_ciudad)s WHERE id_parada = %(id_parada)s'
-
-    filas_afectadas = ejecutar_mutacion(sql, {
-        'id_ciudad': id_ciudad,
-        'id_parada': id_parada
-    })
-
     return filas_afectadas > 0
 
 def actualizar_parada_completa(id_parada: int, id_ciudad: int, texto_resena: str) -> bool:
