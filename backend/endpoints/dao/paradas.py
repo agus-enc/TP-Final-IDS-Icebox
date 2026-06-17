@@ -63,15 +63,29 @@ def eliminar_parada_por_id(id_parada: int) -> bool:
     return filas_afectadas > 0
 
 def actualizar_parada_completa(id_parada: int, id_ciudad: int, texto_resena: str) -> bool:
-    """Actualiza la ciudad y el texto de una parada al mismo tiempo."""
-    sql = '''
-        UPDATE paradas 
-        SET id_ciudad = %(id_ciudad)s, relato_texto = %(texto_resena)s 
-        WHERE id_parada = %(id_parada)s
-    '''
-    filas_afectadas = ejecutar_mutacion(sql, {
-        'id_ciudad': id_ciudad,
-        'texto_resena': texto_resena,
-        'id_parada': id_parada
-    })
-    return filas_afectadas > 0
+    """Actualiza la ciudad y el texto de una parada, sincronizando su imán asociado si lo tuviera."""
+    with obtener_transaccion() as cursor:
+        sql_parada = '''
+                     UPDATE paradas
+                     SET id_ciudad    = %(id_ciudad)s, \
+                         relato_texto = %(texto_resena)s
+                     WHERE id_parada = %(id_parada)s \
+                     '''
+        cursor.execute(sql_parada, {
+            'id_ciudad': id_ciudad,
+            'texto_resena': texto_resena,
+            'id_parada': id_parada
+        })
+        filas_afectadas = cursor.rowcount
+
+        sql_iman = '''
+                   UPDATE imanes
+                   SET id_ciudad = %(id_ciudad)s
+                   WHERE id_parada = %(id_parada)s \
+                   '''
+        cursor.execute(sql_iman, {
+            'id_ciudad': id_ciudad,
+            'id_parada': id_parada
+        })
+
+        return filas_afectadas > 0
