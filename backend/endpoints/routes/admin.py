@@ -106,7 +106,7 @@ def descargar_reporte():
     if not response or response[0]['rol'] != 'admin':
         return jsonify({"status":"error","message":"Acceso denegado, no eres administrador."}), 403
     
-    ruta_grafico = 'backend_grafico/static/images/grafico_admin.png'
+    ruta_grafico = generar_grafico_viajes()
     ruta_grafico_imanes = generar_grafico_imanes()
     ruta_grafico_reseñas = generar_grafico_reseñas()
     ruta_grafico_usuarios = generar_grafico_usuarios_activos()
